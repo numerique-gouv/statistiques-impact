@@ -20,12 +20,18 @@ function buildIndicatorService() {
     const indicatorService = {
         getIndicators,
         createIndicator,
+        deleteIndicator,
     };
 
     return indicatorService;
 
     async function getIndicators() {
         return indicatorRepository.find();
+    }
+
+    async function deleteIndicator(indicatorId: string) {
+        const result = await indicatorRepository.delete({ id: indicatorId });
+        return result.affected === 1;
     }
 
     async function createIndicator(body: indicatorDto) {

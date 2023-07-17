@@ -8,12 +8,17 @@ function buildIndicatorController() {
     const indicatorController = {
         getIndicators,
         createIndicator,
+        deleteIndicator,
     };
 
     return indicatorController;
 
     async function getIndicators() {
         return indicatorService.getIndicators();
+    }
+
+    async function deleteIndicator(params: { urlParams: { indicatorId: string } }) {
+        return indicatorService.deleteIndicator(params.urlParams.indicatorId);
     }
 
     async function createIndicator(params: { body: indicatorDto }) {

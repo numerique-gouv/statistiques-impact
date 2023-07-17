@@ -11,6 +11,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/indicators', buildController(indicatorController.getIndicators));
+router.delete('/indicators/:indicatorId', buildController(indicatorController.deleteIndicator));
 
 router.post(
     '/indicators',
