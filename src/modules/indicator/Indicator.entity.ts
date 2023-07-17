@@ -7,4 +7,22 @@ export class Indicator {
 
     @Column()
     nom_service_public_numerique: string;
+
+    @Column()
+    indicateur: string;
+
+    @Column()
+    valeur: number;
+
+    @Column()
+    unite_mesure: string;
+
+    @Column()
+    frequence_calcul: string;
+
+    @Column({ type: 'timestamptz' })
+    date: string;
+
+    @Column()
+    est_periode: boolean;
 }
