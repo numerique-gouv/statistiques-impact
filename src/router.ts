@@ -1,16 +1,14 @@
 import Express from 'express';
-import { buildIndicatorService } from './modules/indicator';
+import { buildIndicatorController } from './modules/indicator';
+import { buildController } from './lib/buildController';
 
 const router = Express.Router();
+const indicatorController = buildIndicatorController();
 
 router.get('/', (req, res) => {
     res.send('Hello world!');
 });
 
-router.get('/indicators', async (req, res) => {
-    const indicatorService = buildIndicatorService();
-    const indicators = await indicatorService.getIndicators();
-    res.send(indicators);
-});
+router.get('/indicators', buildController(indicatorController.getIndicators));
 
 export { router };

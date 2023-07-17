@@ -1,4 +1,4 @@
 import { Indicator } from './Indicator.entity';
-import { buildIndicatorService } from './indicator.service';
+import { buildIndicatorController } from './indicator.controller';
 
-export { Indicator, buildIndicatorService };
+export { Indicator, buildIndicatorController };
