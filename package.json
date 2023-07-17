@@ -6,7 +6,11 @@
     "scripts": {
         "build": "tsc",
         "start": "node dist",
-        "startDev": "nodemon"
+        "startDev": "nodemon",
+        "migration:generate": "npm run build && typeorm migration:generate -d dist/src/dataSource.js src/migrations/$npm_config_name",
+        "migration:run": "npm run build && typeorm migration:run -d dist/src/dataSource.js",
+        "migration:revert": " npm run build && typeorm migration:revert -d dist/src/dataSource.js",
+        "typeorm": "typeorm-ts-node-esm"
     },
     "author": "",
     "license": "ISC",
@@ -20,7 +24,11 @@
         "@types/node": "^20.3.1",
         "body-parser": "^1.20.2",
         "dotenv": "^16.0.3",
-        "express": "^4.18.1"
+        "express": "^4.18.1",
+        "pg": "^8.8.0",
+        "pg-connection-string": "^2.6.0",
+        "reflect-metadata": "^0.1.13",
+        "typeorm": "^0.3.16"
     },
     "engines": {
         "node": "^16.0.0"
