@@ -13,6 +13,7 @@ type indicatorDtoType = {
     unite_mesure: string;
     frequence_calcul: string;
     date: string;
+    date_debut?: string;
     est_periode: boolean;
 };
 
@@ -81,6 +82,9 @@ function buildIndicatorService(dataSource: DataSource) {
             indicator.unite_mesure = indicatorDto.unite_mesure;
             indicator.frequence_calcul = indicatorDto.frequence_calcul;
             indicator.date = indicatorDto.date;
+            if (indicatorDto.date_debut) {
+                indicator.date_debut = indicatorDto.date_debut;
+            }
             indicator.est_periode = indicatorDto.est_periode;
             return indicator;
         });
