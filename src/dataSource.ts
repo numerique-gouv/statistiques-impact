@@ -11,7 +11,7 @@ const dataSource = new DataSource({
     password: config.DATABASE_PASSWORD,
     database: config.DATABASE_NAME,
     logging: true,
-    entities: [Product, Indicator],
+    entities: ['**/*.entity.js'],
     subscribers: [],
     migrations: ['**/migrations/*.js'],
 });
