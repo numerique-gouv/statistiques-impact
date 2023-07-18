@@ -1,3 +1,3 @@
 {
-    "jobs": [{ "command": "22 22 * * * npm run script:updateAudioconfStats", "size": "S" }]
+    "jobs": [{ "command": " 0 2 1 * npm run script:updateAudioconfStats", "size": "S" }]
 }
