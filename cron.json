@@ -1,0 +1,4 @@
+{
+    "command": "* 20 * * * npm run scripts:updateAudioconfStats",
+    "size": "S"
+}
