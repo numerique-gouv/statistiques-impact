@@ -1,5 +1,6 @@
 import { Indicator } from './Indicator.entity';
 import { dataSource } from '../../dataSource';
+import { Product } from '../product';
 
 export { buildIndicatorService };
 
@@ -11,12 +12,13 @@ type indicatorDto = {
     valeur: number;
     unite_mesure: string;
     frequence_calcul: string;
-    date: number;
+    date: string;
     est_periode: boolean;
 };
 
 function buildIndicatorService() {
     const indicatorRepository = dataSource.getRepository(Indicator);
+    const productRepository = dataSource.getRepository(Product);
     const indicatorService = {
         getIndicators,
         createIndicator,
@@ -36,14 +38,17 @@ function buildIndicatorService() {
 
     async function createIndicator(body: indicatorDto) {
         const indicator = new Indicator();
-        indicator.nom_service_public_numerique = body.nom_service_public_numerique;
+
+        const product = await productRepository.findOneOrFail({
+            where: { name: body.nom_service_public_numerique },
+        });
+
+        indicator.product = product;
         indicator.indicateur = body.indicateur;
         indicator.valeur = body.valeur;
         indicator.unite_mesure = body.unite_mesure;
         indicator.frequence_calcul = body.frequence_calcul;
-        const date = new Date();
-        date.setTime(body.date);
-        indicator.date = date.toISOString();
+        indicator.date = body.date;
         indicator.est_periode = body.est_periode;
 
         return indicatorRepository.save(indicator);

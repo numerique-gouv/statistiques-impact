@@ -1,4 +1,3 @@
-import { Indicator } from './Indicator.entity';
 import { buildIndicatorService, indicatorDto } from './indicator.service';
 
 export { buildIndicatorController };

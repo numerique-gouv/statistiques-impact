@@ -2,13 +2,11 @@ import Express from 'express';
 import { buildIndicatorController } from './modules/indicator';
 import { buildController } from './lib/buildController';
 import Joi from 'joi';
+import { buildProductController } from './modules/product';
 
 const router = Express.Router();
 const indicatorController = buildIndicatorController();
-
-router.get('/', (req, res) => {
-    res.send('Hello world!');
-});
+const productController = buildProductController();
 
 router.get('/indicators', buildController(indicatorController.getIndicators));
 router.delete('/indicators/:indicatorId', buildController(indicatorController.deleteIndicator));
@@ -22,8 +20,20 @@ router.post(
             valeur: Joi.number().required(),
             unite_mesure: Joi.string().required(),
             frequence_calcul: Joi.string().required(),
-            date: Joi.number().required(),
+            date: Joi.string()
+                .required()
+                .regex(/^\d{4}-\d{2}-\d{2}$/),
             est_periode: Joi.boolean().required(),
+        }),
+    }),
+);
+
+router.get('/products', buildController(productController.getProducts));
+router.post(
+    '/products',
+    buildController(productController.createProduct, {
+        schema: Joi.object({
+            name: Joi.string().required(),
         }),
     }),
 );
