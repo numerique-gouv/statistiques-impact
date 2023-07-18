@@ -1,12 +1,12 @@
 import { Indicator } from './Indicator.entity';
-import { dataSource } from '../../dataSource';
 import { Product } from '../product';
+import { DataSource } from 'typeorm';
 
 export { buildIndicatorService };
 
-export type { indicatorDto };
+export type { indicatorDtoType };
 
-type indicatorDto = {
+type indicatorDtoType = {
     nom_service_public_numerique: string;
     indicateur: string;
     valeur: number;
@@ -16,13 +16,14 @@ type indicatorDto = {
     est_periode: boolean;
 };
 
-function buildIndicatorService() {
+function buildIndicatorService(dataSource: DataSource) {
     const indicatorRepository = dataSource.getRepository(Indicator);
     const productRepository = dataSource.getRepository(Product);
     const indicatorService = {
         getIndicators,
-        createIndicator,
+        upsertIndicator,
         deleteIndicator,
+        upsertIndicators,
     };
 
     return indicatorService;
@@ -36,7 +37,7 @@ function buildIndicatorService() {
         return result.affected === 1;
     }
 
-    async function createIndicator(body: indicatorDto) {
+    async function upsertIndicator(body: indicatorDtoType) {
         const indicator = new Indicator();
 
         const product = await productRepository.findOneOrFail({
@@ -51,6 +52,43 @@ function buildIndicatorService() {
         indicator.date = body.date;
         indicator.est_periode = body.est_periode;
 
-        return indicatorRepository.save(indicator);
+        return indicatorRepository.upsert(indicator, [
+            'product',
+            'indicateur',
+            'frequence_calcul',
+            'date',
+        ]);
+    }
+
+    async function upsertIndicators(indicatorDtos: indicatorDtoType[]) {
+        const products: Record<string, Product> = {};
+
+        for (const indicatorDto of indicatorDtos) {
+            if (!Object.keys(products).includes(indicatorDto.nom_service_public_numerique)) {
+                const product = await productRepository.findOneOrFail({
+                    where: { name: indicatorDto.nom_service_public_numerique },
+                });
+                products[indicatorDto.nom_service_public_numerique] = product;
+            }
+        }
+
+        const indicators = indicatorDtos.map((indicatorDto) => {
+            const indicator = new Indicator();
+
+            indicator.product = products[indicatorDto.nom_service_public_numerique];
+            indicator.indicateur = indicatorDto.indicateur;
+            indicator.valeur = indicatorDto.valeur;
+            indicator.unite_mesure = indicatorDto.unite_mesure;
+            indicator.frequence_calcul = indicatorDto.frequence_calcul;
+            indicator.date = indicatorDto.date;
+            indicator.est_periode = indicatorDto.est_periode;
+            return indicator;
+        });
+        return indicatorRepository.upsert(indicators, [
+            'product',
+            'indicateur',
+            'frequence_calcul',
+            'date',
+        ]);
     }
 }

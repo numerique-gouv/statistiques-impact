@@ -1,12 +1,13 @@
-import { buildIndicatorService, indicatorDto } from './indicator.service';
+import { DataSource } from 'typeorm';
+import { buildIndicatorService, indicatorDtoType } from './indicator.service';
 
 export { buildIndicatorController };
 
-function buildIndicatorController() {
-    const indicatorService = buildIndicatorService();
+function buildIndicatorController(dataSource: DataSource) {
+    const indicatorService = buildIndicatorService(dataSource);
     const indicatorController = {
         getIndicators,
-        createIndicator,
+        upsertIndicator,
         deleteIndicator,
     };
 
@@ -20,7 +21,7 @@ function buildIndicatorController() {
         return indicatorService.deleteIndicator(params.urlParams.indicatorId);
     }
 
-    async function createIndicator(params: { body: indicatorDto }) {
-        return indicatorService.createIndicator(params.body);
+    async function upsertIndicator(params: { body: indicatorDtoType }) {
+        return indicatorService.upsertIndicator(params.body);
     }
 }

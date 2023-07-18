@@ -1,13 +1,13 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { Product } from '../product';
 
-@Entity()
 @Unique('One unique value for indicator by frequence and date', [
     'product',
     'indicateur',
     'frequence_calcul',
     'date',
 ])
+@Entity()
 export class Indicator {
     @PrimaryGeneratedColumn('uuid')
     id: string;
@@ -29,6 +29,9 @@ export class Indicator {
 
     @Column()
     date: string;
+
+    @Column({ nullable: true })
+    date_debut?: string;
 
     @Column()
     est_periode: boolean;
