@@ -1,4 +1,4 @@
-const padApiAdaptator = { format };
+const padAdaptator = { format };
 
 type padApiOutputType = {
     dateInf: string;
@@ -21,11 +21,17 @@ function format(padApiOutput: padApiOutputType) {
         throw new Error('The pad API did not return the right format');
     }
 
-    return {
-        date: castPadApiOutput.dateSup.slice(0, 10),
-        date_debut: castPadApiOutput.dateInf.slice(0, 10),
-        value: castPadApiOutput.activeUsers,
-    };
+    return [
+        {
+            date: castPadApiOutput.dateSup.slice(0, 10),
+            date_debut: castPadApiOutput.dateInf.slice(0, 10),
+            valeur: castPadApiOutput.activeUsers,
+            indicateur: 'utilisateurs actifs',
+            unite_mesure: 'unité',
+            frequence_calcul: 'mensuelle',
+            est_periode: true,
+        },
+    ];
 }
 
-export { padApiAdaptator };
+export { padAdaptator };
