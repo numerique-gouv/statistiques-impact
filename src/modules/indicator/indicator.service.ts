@@ -22,6 +22,7 @@ function buildIndicatorService(dataSource: DataSource) {
     const productRepository = dataSource.getRepository(Product);
     const indicatorService = {
         getIndicators,
+        getIndicatorsByProductName,
         upsertIndicator,
         deleteIndicator,
         upsertIndicators,
@@ -31,6 +32,12 @@ function buildIndicatorService(dataSource: DataSource) {
 
     async function getIndicators() {
         return indicatorRepository.find();
+    }
+
+    async function getIndicatorsByProductName(name: string) {
+        return indicatorRepository.find({
+            where: { product: { name } },
+        });
     }
 
     async function deleteIndicator(indicatorId: string) {

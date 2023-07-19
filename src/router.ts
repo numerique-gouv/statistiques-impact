@@ -11,6 +11,10 @@ function buildRouter(dataSource: DataSource) {
     const productController = buildProductController(dataSource);
 
     router.get('/indicators', buildController(indicatorController.getIndicators));
+    router.get(
+        '/indicators/:name',
+        buildController(indicatorController.getIndicatorsByProductName),
+    );
     router.delete('/indicators/:indicatorId', buildController(indicatorController.deleteIndicator));
 
     router.post(

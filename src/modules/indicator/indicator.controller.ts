@@ -7,6 +7,7 @@ function buildIndicatorController(dataSource: DataSource) {
     const indicatorService = buildIndicatorService(dataSource);
     const indicatorController = {
         getIndicators,
+        getIndicatorsByProductName,
         upsertIndicator,
         deleteIndicator,
     };
@@ -15,6 +16,10 @@ function buildIndicatorController(dataSource: DataSource) {
 
     async function getIndicators() {
         return indicatorService.getIndicators();
+    }
+
+    async function getIndicatorsByProductName(params: { urlParams: { name: string } }) {
+        return indicatorService.getIndicatorsByProductName(params.urlParams.name);
     }
 
     async function deleteIndicator(params: { urlParams: { indicatorId: string } }) {
