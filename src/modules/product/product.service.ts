@@ -1,9 +1,9 @@
 import { Product } from './Product.entity';
-import { dataSource } from '../../dataSource';
+import { DataSource } from 'typeorm';
 
 export { buildProductService };
 
-function buildProductService() {
+function buildProductService(dataSource: DataSource) {
     const productRepository = dataSource.getRepository(Product);
     const productService = {
         getProducts,

@@ -1,14 +1,14 @@
 import Express from 'express';
+import Joi from 'joi';
 import { buildIndicatorController } from './modules/indicator';
 import { buildController } from './lib/buildController';
-import Joi from 'joi';
 import { buildProductController } from './modules/product';
 import { DataSource } from 'typeorm';
 
 function buildRouter(dataSource: DataSource) {
     const router = Express.Router();
     const indicatorController = buildIndicatorController(dataSource);
-    const productController = buildProductController();
+    const productController = buildProductController(dataSource);
 
     router.get('/indicators', buildController(indicatorController.getIndicators));
     router.delete('/indicators/:indicatorId', buildController(indicatorController.deleteIndicator));

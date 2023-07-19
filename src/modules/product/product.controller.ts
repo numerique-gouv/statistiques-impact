@@ -1,9 +1,10 @@
+import { DataSource } from 'typeorm';
 import { buildProductService } from './product.service';
 
 export { buildProductController };
 
-function buildProductController() {
-    const productService = buildProductService();
+function buildProductController(dataSource: DataSource) {
+    const productService = buildProductService(dataSource);
     const productController = {
         getProducts,
         createProduct,
