@@ -5,6 +5,8 @@ import { buildController } from './lib/buildController';
 import { buildProductController } from './modules/product';
 import { DataSource } from 'typeorm';
 
+const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
+
 function buildRouter(dataSource: DataSource) {
     const router = Express.Router();
     const indicatorController = buildIndicatorController(dataSource);
@@ -26,9 +28,7 @@ function buildRouter(dataSource: DataSource) {
                 valeur: Joi.number().required(),
                 unite_mesure: Joi.string().required(),
                 frequence_calcul: Joi.string().required(),
-                date: Joi.string()
-                    .required()
-                    .regex(/^\d{4}-\d{2}-\d{2}$/),
+                date: Joi.string().required().regex(DATE_REGEX),
                 est_periode: Joi.boolean().required(),
             }),
         }),
