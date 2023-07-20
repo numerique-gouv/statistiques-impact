@@ -4,7 +4,7 @@ import { buildIndicatorService, indicatorDtoType } from '../modules/indicator';
 import { audioconfAdaptator } from './audioconf.adaptator';
 import { padAdaptator } from './pad.adaptator';
 import { adaptatorType } from './types';
-// import { demarchesSimplifieesAdaptator } from './demarchesSimplifiees.adaptator';
+import { demarchesSimplifieesAdaptator } from './demarchesSimplifiees.adaptator';
 
 const indicatorsToUpdate: Array<{
     productName: string;
@@ -18,11 +18,10 @@ const indicatorsToUpdate: Array<{
         productName: 'pad',
         adaptator: padAdaptator,
     },
-    // {
-    //     productName: 'demarches-simplifiees',
-    //     adaptator: demarchesSimplifieesAdaptator.format,
-    //     url: `https://www.demarches-simplifiees.fr/stats`,
-    // },
+    {
+        productName: 'demarches-simplifiees',
+        adaptator: demarchesSimplifieesAdaptator,
+    },
 ];
 
 async function importStats() {
