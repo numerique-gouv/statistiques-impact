@@ -4,7 +4,7 @@ describe('pad', () => {
     it('should raise an error if the pad does not return the right format', () => {
         const padApiOutput = {};
 
-        expect(() => padAdaptator.format(padApiOutput as any)).toThrowError(
+        expect(() => padAdaptator.map(padApiOutput as any)).toThrowError(
             'The pad API did not return the right format',
         );
     });
@@ -16,7 +16,7 @@ describe('pad', () => {
             activeUsers: 333,
         };
 
-        const formattedOutput = padAdaptator.format(padApiOutput);
+        const formattedOutput = padAdaptator.map(padApiOutput);
 
         expect(formattedOutput).toEqual([
             {

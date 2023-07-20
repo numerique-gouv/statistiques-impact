@@ -1,4 +1,6 @@
-const padAdaptator = { format };
+import axios from 'axios';
+
+const padAdaptator = { map, fetch };
 
 type padApiOutputType = {
     dateInf: string;
@@ -6,7 +8,7 @@ type padApiOutputType = {
     activeUsers: number;
 };
 
-function format(padApiOutput: padApiOutputType) {
+function map(padApiOutput: padApiOutputType) {
     const DATE_REGEX = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
     let castPadApiOutput = {
         dateInf: padApiOutput.dateInf || '',
@@ -32,6 +34,12 @@ function format(padApiOutput: padApiOutputType) {
             est_periode: true,
         },
     ];
+}
+
+async function fetch() {
+    const url = `https://pad.numerique.gouv.fr/stats/users/lastMonth`;
+    const result = await axios.get(url);
+    return result.data;
 }
 
 export { padAdaptator };

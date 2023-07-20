@@ -4,7 +4,7 @@ describe('audioconfAdaptator', () => {
     it('should format the audioconf output', () => {
         const audioconfOutputRows = [{ 'Date Begin': '2022-12-01T00:00:00Z', Count: 1234 }];
 
-        const formatted = audioconfAdaptator.format(audioconfOutputRows);
+        const formatted = audioconfAdaptator.map(audioconfOutputRows);
 
         expect(formatted).toEqual([
             {

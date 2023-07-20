@@ -1,8 +1,10 @@
-const audioconfAdaptator = { format };
+import axios from 'axios';
+
+const audioconfAdaptator = { map, fetch };
 
 type audioconfOutputRowType = { 'Date Begin': string; Count: number };
 
-function format(audioconfOutputRows: Array<audioconfOutputRowType>) {
+function map(audioconfOutputRows: Array<audioconfOutputRowType>) {
     const output: Array<any> = [];
     for (const audioconfOutputRow of audioconfOutputRows) {
         const dateInf = new Date(audioconfOutputRow['Date Begin']);
@@ -41,6 +43,13 @@ function format(audioconfOutputRows: Array<audioconfOutputRowType>) {
     }
 
     return output;
+}
+
+async function fetch() {
+    const url =
+        'https://stats.audioconf.numerique.gouv.fr/public/question/f98281a7-5bd6-4f09-8ec6-a278975adfb9.json';
+    const result = await axios.get(url);
+    return result.data;
 }
 
 export { audioconfAdaptator };

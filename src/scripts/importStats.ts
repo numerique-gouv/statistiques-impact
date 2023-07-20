@@ -3,22 +3,26 @@ import { dataSource } from '../dataSource';
 import { buildIndicatorService, indicatorDtoType } from '../modules/indicator';
 import { audioconfAdaptator } from './audioconf.adaptator';
 import { padAdaptator } from './pad.adaptator';
+import { adaptatorType } from './types';
+// import { demarchesSimplifieesAdaptator } from './demarchesSimplifiees.adaptator';
 
 const indicatorsToUpdate: Array<{
     productName: string;
-    adaptator: (input: any) => Array<Omit<indicatorDtoType, 'nom_service_public_numerique'>>;
-    url: string;
+    adaptator: adaptatorType<any>;
 }> = [
     {
         productName: 'audioconf',
-        adaptator: audioconfAdaptator.format,
-        url: 'https://stats.audioconf.numerique.gouv.fr/public/question/f98281a7-5bd6-4f09-8ec6-a278975adfb9.json',
+        adaptator: audioconfAdaptator,
     },
     {
         productName: 'pad',
-        adaptator: padAdaptator.format,
-        url: `https://pad.numerique.gouv.fr/stats/users/lastMonth`,
+        adaptator: padAdaptator,
     },
+    // {
+    //     productName: 'demarches-simplifiees',
+    //     adaptator: demarchesSimplifieesAdaptator.format,
+    //     url: `https://www.demarches-simplifiees.fr/stats`,
+    // },
 ];
 
 async function importStats() {
@@ -26,8 +30,8 @@ async function importStats() {
     const indicatorService = buildIndicatorService(dataSource);
 
     for (const indicatorToUpdate of indicatorsToUpdate) {
-        const result = await axios.get(indicatorToUpdate.url);
-        const indicatorDtos = indicatorToUpdate.adaptator(result.data);
+        const result = await indicatorToUpdate.adaptator.fetch();
+        const indicatorDtos = indicatorToUpdate.adaptator.map(result);
         await indicatorService.upsertIndicators(
             indicatorDtos.map((indicatorDto) => ({
                 ...indicatorDto,
