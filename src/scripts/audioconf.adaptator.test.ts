@@ -13,7 +13,7 @@ describe('audioconfAdaptator', () => {
                 valeur: 1234,
                 est_periode: true,
                 frequence_calcul: 'mensuelle',
-                indicateur: 'Conférences créées',
+                indicateur: 'conférences de plus de deux minutes',
                 unite_mesure: 'unité',
             },
         ]);

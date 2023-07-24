@@ -18,8 +18,8 @@ async function fetch() {
 function map(annuaireDesEntreprisesApiOutput: annuaireDesEntreprisesApiResultType) {
     let indicatorDtos = [];
     const indicatorNames = {
-        copyPasteAction: 'Nombre de copier/coller depuis une fiche entreprise',
-        redirectedSiren: 'Nombre de SIREN utilisés en accès direct',
+        copyPasteAction: 'copier/coller depuis une fiche entreprise',
+        redirectedSiren: 'SIREN utilisés en accès direct',
     };
     for (const indicatorName of Object.keys(indicatorNames) as Array<
         'copyPasteAction' | 'redirectedSiren'
