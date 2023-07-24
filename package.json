@@ -11,7 +11,7 @@
         "migration:run": "npm run build && typeorm migration:run -d dist/src/dataSource.js",
         "migration:revert": " npm run build && typeorm migration:revert -d dist/src/dataSource.js",
         "typeorm": "typeorm-ts-node-esm",
-        "script:importStats": "npm run build && node dist/src/scripts/importStats.js"
+        "script:importStats": "npm run build && node dist/src/scripts/importStats/importStats.js"
     },
     "author": "",
     "license": "ISC",

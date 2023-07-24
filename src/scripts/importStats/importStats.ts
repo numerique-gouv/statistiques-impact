@@ -1,5 +1,5 @@
-import { dataSource } from '../dataSource';
-import { buildIndicatorService, indicatorDtoType } from '../modules/indicator';
+import { dataSource } from '../../dataSource';
+import { buildIndicatorService, indicatorDtoType } from '../../modules/indicator';
 import { audioconfAdaptator } from './audioconf.adaptator';
 import { padAdaptator } from './pad.adaptator';
 import { adaptatorType } from './types';
@@ -12,19 +12,19 @@ const indicatorsToUpdate: Array<{
     productName: string;
     adaptator: adaptatorType<any>;
 }> = [
-    // {
-    //     productName: 'audioconf',
-    //     adaptator: audioconfAdaptator,
-    // },
-    // {
-    //     productName: 'pad',
-    //     adaptator: padAdaptator,
-    // },
-    // {
-    //     productName: 'demarches-simplifiees',
-    //     adaptator: demarchesSimplifieesAdaptator,
-    // },
-    // { productName: 'datapass', adaptator: datapassAdaptator },
+    {
+        productName: 'audioconf',
+        adaptator: audioconfAdaptator,
+    },
+    {
+        productName: 'pad',
+        adaptator: padAdaptator,
+    },
+    {
+        productName: 'demarches-simplifiees',
+        adaptator: demarchesSimplifieesAdaptator,
+    },
+    { productName: 'datapass', adaptator: datapassAdaptator },
     { productName: 'annuaire-des-entreprises', adaptator: annuaireDesEntreprisesAdaptator },
 ];
 
@@ -36,16 +36,19 @@ async function importStats() {
         const result = await indicatorToUpdate.adaptator.fetch();
         const indicatorDtos = indicatorToUpdate.adaptator
             .map(result)
-            .map((indicatorDto) => ({
-                ...indicatorDto,
-                nom_service_public_numerique: indicatorToUpdate.productName,
-            }))
-            .filter(filter);
+            .map(
+                (indicatorDto) =>
+                    ({
+                        ...indicatorDto,
+                        nom_service_public_numerique: indicatorToUpdate.productName,
+                    } as indicatorDtoType),
+            )
+            .filter(filterUncompletedMonth);
         await indicatorService.upsertIndicators(indicatorDtos);
     }
 }
 
-function filter(indicatorDto: indicatorDtoType): boolean {
+function filterUncompletedMonth(indicatorDto: indicatorDtoType): boolean {
     const parsedDate = dateHandler.parseDate(indicatorDto.date);
     const dateSup = new Date();
     dateSup.setFullYear(parsedDate.year);
