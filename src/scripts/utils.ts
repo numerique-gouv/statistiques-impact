@@ -9,6 +9,7 @@ const dateHandler = {
     addMonth,
     substractMonth,
     parseDate,
+    parseReadableDate,
 };
 
 function addMonth(date: string) {
@@ -51,4 +52,38 @@ function parseDate(date: string) {
     return { year: Number(result[1]), month: Number(result[2]), dayOfMonth: Number(result[3]) };
 }
 
-export { parseCsv, dateHandler, parseDate };
+function parseReadableDate(humanReadableDate: string) {
+    const humanReadableMonthMapping: Record<string, number> = {
+        janvier: 1,
+        février: 2,
+        mars: 3,
+        avril: 4,
+        mai: 5,
+        juin: 6,
+        juillet: 7,
+        août: 8,
+        septembre: 9,
+        octobre: 10,
+        novembre: 11,
+        décembre: 12,
+    };
+    const HUMAN_READABLE_DATE_REGEX = /^([a-zéû]+) (\d{4})$/;
+    const result = humanReadableDate.match(HUMAN_READABLE_DATE_REGEX);
+    if (!result || result.length !== 3) {
+        throw new Error(`humanReadableDate ${humanReadableDate} could not be parsed`);
+    }
+    const humanReadableMonth = result[1];
+    const yearInf = result[2];
+    const monthInf = humanReadableMonthMapping[humanReadableMonth];
+    if (!monthInf) {
+        throw new Error(`month ${monthInf} could not be parsed`);
+    }
+    const formattedMonthInf = formatValue(monthInf);
+
+    const date_debut = `${yearInf}-${formattedMonthInf}-01`;
+    const date = addMonth(date_debut);
+
+    return { date, date_debut };
+}
+
+export { parseCsv, dateHandler };
