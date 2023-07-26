@@ -1,4 +1,4 @@
-import { indicatorDtoType } from '../modules/indicator';
+import { indicatorDtoType } from '../../modules/indicator';
 
 type adaptatorType<apiOutputT> = {
     fetch: () => apiOutputT;

@@ -70,13 +70,13 @@ function parseReadableDate(humanReadableDate: string) {
     const HUMAN_READABLE_DATE_REGEX = /^([a-zéû]+) (\d{4})$/;
     const result = humanReadableDate.match(HUMAN_READABLE_DATE_REGEX);
     if (!result || result.length !== 3) {
-        throw new Error(`humanReadableDate ${humanReadableDate} could not be parsed`);
+        throw new Error(`humanReadableDate "${humanReadableDate}" could not be parsed`);
     }
     const humanReadableMonth = result[1];
     const yearInf = result[2];
     const monthInf = humanReadableMonthMapping[humanReadableMonth];
     if (!monthInf) {
-        throw new Error(`month ${monthInf} could not be parsed`);
+        throw new Error(`month "${humanReadableMonth}" could not be parsed`);
     }
     const formattedMonthInf = formatValue(monthInf);
 

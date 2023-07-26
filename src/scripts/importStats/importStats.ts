@@ -7,25 +7,26 @@ import { demarchesSimplifieesAdaptator } from './demarchesSimplifiees.adaptator'
 import { datapassAdaptator } from './datapass.adaptator';
 import { dateHandler } from './utils';
 import { annuaireDesEntreprisesAdaptator } from './annuaireDesEntreprises.adaptator';
+import { PRODUCTS } from './constants';
 
 const indicatorsToUpdate: Array<{
     productName: string;
     adaptator: adaptatorType<any>;
 }> = [
     {
-        productName: 'audioconf',
+        productName: PRODUCTS.AUDIOCONF,
         adaptator: audioconfAdaptator,
     },
     {
-        productName: 'pad',
+        productName: PRODUCTS.PAD,
         adaptator: padAdaptator,
     },
     {
-        productName: 'demarches-simplifiees',
+        productName: PRODUCTS.DEMARCHES_SIMPLIFIEES,
         adaptator: demarchesSimplifieesAdaptator,
     },
-    { productName: 'datapass', adaptator: datapassAdaptator },
-    { productName: 'annuaire-des-entreprises', adaptator: annuaireDesEntreprisesAdaptator },
+    { productName: PRODUCTS.DATAPASS, adaptator: datapassAdaptator },
+    { productName: PRODUCTS.ANNUAIRE_DES_ENTREPRISES, adaptator: annuaireDesEntreprisesAdaptator },
 ];
 
 async function importStats() {

@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { dateHandler } from './utils';
+import { PRODUCTS } from './constants';
+import { logger } from './logger';
 
 const annuaireDesEntreprisesAdaptator = { fetch, map };
 
@@ -38,7 +40,11 @@ function map(annuaireDesEntreprisesApiOutput: annuaireDesEntreprisesApiResultTyp
                 };
                 indicatorDtos.push(indicatorDto);
             } catch (error) {
-                console.warn(error);
+                logger.error({
+                    productName: PRODUCTS.ANNUAIRE_DES_ENTREPRISES,
+                    indicator: indicatorName,
+                    message: error as string,
+                });
             }
         }
     }
