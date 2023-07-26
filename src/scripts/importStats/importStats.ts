@@ -2,11 +2,11 @@ import { dataSource } from '../../dataSource';
 import { buildIndicatorService, indicatorDtoType } from '../../modules/indicator';
 import { audioconfAdaptator } from './audioconf.adaptator';
 import { padAdaptator } from './pad.adaptator';
-import { adaptatorType } from './types';
 import { demarchesSimplifieesAdaptator } from './demarchesSimplifiees.adaptator';
 import { datapassAdaptator } from './datapass.adaptator';
-import { dateHandler } from './utils';
 import { annuaireDesEntreprisesAdaptator } from './annuaireDesEntreprises.adaptator';
+import { adaptatorType } from './types';
+import { dateHandler } from './utils';
 import { PRODUCTS } from './constants';
 
 const indicatorsToUpdate: Array<{
