@@ -10,6 +10,7 @@ import { dateHandler } from './utils';
 import { PRODUCTS } from './constants';
 import { webinaireAdaptator } from './adaptators/webinaire.adaptator';
 import { apiParticulierAdaptator } from './adaptators/apiParticulier.adaptator';
+import { apiEntrepriseAdaptator } from './adaptators/apiEntreprise.adaptator';
 
 const indicatorsToUpdate: Array<{
     productName: string;
@@ -31,6 +32,7 @@ const indicatorsToUpdate: Array<{
     { productName: PRODUCTS.ANNUAIRE_DES_ENTREPRISES, adaptator: annuaireDesEntreprisesAdaptator },
     { productName: PRODUCTS.WEBINAIRE, adaptator: webinaireAdaptator },
     { productName: PRODUCTS.API_PARTICULIER, adaptator: apiParticulierAdaptator },
+    { productName: PRODUCTS.API_ENTREPRISE, adaptator: apiEntrepriseAdaptator },
 ];
 
 async function importStats() {
