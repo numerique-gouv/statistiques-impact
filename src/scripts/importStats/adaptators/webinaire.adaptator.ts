@@ -10,7 +10,7 @@ const productName = PRODUCTS.WEBINAIRE;
 type webinaireOutputRowType = { 'Created At': string; 'Nombre de lignes': number };
 
 function map(webinaireOutputRows: Array<webinaireOutputRowType>) {
-    const indicatorDtos: Array<any> = [];
+    const indicatorDtos = [];
     const indicatorName = 'conférences';
     for (const webinaireOutputRow of webinaireOutputRows) {
         try {

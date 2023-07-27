@@ -10,7 +10,7 @@ const productName = PRODUCTS.AUDIOCONF;
 type audioconfOutputRowType = { 'Date Begin': string; 'Nombre de lignes': number };
 
 function map(audioconfOutputRows: Array<audioconfOutputRowType>) {
-    const indicatorDtos: Array<any> = [];
+    const indicatorDtos = [];
     const indicatorName = 'conférences de plus de deux minutes';
     for (const audioconfOutputRow of audioconfOutputRows) {
         try {
