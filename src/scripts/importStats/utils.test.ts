@@ -1,6 +1,18 @@
-import { dateHandler } from './utils';
+import { dateHandler, parseCsv } from './utils';
 
 describe('utils', () => {
+    describe.only('parseCsv', () => {
+        it('should parse the csv', () => {
+            const csv = 'mois,nb_procedures_creees_par_mois\nJune,1378\n';
+
+            const parsedCsv = parseCsv(csv);
+
+            expect(parsedCsv).toEqual({
+                header: ['mois', 'nb_procedures_creees_par_mois'],
+                values: [['June', '1378']],
+            });
+        });
+    });
     describe('dateHandler', () => {
         describe('parseReadableDate', () => {
             it('parses the date within a year', () => {
@@ -29,6 +41,22 @@ describe('utils', () => {
                 const parsedDate = dateHandler.parseDate(date);
 
                 expect(parsedDate).toEqual({ year: 2023, month: 8, dayOfMonth: 1 });
+            });
+        });
+
+        describe('formatDate', () => {
+            it('formats the date', () => {
+                const date = '2023-06-27 00:00:00';
+
+                const formattedDate = dateHandler.formatDate(date);
+
+                expect(formattedDate).toEqual('2023-06-27');
+            });
+
+            it('throw an error if not well formatted', () => {
+                const date = '2023-067-27 00:00:00';
+
+                expect(() => dateHandler.formatDate(date)).toThrow();
             });
         });
         describe('addMonth', () => {

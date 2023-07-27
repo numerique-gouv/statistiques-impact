@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { dateHandler } from '../utils';
 import { PRODUCTS } from '../constants';
-import { logger } from './logger';
+import { logger } from '../../../lib/logger';
 
 const annuaireDesEntreprisesAdaptator = { fetch, map };
 

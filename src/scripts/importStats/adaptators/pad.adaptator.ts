@@ -1,4 +1,7 @@
 import axios from 'axios';
+import { logger } from '../../../lib/logger';
+import { PRODUCTS } from '../constants';
+import { dateHandler } from '../utils';
 
 const padAdaptator = { map, fetch };
 
@@ -9,31 +12,35 @@ type padApiOutputType = {
 };
 
 function map(padApiOutput: padApiOutputType) {
-    const DATE_REGEX = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
-    let castPadApiOutput = {
-        dateInf: padApiOutput.dateInf || '',
-        dateSup: padApiOutput.dateSup || '',
-        activeUsers: Number(padApiOutput.activeUsers),
-    };
-    if (
-        !castPadApiOutput.dateInf.match(DATE_REGEX) ||
-        !castPadApiOutput.dateSup.match(DATE_REGEX) ||
-        isNaN(castPadApiOutput.activeUsers)
-    ) {
-        throw new Error('The pad API did not return the right format');
-    }
+    let indicatorDtos = [];
+    const indicatorName = 'utilisateurs actifs';
 
-    return [
-        {
-            date: castPadApiOutput.dateSup.slice(0, 10),
-            date_debut: castPadApiOutput.dateInf.slice(0, 10),
-            valeur: castPadApiOutput.activeUsers,
-            indicateur: 'utilisateurs actifs',
+    try {
+        const date_debut = dateHandler.formatDate(padApiOutput.dateInf);
+        const date = dateHandler.formatDate(padApiOutput.dateSup);
+        const value = Number(padApiOutput.activeUsers);
+        if (!isNaN(value)) {
+            throw new Error(`activeUsers "${padApiOutput.activeUsers}" is NaN`);
+        }
+
+        indicatorDtos.push({
+            date,
+            date_debut,
+            valeur: value,
+            indicateur: indicatorName,
             unite_mesure: 'unité',
             frequence_calcul: 'mensuelle',
             est_periode: true,
-        },
-    ];
+        });
+    } catch (error) {
+        logger.error({
+            productName: PRODUCTS.PAD,
+            indicator: indicatorName,
+            message: error as string,
+        });
+    }
+
+    return indicatorDtos;
 }
 
 async function fetch() {

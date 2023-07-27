@@ -1,14 +1,40 @@
-function parseCsv(csv: string, lineDelimitator = '\n'): Array<string[]> {
-    return csv
+function parseCsv(
+    csv: string,
+    options?: { lineDelimitator?: string; columnsCount?: number; rowsCount?: number },
+): { header: string[]; values: string[][] } {
+    const rows = csv
         .trim()
-        .split(lineDelimitator)
+        .split(options?.lineDelimitator || '\n')
         .map((line) => line.split(','));
+
+    if (rows.length === 0) {
+        throw new Error(`csv ${csv} has 0 rows and cannot be parsed`);
+    }
+    const header = rows[0];
+    const values = rows.slice(1);
+
+    if (
+        !!options?.columnsCount &&
+        (header.length !== options.columnsCount ||
+            values.some((row) => row.length !== options.columnsCount))
+    ) {
+        throw new Error(
+            `csv ${csv} does not match the expected columns count (${options.columnsCount})`,
+        );
+    }
+
+    if (!!options?.rowsCount && options.rowsCount !== values.length) {
+        throw new Error(`csv ${csv} does not match the expected rows count (${options.rowsCount})`);
+    }
+
+    return { header, values };
 }
 
 const dateHandler = {
     addMonth,
     substractMonth,
     parseDate,
+    formatDate,
     parseReadableDate,
 };
 
@@ -43,13 +69,22 @@ function substractMonth(date: string) {
     return `${newYear}-${formatValue(newMonth)}-${formatValue(parsedDate.dayOfMonth)}`;
 }
 
+const DATE_REGEX = /^(\d{4})-(\d{2})-(\d{2})$/;
+
 function parseDate(date: string) {
-    const DATE_REGEX = /^(\d{4})-(\d{2})-(\d{2})$/;
     const result = date.match(DATE_REGEX);
     if (!result || result.length !== 4) {
         throw new Error(`date "${date}" does not match the format YYYY-MM-DD`);
     }
     return { year: Number(result[1]), month: Number(result[2]), dayOfMonth: Number(result[3]) };
+}
+
+function formatDate(date: string): string {
+    const slicedDate = date.slice(0, 10);
+    if (!slicedDate.match(DATE_REGEX)) {
+        throw new Error(`date "${date}" does not match the format YYYY-MM-DD`);
+    }
+    return slicedDate;
 }
 
 function parseReadableDate(humanReadableDate: string) {

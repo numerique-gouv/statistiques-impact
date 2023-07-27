@@ -2,7 +2,9 @@ import { audioconfAdaptator } from './audioconf.adaptator';
 
 describe('audioconfAdaptator', () => {
     it('should format the audioconf output', () => {
-        const audioconfOutputRows = [{ 'Date Begin': '2022-12-01T00:00:00Z', Count: 1234 }];
+        const audioconfOutputRows = [
+            { 'Date Begin': '2022-12-01T00:00:00Z', 'Nombre de lignes': 1234 },
+        ];
 
         const formatted = audioconfAdaptator.map(audioconfOutputRows);
 
