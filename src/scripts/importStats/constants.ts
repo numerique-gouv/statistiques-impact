@@ -4,6 +4,7 @@ const PRODUCTS = {
     AUDIOCONF: 'audioconf',
     PAD: 'pad',
     DEMARCHES_SIMPLIFIEES: 'demarches-simplifiees',
+    WEBINAIRE: 'webinaire',
 };
 
 export { PRODUCTS };

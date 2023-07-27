@@ -8,6 +8,7 @@ import { annuaireDesEntreprisesAdaptator } from './adaptators/annuaireDesEntrepr
 import { adaptatorType } from './types';
 import { dateHandler } from './utils';
 import { PRODUCTS } from './constants';
+import { webinaireAdaptator } from './adaptators/webinaire.adaptator';
 
 const indicatorsToUpdate: Array<{
     productName: string;
@@ -27,6 +28,7 @@ const indicatorsToUpdate: Array<{
     },
     { productName: PRODUCTS.DATAPASS, adaptator: datapassAdaptator },
     { productName: PRODUCTS.ANNUAIRE_DES_ENTREPRISES, adaptator: annuaireDesEntreprisesAdaptator },
+    { productName: PRODUCTS.WEBINAIRE, adaptator: webinaireAdaptator },
 ];
 
 async function importStats() {

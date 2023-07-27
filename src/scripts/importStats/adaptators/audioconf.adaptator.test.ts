@@ -14,6 +14,7 @@ describe('audioconfAdaptator', () => {
                 date_debut: '2022-12-01',
                 valeur: 1234,
                 est_periode: true,
+                nom_service_public_numerique: 'audioconf',
                 frequence_calcul: 'mensuelle',
                 indicateur: 'conférences de plus de deux minutes',
                 unite_mesure: 'unité',

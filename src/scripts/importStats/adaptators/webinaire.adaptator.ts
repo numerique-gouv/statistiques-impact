@@ -3,27 +3,25 @@ import { dateHandler } from '../utils';
 import { logger } from '../../../lib/logger';
 import { PRODUCTS } from '../constants';
 
-const audioconfAdaptator = { map, fetch };
+const webinaireAdaptator = { map, fetch };
 
-const productName = PRODUCTS.AUDIOCONF;
+const productName = PRODUCTS.WEBINAIRE;
 
-type audioconfOutputRowType = { 'Date Begin': string; 'Nombre de lignes': number };
+type webinaireOutputRowType = { 'Created At': string; 'Nombre de lignes': number };
 
-function map(audioconfOutputRows: Array<audioconfOutputRowType>) {
+function map(webinaireOutputRows: Array<webinaireOutputRowType>) {
     const indicatorDtos: Array<any> = [];
-    const indicatorName = 'conférences de plus de deux minutes';
-    for (const audioconfOutputRow of audioconfOutputRows) {
+    const indicatorName = 'conférences';
+    for (const webinaireOutputRow of webinaireOutputRows) {
         try {
-            const date_debut = dateHandler.formatDate(audioconfOutputRow['Date Begin']);
+            const date_debut = dateHandler.formatDate(webinaireOutputRow['Created At']);
             const date = dateHandler.addMonth(date_debut);
-
-            const value = Number(audioconfOutputRow['Nombre de lignes']);
+            const value = Number(webinaireOutputRow['Nombre de lignes']);
             if (isNaN(value)) {
                 throw new Error(
-                    `The "Nombre de lignes" value for ${date_debut} is ${audioconfOutputRow['Nombre de lignes']} and could not be parsed as a number.`,
+                    `The "Nombre de lignes" value for ${date_debut} is ${webinaireOutputRow['Nombre de lignes']} and could not be parsed as a number.`,
                 );
             }
-
             indicatorDtos.push({
                 date_debut,
                 date,
@@ -48,9 +46,9 @@ function map(audioconfOutputRows: Array<audioconfOutputRowType>) {
 
 async function fetch() {
     const url =
-        'https://stats.audioconf.numerique.gouv.fr/public/question/f98281a7-5bd6-4f09-8ec6-a278975adfb9.json';
+        'http://webinaire-metabase.osc-secnum-fr1.scalingo.io/public/question/ddae3b19-ed8b-41db-84b1-24ec5841cce5.json';
     const result = await axios.get(url);
     return result.data;
 }
 
-export { audioconfAdaptator };
+export { webinaireAdaptator };
