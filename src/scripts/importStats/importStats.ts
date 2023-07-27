@@ -1,10 +1,10 @@
 import { dataSource } from '../../dataSource';
 import { buildIndicatorService, indicatorDtoType } from '../../modules/indicator';
-import { audioconfAdaptator } from './audioconf.adaptator';
-import { padAdaptator } from './pad.adaptator';
-import { demarchesSimplifieesAdaptator } from './demarchesSimplifiees.adaptator';
-import { datapassAdaptator } from './datapass.adaptator';
-import { annuaireDesEntreprisesAdaptator } from './annuaireDesEntreprises.adaptator';
+import { audioconfAdaptator } from './adaptators/audioconf.adaptator';
+import { padAdaptator } from './adaptators/pad.adaptator';
+import { demarchesSimplifieesAdaptator } from './adaptators/demarchesSimplifiees.adaptator';
+import { datapassAdaptator } from './adaptators/datapass.adaptator';
+import { annuaireDesEntreprisesAdaptator } from './adaptators/annuaireDesEntreprises.adaptator';
 import { adaptatorType } from './types';
 import { dateHandler } from './utils';
 import { PRODUCTS } from './constants';

@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { dateHandler } from './utils';
-import { PRODUCTS } from './constants';
+import { dateHandler } from '../utils';
+import { PRODUCTS } from '../constants';
 import { logger } from './logger';
 
 const annuaireDesEntreprisesAdaptator = { fetch, map };

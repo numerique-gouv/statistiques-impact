@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { dateHandler, parseCsv } from './utils';
+import { dateHandler, parseCsv } from '../utils';
 
 const demarchesSimplifieesAdaptator = { map, fetch };
 

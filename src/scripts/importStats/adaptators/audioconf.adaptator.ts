@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { dateHandler } from './utils';
+import { dateHandler } from '../utils';
 
 const audioconfAdaptator = { map, fetch };
 
