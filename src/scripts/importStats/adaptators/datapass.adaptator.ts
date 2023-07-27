@@ -9,6 +9,8 @@ type datapassApiResultType = {
     monthly_enrollment_count: Array<{ month: string; validated: number }>;
 };
 
+const productName = PRODUCTS.DATAPASS;
+
 async function fetch() {
     const url = `https://back.datapass.api.gouv.fr/api/stats`;
     const result = await axios.get(url);
@@ -19,7 +21,6 @@ async function fetch() {
 function map(datapassApiOutput: datapassApiResultType) {
     let indicatorDtos = [];
     const indicatorName = 'habilitations validées';
-    const productName = PRODUCTS.DATAPASS;
     for (const monthlyValue of datapassApiOutput.monthly_enrollment_count) {
         try {
             const { month, validated } = monthlyValue;
@@ -30,6 +31,7 @@ function map(datapassApiOutput: datapassApiResultType) {
                 date_debut,
                 valeur: validated,
                 indicateur: indicatorName,
+                nom_service_public_numerique: productName,
                 unite_mesure: 'unité',
                 frequence_calcul: 'mensuelle',
                 est_periode: true,

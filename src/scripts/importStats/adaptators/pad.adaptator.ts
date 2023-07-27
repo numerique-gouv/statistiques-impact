@@ -11,6 +11,8 @@ type padApiOutputType = {
     activeUsers: number;
 };
 
+const productName = PRODUCTS.PAD;
+
 function map(padApiOutput: padApiOutputType) {
     let indicatorDtos = [];
     const indicatorName = 'utilisateurs actifs';
@@ -19,7 +21,7 @@ function map(padApiOutput: padApiOutputType) {
         const date_debut = dateHandler.formatDate(padApiOutput.dateInf);
         const date = dateHandler.formatDate(padApiOutput.dateSup);
         const value = Number(padApiOutput.activeUsers);
-        if (!isNaN(value)) {
+        if (isNaN(value)) {
             throw new Error(`activeUsers "${padApiOutput.activeUsers}" is NaN`);
         }
 
@@ -28,13 +30,14 @@ function map(padApiOutput: padApiOutputType) {
             date_debut,
             valeur: value,
             indicateur: indicatorName,
+            nom_service_public_numerique: PRODUCTS.PAD,
             unite_mesure: 'unité',
             frequence_calcul: 'mensuelle',
             est_periode: true,
         });
     } catch (error) {
         logger.error({
-            productName: PRODUCTS.PAD,
+            productName,
             indicator: indicatorName,
             message: error as string,
         });

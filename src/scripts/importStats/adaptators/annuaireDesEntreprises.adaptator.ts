@@ -10,6 +10,8 @@ type annuaireDesEntreprisesApiResultType = {
     redirectedSiren: Array<{ label: string; value: number }>;
 };
 
+const productName = PRODUCTS.ANNUAIRE_DES_ENTREPRISES;
+
 async function fetch() {
     const url = `https://annuaire-entreprises.data.gouv.fr/api/stats`;
     const result = await axios.get(url);
@@ -34,6 +36,7 @@ function map(annuaireDesEntreprisesApiOutput: annuaireDesEntreprisesApiResultTyp
                     date_debut,
                     valeur: value,
                     indicateur: indicatorNames[indicatorName],
+                    nom_service_public_numerique: productName,
                     unite_mesure: 'unité',
                     frequence_calcul: 'mensuelle',
                     est_periode: true,
@@ -41,7 +44,7 @@ function map(annuaireDesEntreprisesApiOutput: annuaireDesEntreprisesApiResultTyp
                 indicatorDtos.push(indicatorDto);
             } catch (error) {
                 logger.error({
-                    productName: PRODUCTS.ANNUAIRE_DES_ENTREPRISES,
+                    productName,
                     indicator: indicatorName,
                     message: error as string,
                 });

@@ -37,13 +37,6 @@ async function importStats() {
         const result = await indicatorToUpdate.adaptator.fetch();
         const indicatorDtos = indicatorToUpdate.adaptator
             .map(result)
-            .map(
-                (indicatorDto) =>
-                    ({
-                        ...indicatorDto,
-                        nom_service_public_numerique: indicatorToUpdate.productName,
-                    } as indicatorDtoType),
-            )
             .filter(filterUncompletedMonth);
         await indicatorService.upsertIndicators(indicatorDtos);
     }

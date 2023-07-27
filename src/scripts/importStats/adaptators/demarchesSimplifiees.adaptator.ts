@@ -34,6 +34,7 @@ function map(indicators: Array<{ date: string; csv: string }>) {
                 date_debut: dateHandler.substractMonth(indicator.date),
                 valeur: value,
                 indicateur: indicatorName,
+                nom_service_public_numerique: productName,
                 unite_mesure: 'unité',
                 frequence_calcul: 'mensuelle',
                 est_periode: true,

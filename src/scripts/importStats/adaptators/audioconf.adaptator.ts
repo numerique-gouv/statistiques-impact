@@ -5,6 +5,8 @@ import { PRODUCTS } from '../constants';
 
 const audioconfAdaptator = { map, fetch };
 
+const productName = PRODUCTS.AUDIOCONF;
+
 type audioconfOutputRowType = { 'Date Begin': string; 'Nombre de lignes': number };
 
 function map(audioconfOutputRows: Array<audioconfOutputRowType>) {
@@ -27,13 +29,14 @@ function map(audioconfOutputRows: Array<audioconfOutputRowType>) {
                 date,
                 indicateur: 'conférences de plus de deux minutes',
                 unite_mesure: 'unité',
+                nom_service_public_numerique: productName,
                 frequence_calcul: 'mensuelle',
                 est_periode: true,
                 valeur: value,
             });
         } catch (error) {
             logger.error({
-                productName: PRODUCTS.AUDIOCONF,
+                productName,
                 indicator: indicatorName,
                 message: error as string,
             });
