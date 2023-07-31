@@ -18,7 +18,7 @@ export class Indicator {
     @Column()
     indicateur: string;
 
-    @Column()
+    @Column('float')
     valeur: number;
 
     @Column()
