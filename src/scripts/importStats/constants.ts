@@ -3,10 +3,11 @@ const PRODUCTS = {
     AGENT_CONNECT: 'agent-connect',
     API_PARTICULIER: 'api-particulier',
     API_ENTREPRISE: 'api-entreprise',
-    DATAPASS: 'datapass',
     AUDIOCONF: 'audioconf',
-    PAD: 'pad',
+    DATAPASS: 'datapass',
     DEMARCHES_SIMPLIFIEES: 'demarches-simplifiees',
+    PAD: 'pad',
+    TCHAP: 'tchap',
     WEBINAIRE: 'webinaire',
 };
 
