@@ -1,7 +1,7 @@
 import { dateHandler, parseCsv } from './utils';
 
 describe('utils', () => {
-    describe.only('parseCsv', () => {
+    describe('parseCsv', () => {
         it('should parse the csv', () => {
             const csv = 'mois,nb_procedures_creees_par_mois\nJune,1378\n';
 
@@ -14,6 +14,35 @@ describe('utils', () => {
         });
     });
     describe('dateHandler', () => {
+        describe('compareDates', () => {
+            it('returns 0 when dates are equal', () => {
+                const dateA = { year: 2023, month: 2, dayOfMonth: 3 };
+                const dateB = { year: 2023, month: 2, dayOfMonth: 3 };
+
+                const result = dateHandler.compareDates(dateA, dateB);
+
+                expect(result).toBe(0);
+            });
+
+            it('returns 1 when date A is older than date B', () => {
+                const dateA = { year: 2019, month: 3, dayOfMonth: 3 };
+                const dateB = { year: 2023, month: 2, dayOfMonth: 3 };
+
+                const result = dateHandler.compareDates(dateA, dateB);
+
+                expect(result).toBe(1);
+            });
+
+            it('returns -1 when date B is older than date A', () => {
+                const dateA = { year: 2023, month: 3, dayOfMonth: 3 };
+                const dateB = { year: 2023, month: 2, dayOfMonth: 3 };
+
+                const result = dateHandler.compareDates(dateA, dateB);
+
+                expect(result).toBe(-1);
+            });
+        });
+
         describe('parseReadableDate', () => {
             it('parses the date within a year', () => {
                 const humanReadableDate = 'août 2022';

@@ -53,14 +53,15 @@ async function importStats() {
 }
 
 function filterUncompletedMonth(indicatorDto: indicatorDtoType): boolean {
-    const parsedDate = dateHandler.parseDate(indicatorDto.date);
-    const dateSup = new Date();
-    dateSup.setFullYear(parsedDate.year);
-    dateSup.setMonth(parsedDate.month - 1);
-    dateSup.setDate(parsedDate.dayOfMonth);
-
+    const parsedIndicatorDate = dateHandler.parseDate(indicatorDto.date);
     const now = new Date();
-    return now.getTime() > dateSup.getTime();
+    const parsedNowDate = {
+        year: now.getFullYear(),
+        month: now.getMonth() + 1,
+        dayOfMonth: now.getDate(),
+    };
+
+    return dateHandler.compareDates(parsedIndicatorDate, parsedNowDate) !== -1;
 }
 
 importStats();

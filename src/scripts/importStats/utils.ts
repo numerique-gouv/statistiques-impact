@@ -30,13 +30,42 @@ function parseCsv(
     return { header, values };
 }
 
+type parsedDateType = {
+    year: number;
+    month: number;
+    dayOfMonth: number;
+};
+
 const dateHandler = {
     addMonth,
+    compareDates,
     substractMonth,
     parseDate,
     formatDate,
     parseReadableDate,
 };
+
+function compareDates(dateA: parsedDateType, dateB: parsedDateType) {
+    if (dateA.year < dateB.year) {
+        return 1;
+    } else if (dateA.year > dateB.year) {
+        return -1;
+    }
+
+    if (dateA.month < dateB.month) {
+        return 1;
+    } else if (dateA.month > dateB.month) {
+        return -1;
+    }
+
+    if (dateA.dayOfMonth < dateB.dayOfMonth) {
+        return 1;
+    } else if (dateA.dayOfMonth > dateB.dayOfMonth) {
+        return -1;
+    }
+
+    return 0;
+}
 
 function addMonth(date: string) {
     const parsedDate = parseDate(date);
@@ -71,7 +100,7 @@ function substractMonth(date: string) {
 
 const DATE_REGEX = /^(\d{4})-(\d{2})-(\d{2})$/;
 
-function parseDate(date: string) {
+function parseDate(date: string): parsedDateType {
     const result = date.match(DATE_REGEX);
     if (!result || result.length !== 4) {
         throw new Error(`date "${date}" does not match the format YYYY-MM-DD`);
