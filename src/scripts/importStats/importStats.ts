@@ -11,6 +11,7 @@ import { PRODUCTS } from './constants';
 import { webinaireAdaptator } from './adaptators/webinaire.adaptator';
 import { apiParticulierAdaptator } from './adaptators/apiParticulier.adaptator';
 import { apiEntrepriseAdaptator } from './adaptators/apiEntreprise.adaptator';
+import { agentConnectAdaptator } from './adaptators/agentConnect.adaptator';
 
 const indicatorsToUpdate: Array<{
     productName: string;
@@ -33,6 +34,7 @@ const indicatorsToUpdate: Array<{
     { productName: PRODUCTS.WEBINAIRE, adaptator: webinaireAdaptator },
     { productName: PRODUCTS.API_PARTICULIER, adaptator: apiParticulierAdaptator },
     { productName: PRODUCTS.API_ENTREPRISE, adaptator: apiEntrepriseAdaptator },
+    { productName: PRODUCTS.AGENT_CONNECT, adaptator: agentConnectAdaptator },
 ];
 
 async function importStats() {
