@@ -1,3 +1,3 @@
 {
-    "jobs": [{ "command": "0 2 2 * * npm run script:importStats", "size": "S" }]
+    "jobs": [{ "command": "0 13 1 * * npm run script:importStats", "size": "S" }]
 }
