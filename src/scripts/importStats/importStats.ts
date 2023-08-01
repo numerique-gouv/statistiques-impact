@@ -13,6 +13,7 @@ import { apiParticulierAdaptator } from './adaptators/apiParticulier.adaptator';
 import { apiEntrepriseAdaptator } from './adaptators/apiEntreprise.adaptator';
 import { agentConnectAdaptator } from './adaptators/agentConnect.adaptator';
 import { tchapAdaptator } from './adaptators/tchap.adaptator';
+import { logger } from '../../lib/logger';
 
 const indicatorsToUpdate: Array<{
     productName: string;
@@ -44,11 +45,15 @@ async function importStats() {
     const indicatorService = buildIndicatorService(dataSource);
 
     for (const indicatorToUpdate of indicatorsToUpdate) {
-        const result = await indicatorToUpdate.adaptator.fetch();
-        const indicatorDtos = indicatorToUpdate.adaptator
-            .map(result)
-            .filter(filterUncompletedMonth);
-        await indicatorService.upsertIndicators(indicatorDtos);
+        try {
+            const result = await indicatorToUpdate.adaptator.fetch();
+            const indicatorDtos = indicatorToUpdate.adaptator
+                .map(result)
+                .filter(filterUncompletedMonth);
+            await indicatorService.upsertIndicators(indicatorDtos);
+        } catch (error) {
+            logger.error({ productName: indicatorToUpdate.productName, message: error as string });
+        }
     }
 }
 

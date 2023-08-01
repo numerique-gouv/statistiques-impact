@@ -1,5 +1,4 @@
 import { Indicator } from './Indicator.entity';
-import { Product } from '../product';
 import { DataSource } from 'typeorm';
 
 export { buildIndicatorService };
@@ -19,11 +18,9 @@ type indicatorDtoType = {
 
 function buildIndicatorService(dataSource: DataSource) {
     const indicatorRepository = dataSource.getRepository(Indicator);
-    const productRepository = dataSource.getRepository(Product);
     const indicatorService = {
         getIndicators,
         getIndicatorsByProductName,
-        upsertIndicator,
         deleteIndicator,
         upsertIndicators,
     };
@@ -34,9 +31,9 @@ function buildIndicatorService(dataSource: DataSource) {
         return indicatorRepository.find();
     }
 
-    async function getIndicatorsByProductName(name: string) {
+    async function getIndicatorsByProductName(nom_service_public_numerique: string) {
         return indicatorRepository.find({
-            where: { product: { name } },
+            where: { nom_service_public_numerique },
         });
     }
 
@@ -45,45 +42,11 @@ function buildIndicatorService(dataSource: DataSource) {
         return result.affected === 1;
     }
 
-    async function upsertIndicator(body: indicatorDtoType) {
-        const indicator = new Indicator();
-
-        const product = await productRepository.findOneOrFail({
-            where: { name: body.nom_service_public_numerique },
-        });
-
-        indicator.product = product;
-        indicator.indicateur = body.indicateur;
-        indicator.valeur = body.valeur;
-        indicator.unite_mesure = body.unite_mesure;
-        indicator.frequence_calcul = body.frequence_calcul;
-        indicator.date = body.date;
-        indicator.est_periode = body.est_periode;
-
-        return indicatorRepository.upsert(indicator, [
-            'product',
-            'indicateur',
-            'frequence_calcul',
-            'date',
-        ]);
-    }
-
     async function upsertIndicators(indicatorDtos: indicatorDtoType[]) {
-        const products: Record<string, Product> = {};
-
-        for (const indicatorDto of indicatorDtos) {
-            if (!Object.keys(products).includes(indicatorDto.nom_service_public_numerique)) {
-                const product = await productRepository.findOneOrFail({
-                    where: { name: indicatorDto.nom_service_public_numerique },
-                });
-                products[indicatorDto.nom_service_public_numerique] = product;
-            }
-        }
-
         const indicators = indicatorDtos.map((indicatorDto) => {
             const indicator = new Indicator();
 
-            indicator.product = products[indicatorDto.nom_service_public_numerique];
+            indicator.nom_service_public_numerique = indicatorDto.nom_service_public_numerique;
             indicator.indicateur = indicatorDto.indicateur;
             indicator.valeur = indicatorDto.valeur;
             indicator.unite_mesure = indicatorDto.unite_mesure;
@@ -96,7 +59,7 @@ function buildIndicatorService(dataSource: DataSource) {
             return indicator;
         });
         return indicatorRepository.upsert(indicators, [
-            'product',
+            'nom_service_public_numerique',
             'indicateur',
             'frequence_calcul',
             'date',
