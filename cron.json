@@ -1,3 +1,6 @@
 {
-    "jobs": [{ "command": "0 13 1 * * npm run script:importStats", "size": "S" }]
+    "jobs": [
+        { "command": "0 13 1 * * npm run script:importStats", "size": "S" },
+        { "command": "0 10 * * 3 npm run script:importMetabaseVersions", "size": "S" }
+    ]
 }
