@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { logger } from '../../../lib/logger';
-import { PRODUCTS } from '../constants';
 import { dateHandler } from '../utils';
+import { PRODUCTS } from '../../../constants';
 
 const padAdaptator = { map, fetch };
 
@@ -11,7 +11,7 @@ type padApiOutputType = {
     activeUsers: number;
 };
 
-const productName = PRODUCTS.PAD;
+const productName = PRODUCTS.PAD.name;
 
 function map(padApiOutput: padApiOutputType) {
     let indicatorDtos = [];
@@ -30,7 +30,7 @@ function map(padApiOutput: padApiOutputType) {
             date_debut,
             valeur: value,
             indicateur: indicatorName,
-            nom_service_public_numerique: PRODUCTS.PAD,
+            nom_service_public_numerique: PRODUCTS.PAD.name,
             unite_mesure: 'unité',
             frequence_calcul: 'mensuelle',
             est_periode: true,

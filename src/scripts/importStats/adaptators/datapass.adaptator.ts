@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { dateHandler } from '../utils';
-import { PRODUCTS } from '../constants';
 import { logger } from '../../../lib/logger';
+import { PRODUCTS } from '../../../constants';
 
 const datapassAdaptator = { fetch, map };
 
@@ -9,7 +9,7 @@ type datapassApiResultType = {
     monthly_enrollment_count: Array<{ month: string; validated: number }>;
 };
 
-const productName = PRODUCTS.DATAPASS;
+const productName = PRODUCTS.DATAPASS.name;
 
 async function fetch() {
     const url = `https://back.datapass.api.gouv.fr/api/stats`;

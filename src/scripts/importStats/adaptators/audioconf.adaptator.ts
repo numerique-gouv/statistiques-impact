@@ -1,11 +1,11 @@
 import axios from 'axios';
 import { dateHandler } from '../utils';
 import { logger } from '../../../lib/logger';
-import { PRODUCTS } from '../constants';
+import { PRODUCTS } from '../../../constants';
 
 const audioconfAdaptator = { map, fetch };
 
-const productName = PRODUCTS.AUDIOCONF;
+const productName = PRODUCTS.AUDIOCONF.name;
 
 type audioconfOutputRowType = { 'Date Begin': string; 'Nombre de lignes': number };
 

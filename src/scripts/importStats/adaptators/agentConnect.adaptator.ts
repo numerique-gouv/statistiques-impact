@@ -1,11 +1,11 @@
 import axios from 'axios';
 import { dateHandler } from '../utils';
 import { logger } from '../../../lib/logger';
-import { PRODUCTS } from '../constants';
+import { PRODUCTS } from '../../../constants';
 
 const agentConnectAdaptator = { map, fetch };
 
-const productName = PRODUCTS.AGENT_CONNECT;
+const productName = PRODUCTS.AGENT_CONNECT.name;
 const CONNEXIONS = ['Initiée', 'Réussie'] as const;
 
 type agentConnectOutputRowType = {

@@ -7,52 +7,38 @@ import { datapassAdaptator } from './adaptators/datapass.adaptator';
 import { annuaireDesEntreprisesAdaptator } from './adaptators/annuaireDesEntreprises.adaptator';
 import { adaptatorType } from './types';
 import { dateHandler } from './utils';
-import { PRODUCTS } from './constants';
 import { webinaireAdaptator } from './adaptators/webinaire.adaptator';
 import { apiParticulierAdaptator } from './adaptators/apiParticulier.adaptator';
 import { apiEntrepriseAdaptator } from './adaptators/apiEntreprise.adaptator';
 import { agentConnectAdaptator } from './adaptators/agentConnect.adaptator';
 import { tchapAdaptator } from './adaptators/tchap.adaptator';
 import { logger } from '../../lib/logger';
+import { PRODUCTS } from '../../constants';
 
-const indicatorsToUpdate: Array<{
-    productName: string;
-    adaptator: adaptatorType<any>;
-}> = [
-    {
-        productName: PRODUCTS.AUDIOCONF,
-        adaptator: audioconfAdaptator,
-    },
-    {
-        productName: PRODUCTS.PAD,
-        adaptator: padAdaptator,
-    },
-    {
-        productName: PRODUCTS.DEMARCHES_SIMPLIFIEES,
-        adaptator: demarchesSimplifieesAdaptator,
-    },
-    { productName: PRODUCTS.DATAPASS, adaptator: datapassAdaptator },
-    { productName: PRODUCTS.ANNUAIRE_DES_ENTREPRISES, adaptator: annuaireDesEntreprisesAdaptator },
-    { productName: PRODUCTS.WEBINAIRE, adaptator: webinaireAdaptator },
-    { productName: PRODUCTS.API_PARTICULIER, adaptator: apiParticulierAdaptator },
-    { productName: PRODUCTS.API_ENTREPRISE, adaptator: apiEntrepriseAdaptator },
-    { productName: PRODUCTS.AGENT_CONNECT, adaptator: agentConnectAdaptator },
-    { productName: PRODUCTS.TCHAP, adaptator: tchapAdaptator },
-];
+const indicatorsToUpdate: Record<string, adaptatorType<any>> = {
+    [PRODUCTS.AUDIOCONF.name]: audioconfAdaptator,
+    [PRODUCTS.PAD.name]: padAdaptator,
+    [PRODUCTS.DEMARCHES_SIMPLIFIEES.name]: demarchesSimplifieesAdaptator,
+    [PRODUCTS.DATAPASS.name]: datapassAdaptator,
+    [PRODUCTS.ANNUAIRE_DES_ENTREPRISES.name]: annuaireDesEntreprisesAdaptator,
+    [PRODUCTS.WEBINAIRE.name]: webinaireAdaptator,
+    [PRODUCTS.API_PARTICULIER.name]: apiParticulierAdaptator,
+    [PRODUCTS.API_ENTREPRISE.name]: apiEntrepriseAdaptator,
+    [PRODUCTS.AGENT_CONNECT.name]: agentConnectAdaptator,
+    [PRODUCTS.TCHAP.name]: tchapAdaptator,
+};
 
 async function importStats() {
     await dataSource.initialize();
     const indicatorService = buildIndicatorService(dataSource);
 
-    for (const indicatorToUpdate of indicatorsToUpdate) {
+    for (const [productName, adaptator] of Object.entries(indicatorsToUpdate)) {
         try {
-            const result = await indicatorToUpdate.adaptator.fetch();
-            const indicatorDtos = indicatorToUpdate.adaptator
-                .map(result)
-                .filter(filterUncompletedMonth);
+            const result = await adaptator.fetch();
+            const indicatorDtos = adaptator.map(result).filter(filterUncompletedMonth);
             await indicatorService.upsertIndicators(indicatorDtos);
         } catch (error) {
-            logger.error({ productName: indicatorToUpdate.productName, message: error as string });
+            logger.error({ productName: productName, message: error as string });
         }
     }
 }

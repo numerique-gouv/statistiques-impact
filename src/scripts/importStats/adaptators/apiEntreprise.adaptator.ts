@@ -1,11 +1,11 @@
 import axios from 'axios';
 import { dateHandler } from '../utils';
 import { logger } from '../../../lib/logger';
-import { PRODUCTS } from '../constants';
+import { PRODUCTS } from '../../../constants';
 
 const apiEntrepriseAdaptator = { map, fetch };
 
-const productName = PRODUCTS.API_ENTREPRISE;
+const productName = PRODUCTS.API_ENTREPRISE.name;
 
 type apiEntrepriseOutputType = Record<string, Array<{ timestamp: string; count: number }>>;
 

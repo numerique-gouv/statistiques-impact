@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { dateHandler } from '../utils';
-import { PRODUCTS } from '../constants';
 import { logger } from '../../../lib/logger';
+import { PRODUCTS } from '../../../constants';
 
 const annuaireDesEntreprisesAdaptator = { fetch, map };
 
@@ -10,7 +10,7 @@ type annuaireDesEntreprisesApiResultType = {
     redirectedSiren: Array<{ label: string; value: number }>;
 };
 
-const productName = PRODUCTS.ANNUAIRE_DES_ENTREPRISES;
+const productName = PRODUCTS.ANNUAIRE_DES_ENTREPRISES.name;
 
 async function fetch() {
     const url = `https://annuaire-entreprises.data.gouv.fr/api/stats`;

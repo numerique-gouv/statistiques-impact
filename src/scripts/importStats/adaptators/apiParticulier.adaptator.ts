@@ -1,11 +1,11 @@
 import axios from 'axios';
 import { dateHandler } from '../utils';
 import { logger } from '../../../lib/logger';
-import { PRODUCTS } from '../constants';
+import { PRODUCTS } from '../../../constants';
 
 const apiParticulierAdaptator = { map, fetch };
 
-const productName = PRODUCTS.API_PARTICULIER;
+const productName = PRODUCTS.API_PARTICULIER.name;
 
 type apiParticulierOutputType = Record<string, Array<{ timestamp: string; 'Nb appels': number }>>;
 

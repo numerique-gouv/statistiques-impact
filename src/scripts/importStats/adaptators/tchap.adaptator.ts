@@ -1,11 +1,11 @@
 import axios from 'axios';
 import { dateHandler } from '../utils';
 import { logger } from '../../../lib/logger';
-import { PRODUCTS } from '../constants';
+import { PRODUCTS } from '../../../constants';
 
 const tchapAdaptator = { map, fetch };
 
-const productName = PRODUCTS.TCHAP;
+const productName = PRODUCTS.TCHAP.name;
 
 type tchapOutputRowType = {
     Month: string;

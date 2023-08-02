@@ -1,11 +1,11 @@
 import axios from 'axios';
 import { dateHandler } from '../utils';
 import { logger } from '../../../lib/logger';
-import { PRODUCTS } from '../constants';
+import { PRODUCTS } from '../../../constants';
 
 const webinaireAdaptator = { map, fetch };
 
-const productName = PRODUCTS.WEBINAIRE;
+const productName = PRODUCTS.WEBINAIRE.name;
 
 type webinaireOutputRowType = { 'Created At': string; 'Nombre de lignes': number };
 

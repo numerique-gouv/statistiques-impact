@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { dateHandler, parseCsv } from '../utils';
 import { logger } from '../../../lib/logger';
-import { PRODUCTS } from '../constants';
+import { PRODUCTS } from '../../../constants';
 
 const demarchesSimplifieesAdaptator = { map, fetch };
 
@@ -14,7 +14,7 @@ type indicatorSummaryType = {
 };
 
 const indicatorName = 'procédures créées';
-const productName = PRODUCTS.DEMARCHES_SIMPLIFIEES;
+const productName = PRODUCTS.DEMARCHES_SIMPLIFIEES.name;
 
 function map(indicators: Array<{ date: string; csv: string }>) {
     const indicatorDtos = [];
