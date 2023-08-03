@@ -4,8 +4,6 @@ import { buildController } from './lib/buildController';
 import { DataSource } from 'typeorm';
 import { buildLogEntryController } from './modules/logEntry';
 
-const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
-
 function buildRouter(dataSource: DataSource) {
     const router = Express.Router();
     const indicatorController = buildIndicatorController(dataSource);
