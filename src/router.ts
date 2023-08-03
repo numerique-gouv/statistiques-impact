@@ -1,7 +1,7 @@
 import Express from 'express';
+import { DataSource } from 'typeorm';
 import { buildIndicatorController } from './modules/indicator';
 import { buildController } from './lib/buildController';
-import { DataSource } from 'typeorm';
 import { buildLogEntryController } from './modules/logEntry';
 
 function buildRouter(dataSource: DataSource) {

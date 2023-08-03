@@ -1,19 +1,19 @@
 import { dataSource } from '../../dataSource';
 import { buildIndicatorService, indicatorDtoType } from '../../modules/indicator';
+import { logger } from '../../lib/logger';
+import { PRODUCTS } from '../../constants';
 import { audioconfAdaptator } from './adaptators/audioconf.adaptator';
 import { padAdaptator } from './adaptators/pad.adaptator';
 import { demarchesSimplifieesAdaptator } from './adaptators/demarchesSimplifiees.adaptator';
 import { datapassAdaptator } from './adaptators/datapass.adaptator';
 import { annuaireDesEntreprisesAdaptator } from './adaptators/annuaireDesEntreprises.adaptator';
-import { adaptatorType } from './types';
-import { dateHandler } from './utils';
 import { webinaireAdaptator } from './adaptators/webinaire.adaptator';
 import { apiParticulierAdaptator } from './adaptators/apiParticulier.adaptator';
 import { apiEntrepriseAdaptator } from './adaptators/apiEntreprise.adaptator';
 import { agentConnectAdaptator } from './adaptators/agentConnect.adaptator';
 import { tchapAdaptator } from './adaptators/tchap.adaptator';
-import { logger } from '../../lib/logger';
-import { PRODUCTS } from '../../constants';
+import { adaptatorType } from './types';
+import { dateHandler } from './utils';
 
 const indicatorsToUpdate: Record<string, adaptatorType<any>> = {
     [PRODUCTS.AUDIOCONF.name]: audioconfAdaptator,
