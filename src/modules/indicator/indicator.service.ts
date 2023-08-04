@@ -1,3 +1,4 @@
+import { Product } from '../product';
 import { Indicator } from './Indicator.entity';
 import { DataSource } from 'typeorm';
 
@@ -18,6 +19,7 @@ type indicatorDtoType = {
 
 function buildIndicatorService(dataSource: DataSource) {
     const indicatorRepository = dataSource.getRepository(Indicator);
+    const productRepository = dataSource.getRepository(Product);
     const indicatorService = {
         getIndicators,
         getIndicatorsByProductName,
@@ -33,7 +35,7 @@ function buildIndicatorService(dataSource: DataSource) {
 
     async function getIndicatorsByProductName(nom_service_public_numerique: string) {
         return indicatorRepository.find({
-            where: { nom_service_public_numerique },
+            where: { product: { nom_service_public_numerique } },
         });
     }
 
@@ -42,24 +44,33 @@ function buildIndicatorService(dataSource: DataSource) {
         return result.affected === 1;
     }
 
-    async function upsertIndicators(indicatorDtos: indicatorDtoType[]) {
-        const indicators = indicatorDtos.map((indicatorDto) => {
-            const indicator = new Indicator();
-
-            indicator.nom_service_public_numerique = indicatorDto.nom_service_public_numerique;
-            indicator.indicateur = indicatorDto.indicateur;
-            indicator.valeur = indicatorDto.valeur;
-            indicator.unite_mesure = indicatorDto.unite_mesure;
-            indicator.frequence_calcul = indicatorDto.frequence_calcul;
-            indicator.date = indicatorDto.date;
-            if (indicatorDto.date_debut) {
-                indicator.date_debut = indicatorDto.date_debut;
-            }
-            indicator.est_periode = indicatorDto.est_periode;
-            return indicator;
+    async function upsertIndicators(
+        nom_service_public_numerique: string,
+        indicatorDtos: indicatorDtoType[],
+    ) {
+        const product = await productRepository.findOneByOrFail({
+            nom_service_public_numerique,
         });
+
+        const indicators = await Promise.all(
+            indicatorDtos.map(async (indicatorDto) => {
+                const indicator = new Indicator();
+
+                indicator.product = product;
+                indicator.indicateur = indicatorDto.indicateur;
+                indicator.valeur = indicatorDto.valeur;
+                indicator.unite_mesure = indicatorDto.unite_mesure;
+                indicator.frequence_calcul = indicatorDto.frequence_calcul;
+                indicator.date = indicatorDto.date;
+                if (indicatorDto.date_debut) {
+                    indicator.date_debut = indicatorDto.date_debut;
+                }
+                indicator.est_periode = indicatorDto.est_periode;
+                return indicator;
+            }),
+        );
         return indicatorRepository.upsert(indicators, [
-            'nom_service_public_numerique',
+            'product',
             'indicateur',
             'frequence_calcul',
             'date',

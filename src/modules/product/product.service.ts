@@ -1,0 +1,15 @@
+import { DataSource } from 'typeorm';
+import { Product } from './Product.entity';
+
+function buildProductService(dataSource: DataSource) {
+    const productRepository = dataSource.getRepository(Product);
+    return {
+        upsertProduct,
+    };
+
+    async function upsertProduct(productDto: Partial<Product>) {
+        return productRepository.upsert(productDto, ['nom_service_public_numerique']);
+    }
+}
+
+export { buildProductService };

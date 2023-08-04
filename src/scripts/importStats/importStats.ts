@@ -36,7 +36,7 @@ async function importStats() {
         try {
             const result = await adaptator.fetch();
             const indicatorDtos = adaptator.map(result).filter(filterUncompletedMonth);
-            await indicatorService.upsertIndicators(indicatorDtos);
+            await indicatorService.upsertIndicators(productName, indicatorDtos);
         } catch (error) {
             logger.error({ productName: productName, message: error as string });
         }

@@ -2,7 +2,7 @@ import { DataSource } from 'typeorm';
 import { config } from './config';
 import { Indicator } from './modules/indicator/Indicator.entity';
 import { LogEntry } from './modules/logEntry/LogEntry.entity';
-import { ProductInfo } from './modules/productInfo/ProductInfo.entity';
+import { Product } from './modules/product/Product.entity';
 
 const dataSource = new DataSource({
     type: 'postgres',
@@ -12,7 +12,7 @@ const dataSource = new DataSource({
     password: config.DATABASE_PASSWORD,
     database: config.DATABASE_NAME,
     logging: true,
-    entities: [Indicator, LogEntry, ProductInfo],
+    entities: [Indicator, LogEntry, Product],
     subscribers: [],
     migrations: ['**/migrations/*.js'],
 });

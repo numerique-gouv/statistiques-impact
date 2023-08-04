@@ -1,7 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { Product } from '../product';
 
 @Unique('One unique value for indicator by frequence and date', [
-    'nom_service_public_numerique',
+    'product',
     'indicateur',
     'frequence_calcul',
     'date',
@@ -11,8 +12,8 @@ export class Indicator {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column()
-    nom_service_public_numerique: string;
+    @ManyToOne(() => Product, { onDelete: 'CASCADE' })
+    product: Product;
 
     @Column()
     indicateur: string;

@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class ProductInfo {
+export class Product {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
@@ -9,5 +9,5 @@ export class ProductInfo {
     nom_service_public_numerique: string;
 
     @Column({ nullable: true })
-    metabaseVersion: string;
+    metabaseVersion?: string;
 }
