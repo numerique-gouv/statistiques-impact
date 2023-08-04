@@ -1,4 +1,4 @@
-import { VERSION_REGEX, extractMetabaseVersion } from './extractMetabaseVersion';
+import { extractMetabaseVersion } from './extractMetabaseVersion';
 import { promises as fs } from 'fs';
 
 describe('extractMetabaseVersion', () => {

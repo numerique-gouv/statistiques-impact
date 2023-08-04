@@ -9,4 +9,4 @@ async function extractMetabaseVersion(html: string) {
     return metabaseVersion;
 }
 
-export { extractMetabaseVersion, VERSION_REGEX };
+export { extractMetabaseVersion };

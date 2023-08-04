@@ -10,4 +10,7 @@ export class Product {
 
     @Column({ nullable: true })
     metabaseVersion?: string;
+
+    @Column('float', { nullable: true })
+    percentageSignedCommits?: number;
 }
