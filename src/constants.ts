@@ -8,12 +8,26 @@ const PRODUCTS: Record<string, productType> = {
     },
     ANNUAIRE_DES_ENTREPRISES: {
         name: 'annuaire-des-entreprises',
-        repositoriesUrl: ['https://github.com/etalab/annuaire-entreprises-site'],
+        repositoriesUrl: [
+            'https://github.com/etalab/annuaire-entreprises-site',
+            'https://github.com/etalab/annuaire-entreprises-search-api',
+            'https://github.com/etalab/annuaire-entreprises-search-infra',
+            'https://github.com/etalab/annuaire-entreprises-api-proxy',
+            'https://github.com/etalab/annuaire-entreprises-search-testing',
+        ],
     },
     API_GOUV: {
         name: 'api-gouv',
         metabaseUrl: 'https://metabase.entreprise.api.gouv.fr',
-        repositoriesUrl: [],
+        repositoriesUrl: [
+            'https://github.com/betagouv/api.gouv.fr',
+            'https://github.com/etalab/admin_api_entreprise',
+            'https://github.com/etalab/calendrier.api.gouv.fr',
+            'https://github.com/etalab/geo.api.gouv.fr',
+            'https://github.com/etalab/api-geo',
+            'https://github.com/etalab/rncs_worker_api_entreprise',
+            'https://github.com/etalab/watchdoge_apientreprise',
+        ],
     },
     AUDIOCONF: {
         name: 'audioconf',
@@ -28,13 +42,35 @@ const PRODUCTS: Record<string, productType> = {
         name: 'code-gouv',
         repositoriesUrl: [],
     },
+    DATA_GOUV: {
+        name: 'data-gouv',
+        repositoriesUrl: [
+            'https://github.com/etalab/ouverture.data.gouv.fr',
+            'https://github.com/etalab/schema.data.gouv.fr',
+            'https://github.com/etalab/guides.data.gouv.fr',
+            'https://github.com/etalab/catalogage-donnees',
+            'https://github.com/etalab/cadastre.data.gouv.fr',
+            'https://github.com/etalab/explore.data.gouv.fr',
+            'https://github.com/etalab/datagouvfr-pages',
+            'https://github.com/etalab/doc.data.gouv.fr',
+            'https://github.com/etalab/support.data.gouv.fr',
+        ],
+    },
     DATAPASS: {
         name: 'datapass',
-        repositoriesUrl: [],
+        repositoriesUrl: ['https://github.com/betagouv/datapass'],
     },
     DEMARCHES_SIMPLIFIEES: {
         name: 'demarches-simplifiees',
-        repositoriesUrl: [],
+        repositoriesUrl: ['https://github.com/betagouv/doc.demarches-simplifiees.fr'],
+    },
+    DVF: {
+        name: 'dvf',
+        repositoriesUrl: [
+            'https://github.com/etalab/DVF-app',
+            'https://github.com/etalab/api-dvf',
+            'https://github.com/etalab/dvf',
+        ],
     },
     FRANCE_CONNECT: {
         name: 'france-connect',
@@ -43,9 +79,14 @@ const PRODUCTS: Record<string, productType> = {
     HUBEE: { name: 'hubee', repositoriesUrl: [] },
     MON_COMPTE_PRO: {
         name: 'mon-compte-pro',
-        repositoriesUrl: ['https://github.com/betagouv/moncomptepro'],
+        repositoriesUrl: [
+            'https://github.com/betagouv/moncomptepro',
+            'https://github.com/betagouv/moncomptepro-landing-page',
+            'https://github.com/betagouv/moncomptepro-infrastructure',
+        ],
         metabaseUrl: 'https://stats.moncomptepro.beta.gouv.fr/',
     },
+    OOTS: { name: 'oots', repositoriesUrl: ['https://github.com/betagouv/oots-france'] },
     OSMOSE: { name: 'osmose', repositoriesUrl: [] },
     PAD: { name: 'pad', repositoriesUrl: ['https://github.com/betagouv/pad.numerique.gouv.fr'] },
     RESANA: { name: 'resana', repositoriesUrl: [] },
@@ -61,7 +102,7 @@ const PRODUCTS: Record<string, productType> = {
     },
     WEBINAIRE: {
         name: 'webinaire',
-        repositoriesUrl: [],
+        repositoriesUrl: ['https://github.com/betagouv/visio-bbb/'],
         metabaseUrl: 'https://webinaire-metabase.osc-secnum-fr1.scalingo.io/',
     },
 };
