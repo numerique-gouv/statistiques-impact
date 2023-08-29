@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Table } from '@codegouvfr/react-dsfr/Table';
 import { Badge } from '@codegouvfr/react-dsfr/Badge';
-import { ProgressBar } from '../components/ProgressBar';
 
 import { Page } from '../components/Page';
 
@@ -37,10 +36,10 @@ function buildData() {
     ]
         .sort()
         .map((name) => [
-            <Link to={`/products/${name}`}>{name}</Link>,
-            <Badge severity="info">{Math.random() > 0.5 ? 'Construction' : 'Accélération'}</Badge>,
-            <ProgressBar progress={Math.round(Math.random() * 25 + 75)} />,
-            <ProgressBar progress={Math.round(Math.random() * 25 + 75)} />,
+            <Link to={`/indicators/${name}`}>{name}</Link>,
+            <Badge severity="info">-</Badge>,
+            <div />,
+            <div />,
         ]);
 }
 
