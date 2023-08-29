@@ -1,9 +1,10 @@
-import Express from 'express';
+import Express, { Response } from 'express';
 import 'reflect-metadata';
 import { config } from './config';
 import { buildRouter } from './router';
 import { dataSource } from './dataSource';
 import bodyParser from 'body-parser';
+import path from 'path';
 
 async function runApp() {
     await dataSource.initialize();
@@ -11,7 +12,13 @@ async function runApp() {
     const app = Express();
     const router = buildRouter(dataSource);
 
-    app.use('/', bodyParser.json(), router);
+    app.use(Express.static(path.join(__dirname, '..', 'src', 'client', 'build')));
+
+    app.get('/*', (_, res: Response) => {
+        res.sendFile(path.join(__dirname, '..', 'src', 'client', 'build', 'index.html'));
+    });
+
+    app.use('/api', bodyParser.json(), router);
 
     app.listen(config.PORT, async () => {
         console.log(`Server is running on port ${config.PORT}`);
