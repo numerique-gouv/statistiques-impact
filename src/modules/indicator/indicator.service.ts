@@ -30,7 +30,10 @@ function buildIndicatorService(dataSource: DataSource) {
     return indicatorService;
 
     async function getIndicators() {
-        return indicatorRepository.find();
+        return indicatorRepository.find({
+            relations: ['product'],
+            select: { product: { nom_service_public_numerique: true } },
+        });
     }
 
     async function getIndicatorsByProductName(nom_service_public_numerique: string) {
