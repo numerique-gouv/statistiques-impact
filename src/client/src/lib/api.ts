@@ -1,6 +1,8 @@
+import { config } from '../config';
+
 const api = { getIndicatorsByProduct, getProducts };
 
-const BASE_URL = `http://localhost:3001/api`;
+const BASE_URL = `${config.API_URL}/api`;
 
 function getIndicatorsByProduct(productId: string) {
     const url = `${BASE_URL}/indicators/${productId}`;

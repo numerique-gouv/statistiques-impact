@@ -21,6 +21,7 @@ const config = {
     DATABASE_USER: process.env.DATABASE_USER || '',
     DATABASE_NAME: process.env.DATABASE_NAME || '',
     DATABASE_PORT: process.env.DATABASE_PORT ? Number(process.env.DATABASE_PORT) : 5432,
+    ALLOWED_ORIGIN: process.env.ALLOWED_ORIGIN || '',
     ...databaseConfig,
 };
 
