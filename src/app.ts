@@ -1,4 +1,5 @@
 import Express, { Response } from 'express';
+import cors from 'cors';
 import 'reflect-metadata';
 import { config } from './config';
 import { buildRouter } from './router';
@@ -12,13 +13,13 @@ async function runApp() {
     const app = Express();
     const router = buildRouter(dataSource);
 
-    app.use(Express.static(path.join(__dirname, '..', 'src', 'client', 'build')));
+    // app.use(Express.static(path.join(__dirname, '..', 'src', 'client', 'build')));
 
-    app.get('/*', (_, res: Response) => {
-        res.sendFile(path.join(__dirname, '..', 'src', 'client', 'build', 'index.html'));
-    });
+    // app.get('/*', (_, res: Response) => {
+    //     res.sendFile(path.join(__dirname, '..', 'src', 'client', 'build', 'index.html'));
+    // });
 
-    app.use('/api', bodyParser.json(), router);
+    app.use('/api', cors({ origin: 'http://localhost:3000' }), bodyParser.json(), router);
 
     app.listen(config.PORT, async () => {
         console.log(`Server is running on port ${config.PORT}`);

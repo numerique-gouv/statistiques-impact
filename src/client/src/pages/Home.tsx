@@ -16,24 +16,7 @@ function Home() {
 }
 
 function buildData() {
-    return [
-        'Agent Connect',
-        'audioconf',
-        'api.gouv',
-        'calendso',
-        'DVF',
-        'France Connect',
-        'code.gouv',
-        'datapass',
-        'API Entreprises',
-        'API Géo',
-        'Mon France Connect',
-        'Mon Compte Pro',
-        'Osmose',
-        'Pad',
-        'Resana',
-        'Rizomo',
-    ]
+    return ['agent-connect']
         .sort()
         .map((name) => [
             <Link to={`/indicators/${name}`}>{name}</Link>,
