@@ -11,7 +11,6 @@ type productsType = Array<{ id: string; nom_service_public_numerique: string }>;
 function Home() {
     const headers = ['Produit', 'Phase', 'Sécurité', 'Accessibilité'];
     const query = useQuery<productsType>(['products'], api.getProducts);
-    console.log(query.data);
 
     return (
         <Page>

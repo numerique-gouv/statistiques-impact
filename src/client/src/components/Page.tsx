@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React from 'react';
 import { fr } from '@codegouvfr/react-dsfr';
 import { Header } from './Header';
 import { Footer } from './Footer';
