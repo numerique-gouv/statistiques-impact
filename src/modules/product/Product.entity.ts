@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Indicator } from '../indicator';
 
 @Entity()
 export class Product {
@@ -13,4 +14,7 @@ export class Product {
 
     @Column('float', { nullable: true })
     percentageSignedCommits?: number;
+
+    @OneToMany(() => Indicator, (indicator) => indicator.product)
+    indicators: Indicator[];
 }

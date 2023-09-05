@@ -6,10 +6,14 @@ import { Page } from '../components/Page';
 import { useQuery } from 'react-query';
 import { api } from '../lib/api';
 
-type productsType = Array<{ id: string; nom_service_public_numerique: string }>;
+type productsType = Array<{
+    id: string;
+    nom_service_public_numerique: string;
+    lastStatisticDate: string | undefined;
+}>;
 
 function Home() {
-    const headers = ['Produit', 'Phase', 'Sécurité', 'Accessibilité'];
+    const headers = ['Produit', 'Phase', 'Dernière stat publiée', 'Sécurité', 'Accessibilité'];
     const query = useQuery<productsType>(['products'], api.getProducts);
 
     return (
@@ -22,6 +26,7 @@ function Home() {
                             {product.nom_service_public_numerique}
                         </Link>,
                         <Badge severity="info">-</Badge>,
+                        <div>{product.lastStatisticDate || '-'}</div>,
                         <div />,
                         <div />,
                     ])}
