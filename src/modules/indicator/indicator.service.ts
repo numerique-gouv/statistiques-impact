@@ -37,9 +37,21 @@ function buildIndicatorService(dataSource: DataSource) {
     }
 
     async function getIndicatorsByProductName(nom_service_public_numerique: string) {
-        return indicatorRepository.find({
+        const indicators = await indicatorRepository.find({
             where: { product: { nom_service_public_numerique } },
+            order: { date: 'ASC' },
         });
+
+        const grouppedIndicators = indicators.reduce((acc, indicator) => {
+            return {
+                ...acc,
+                [indicator.indicateur]: acc[indicator.indicateur]
+                    ? [...acc[indicator.indicateur], indicator]
+                    : [indicator],
+            };
+        }, {} as Record<string, Indicator[]>);
+
+        return grouppedIndicators;
     }
 
     async function deleteIndicator(indicatorId: string) {

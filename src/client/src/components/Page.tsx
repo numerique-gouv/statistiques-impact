@@ -3,7 +3,7 @@ import { fr } from '@codegouvfr/react-dsfr';
 import { Header } from './Header';
 import { Footer } from './Footer';
 
-function Page(props: { children: JSX.Element | boolean }) {
+function Page(props: { children: JSX.Element | JSX.Element[] | boolean }) {
     return (
         <>
             <Header />
