@@ -11,7 +11,7 @@ function buildProductService(dataSource: DataSource) {
     async function getProducts() {
         const products = await productRepository.find({
             relations: ['indicators'],
-            select: { indicators: { date: true } },
+            select: { indicators: { date: true, isAutomatic: true } },
         });
         return products.map((product) => ({
             id: product.id,
@@ -19,6 +19,7 @@ function buildProductService(dataSource: DataSource) {
             lastStatisticDate: product.indicators.length
                 ? product.indicators.sort()[product.indicators.length - 1].date
                 : undefined,
+            isAutomatic: product.indicators.every((indicator) => indicator.isAutomatic),
         }));
     }
 

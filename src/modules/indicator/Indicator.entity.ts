@@ -15,6 +15,9 @@ export class Indicator {
     @ManyToOne(() => Product, { onDelete: 'CASCADE' })
     product: Product;
 
+    @Column({ default: true })
+    isAutomatic: boolean;
+
     @Column()
     indicateur: string;
 

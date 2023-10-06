@@ -10,10 +10,11 @@ type productsType = Array<{
     id: string;
     nom_service_public_numerique: string;
     lastStatisticDate: string | undefined;
+    isAutomatic: boolean;
 }>;
 
 function Home() {
-    const headers = ['Produit', 'Phase', 'Dernière stat publiée', 'Sécurité', 'Accessibilité'];
+    const headers = ['Produit', 'Phase', 'Dernière stat publiée', 'Récupération automatique ?'];
     const query = useQuery<productsType>(['products'], api.getProducts);
 
     return (
@@ -27,8 +28,7 @@ function Home() {
                         </Link>,
                         <Badge severity="info">-</Badge>,
                         <div>{product.lastStatisticDate || '-'}</div>,
-                        <div />,
-                        <div />,
+                        <div>{product.isAutomatic && 'X'}</div>,
                     ])}
                     caption="Produits référencés"
                 ></Table>
