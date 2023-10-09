@@ -24,7 +24,7 @@ describe('pad', () => {
                 date_debut: '2023-06-19',
                 est_periode: true,
                 frequence_calcul: 'mensuelle',
-                isAutomatic: true,
+                est_automatise: true,
                 nom_service_public_numerique: 'pad',
                 indicateur: 'utilisateurs actifs',
                 unite_mesure: 'unité',

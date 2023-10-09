@@ -15,7 +15,7 @@ type indicatorDtoType = {
     date: string;
     date_debut?: string;
     est_periode: boolean;
-    isAutomatic: boolean;
+    est_automatise: boolean;
 };
 
 function buildIndicatorService(dataSource: DataSource) {
@@ -82,7 +82,7 @@ function buildIndicatorService(dataSource: DataSource) {
                     indicator.date_debut = indicatorDto.date_debut;
                 }
                 indicator.est_periode = indicatorDto.est_periode;
-                indicator.isAutomatic = indicatorDto.isAutomatic;
+                indicator.est_automatise = indicatorDto.est_automatise;
 
                 return indicator;
             }),

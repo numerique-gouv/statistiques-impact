@@ -16,7 +16,7 @@ export class Indicator {
     product: Product;
 
     @Column({ default: true })
-    isAutomatic: boolean;
+    est_automatise: boolean;
 
     @Column()
     indicateur: string;

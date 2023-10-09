@@ -10,7 +10,7 @@ type productsType = Array<{
     id: string;
     nom_service_public_numerique: string;
     lastStatisticDate: string | undefined;
-    isAutomatic: boolean;
+    est_automatise: boolean;
 }>;
 
 function Home() {
@@ -28,7 +28,7 @@ function Home() {
                         </Link>,
                         <Badge severity="info">-</Badge>,
                         <div>{product.lastStatisticDate || '-'}</div>,
-                        <div>{product.isAutomatic && 'X'}</div>,
+                        <div>{product.est_automatise && 'X'}</div>,
                     ])}
                     caption="Produits référencés"
                 ></Table>

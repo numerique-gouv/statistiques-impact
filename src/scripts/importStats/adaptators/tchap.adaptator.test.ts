@@ -19,7 +19,7 @@ describe('tchapAdaptator', () => {
                 est_periode: true,
                 nom_service_public_numerique: 'tchap',
                 frequence_calcul: 'mensuelle',
-                isAutomatic: true,
+                est_automatise: true,
                 indicateur: 'utilisateurs actifs',
                 unite_mesure: 'unité',
             },

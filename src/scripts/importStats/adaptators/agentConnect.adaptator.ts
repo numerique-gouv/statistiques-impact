@@ -64,7 +64,7 @@ function map(agentConnectOutputRows: Array<agentConnectOutputRowType>) {
                 unite_mesure: 'unité',
                 nom_service_public_numerique: productName,
                 frequence_calcul: 'mensuelle',
-                isAutomatic: true,
+                est_automatise: true,
                 est_periode: true,
                 valeur: grouppedIndicatorsByDate[date_debut]['Réussie'],
             });
@@ -85,7 +85,7 @@ function map(agentConnectOutputRows: Array<agentConnectOutputRowType>) {
                 unite_mesure: '%',
                 nom_service_public_numerique: productName,
                 frequence_calcul: 'mensuelle',
-                isAutomatic: true,
+                est_automatise: true,
                 est_periode: true,
                 valeur: Number(percentage.toFixed(2)),
             });
