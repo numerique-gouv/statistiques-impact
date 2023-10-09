@@ -39,6 +39,7 @@ function map(annuaireDesEntreprisesApiOutput: annuaireDesEntreprisesApiResultTyp
                     nom_service_public_numerique: productName,
                     unite_mesure: 'unité',
                     frequence_calcul: 'mensuelle',
+                    isAutomatic: true,
                     est_periode: true,
                 };
                 indicatorDtos.push(indicatorDto);

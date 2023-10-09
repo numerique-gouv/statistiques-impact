@@ -16,6 +16,7 @@ describe('webinaireAdaptator', () => {
                 est_periode: true,
                 nom_service_public_numerique: 'webinaire',
                 frequence_calcul: 'mensuelle',
+                isAutomatic: true,
                 indicateur: 'conférences',
                 unite_mesure: 'unité',
             },

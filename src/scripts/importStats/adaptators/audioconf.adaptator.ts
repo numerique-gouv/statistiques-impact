@@ -31,6 +31,7 @@ function map(audioconfOutputRows: Array<audioconfOutputRowType>) {
                 unite_mesure: 'unité',
                 nom_service_public_numerique: productName,
                 frequence_calcul: 'mensuelle',
+                isAutomatic: true,
                 est_periode: true,
                 valeur: value,
             });
