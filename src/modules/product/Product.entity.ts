@@ -1,5 +1,6 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Indicator } from '../indicator';
+import { Team } from '../team';
 
 @Entity()
 export class Product {
@@ -17,4 +18,7 @@ export class Product {
 
     @OneToMany(() => Indicator, (indicator) => indicator.product)
     indicators: Indicator[];
+
+    @ManyToOne(() => Team, { onDelete: 'CASCADE' })
+    team: Team;
 }

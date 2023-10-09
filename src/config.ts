@@ -22,6 +22,9 @@ const config = {
     DATABASE_NAME: process.env.DATABASE_NAME || '',
     DATABASE_PORT: process.env.DATABASE_PORT ? Number(process.env.DATABASE_PORT) : 5432,
     ALLOWED_ORIGIN: process.env.ALLOWED_ORIGIN || '',
+    GRIST_API_KEY: process.env.GRIST_API_KEY,
+    GRIST_DOCUMENT_ID: process.env.GRIST_DOCUMENT_ID,
+    GRIST_URL: process.env.GRIST_URL,
     ...databaseConfig,
 };
 
