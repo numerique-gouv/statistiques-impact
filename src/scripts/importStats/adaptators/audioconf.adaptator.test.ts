@@ -15,7 +15,7 @@ describe('audioconfAdaptator', () => {
                 valeur: 1234,
                 est_periode: true,
                 nom_service_public_numerique: 'audioconf',
-                frequence_calcul: 'mensuelle',
+                frequence_monitoring: 'mensuelle',
                 est_automatise: true,
                 indicateur: 'conférences de plus de deux minutes',
                 unite_mesure: 'unité',

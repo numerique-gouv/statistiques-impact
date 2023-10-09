@@ -4,7 +4,7 @@ import { Product } from '../product';
 @Unique('One unique value for indicator by frequence and date', [
     'product',
     'indicateur',
-    'frequence_calcul',
+    'frequence_monitoring',
     'date',
 ])
 @Entity()
@@ -28,7 +28,7 @@ export class Indicator {
     unite_mesure: string;
 
     @Column()
-    frequence_calcul: string;
+    frequence_monitoring: string;
 
     @Column()
     date: string;

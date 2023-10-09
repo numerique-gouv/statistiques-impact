@@ -38,7 +38,7 @@ function map(annuaireDesEntreprisesApiOutput: annuaireDesEntreprisesApiResultTyp
                     indicateur: indicatorNames[indicatorName],
                     nom_service_public_numerique: productName,
                     unite_mesure: 'unité',
-                    frequence_calcul: 'mensuelle',
+                    frequence_monitoring: 'mensuelle',
                     est_automatise: true,
                     est_periode: true,
                 };

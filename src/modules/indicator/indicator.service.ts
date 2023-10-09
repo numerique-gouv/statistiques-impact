@@ -11,7 +11,7 @@ type indicatorDtoType = {
     indicateur: string;
     valeur: number;
     unite_mesure: string;
-    frequence_calcul: string;
+    frequence_monitoring: string;
     date: string;
     date_debut?: string;
     est_periode: boolean;
@@ -76,7 +76,7 @@ function buildIndicatorService(dataSource: DataSource) {
                 indicator.indicateur = indicatorDto.indicateur;
                 indicator.valeur = indicatorDto.valeur;
                 indicator.unite_mesure = indicatorDto.unite_mesure;
-                indicator.frequence_calcul = indicatorDto.frequence_calcul;
+                indicator.frequence_monitoring = indicatorDto.frequence_monitoring;
                 indicator.date = indicatorDto.date;
                 if (indicatorDto.date_debut) {
                     indicator.date_debut = indicatorDto.date_debut;
@@ -90,7 +90,7 @@ function buildIndicatorService(dataSource: DataSource) {
         return indicatorRepository.upsert(indicators, [
             'product',
             'indicateur',
-            'frequence_calcul',
+            'frequence_monitoring',
             'date',
         ]);
     }

@@ -31,7 +31,7 @@ function map(tchapOutputRows: Array<tchapOutputRowType>) {
                 indicateur: indicatorName,
                 unite_mesure: 'unité',
                 nom_service_public_numerique: productName,
-                frequence_calcul: 'mensuelle',
+                frequence_monitoring: 'mensuelle',
                 est_automatise: true,
                 est_periode: true,
                 valeur: value,
