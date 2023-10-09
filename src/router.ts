@@ -19,6 +19,7 @@ function buildRouter(dataSource: DataSource) {
         '/indicators/:name',
         buildController(indicatorController.getIndicatorsByProductName),
     );
+    router.post('/indicators', buildController(indicatorController.upsertIndicators));
     router.delete('/indicators/:indicatorId', buildController(indicatorController.deleteIndicator));
 
     return router;

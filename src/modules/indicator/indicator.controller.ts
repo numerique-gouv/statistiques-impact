@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm';
-import { buildIndicatorService } from './indicator.service';
+import { buildIndicatorService, indicatorDtoType } from './indicator.service';
 
 export { buildIndicatorController };
 
@@ -9,6 +9,7 @@ function buildIndicatorController(dataSource: DataSource) {
         getIndicators,
         getIndicatorsByProductName,
         deleteIndicator,
+        upsertIndicators,
     };
 
     return indicatorController;
@@ -19,6 +20,15 @@ function buildIndicatorController(dataSource: DataSource) {
 
     async function getIndicatorsByProductName(params: { urlParams: { name: string } }) {
         return indicatorService.getIndicatorsByProductName(params.urlParams.name);
+    }
+
+    async function upsertIndicators(params: {
+        body: { productName: string; indicatorDtos: indicatorDtoType[] };
+    }) {
+        return indicatorService.upsertIndicators(
+            params.body.productName,
+            params.body.indicatorDtos,
+        );
     }
 
     async function deleteIndicator(params: { urlParams: { indicatorId: string } }) {
