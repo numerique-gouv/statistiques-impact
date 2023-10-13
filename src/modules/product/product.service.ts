@@ -1,6 +1,14 @@
 import { DataSource } from 'typeorm';
 import { Product } from './Product.entity';
-import { Team } from '../team';
+import { Team, buildTeamService } from '../team';
+
+type formattedProductType = {
+    id: string;
+    nom_service_public_numerique: string;
+    lastIndicatorDate: string | undefined;
+    lastIndicators: string[];
+    est_automatise: boolean;
+};
 
 function buildProductService(dataSource: DataSource) {
     const productRepository = dataSource.getRepository(Product);
@@ -10,18 +18,58 @@ function buildProductService(dataSource: DataSource) {
     };
 
     async function getProducts() {
+        const teamService = buildTeamService(dataSource);
         const products = await productRepository.find({
-            relations: ['indicators'],
-            select: { indicators: { date: true, est_automatise: true } },
+            relations: ['indicators', 'team'],
+            select: {
+                indicators: { date: true, est_automatise: true, valeur: true, indicateur: true },
+                team: { id: true },
+            },
         });
-        return products.map((product) => ({
-            id: product.id,
-            nom_service_public_numerique: product.nom_service_public_numerique,
-            lastStatisticDate: product.indicators.length
-                ? product.indicators.sort()[product.indicators.length - 1].date
-                : undefined,
-            est_automatise: product.indicators.every((indicator) => indicator.est_automatise),
-        }));
+        const teams = await teamService.getAllTeams();
+        const results: Record<
+            string,
+            {
+                id: string;
+                name: string;
+                products: Array<formattedProductType>;
+            }
+        > = {};
+        for (const product of products) {
+            let est_automatise = false;
+            let lastIndicators: string[] = [];
+            let lastIndicatorDate: string | undefined = undefined;
+
+            if (product.indicators.length > 0) {
+                lastIndicatorDate = product.indicators.sort((b, a) =>
+                    a.date.localeCompare(b.date),
+                )[0].date;
+                lastIndicators = product.indicators
+                    .filter((indicator) => indicator.date === lastIndicatorDate)
+                    .map((indicator) => `${indicator.valeur} ${indicator.indicateur}`);
+                est_automatise = product.indicators.every((indicator) => indicator.est_automatise);
+            }
+            const formattedProduct: formattedProductType = {
+                id: product.id,
+                nom_service_public_numerique: product.nom_service_public_numerique,
+                lastIndicators,
+                lastIndicatorDate,
+                est_automatise,
+            };
+
+            results[product.team.id] = results[product.team.id]
+                ? {
+                      ...results[product.team.id],
+                      products: [...results[product.team.id].products, formattedProduct],
+                  }
+                : {
+                      id: product.team.id,
+                      name: teams[product.team.id].name,
+                      products: [formattedProduct],
+                  };
+        }
+
+        return results;
     }
 
     async function upsertProduct(productDto: Partial<Product>, teamId?: Team['id']) {
