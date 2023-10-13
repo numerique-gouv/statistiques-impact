@@ -13,7 +13,7 @@ type annuaireDesEntreprisesApiResultType = {
 const productName = PRODUCTS.ANNUAIRE_DES_ENTREPRISES.name;
 
 async function fetch() {
-    const url = `https://annuaire-entreprises.data.gouv.fr/api/stats`;
+    const url = `https://annuaire-entreprises.data.gouv.fr/api/data-fetching/stats`;
     const result = await axios.get(url);
 
     return result.data;
