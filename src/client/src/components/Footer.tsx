@@ -4,7 +4,7 @@ import { Footer as DSFRFooter } from '@codegouvfr/react-dsfr/Footer';
 function Footer() {
     return (
         <DSFRFooter
-            brandTop={<>Impact et qualité</>}
+            brandTop={<>Statistiques</>}
             accessibility="non compliant"
             homeLinkProps={{
                 to: '/',
