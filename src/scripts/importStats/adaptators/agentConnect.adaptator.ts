@@ -45,7 +45,7 @@ function map(agentConnectOutputRows: Array<agentConnectOutputRowType>) {
     } catch (error) {
         logger.error({
             productName,
-            indicator: 'nombre de connexions réussies',
+            indicator: 'connexions réussies',
             message: error as string,
         });
     }
@@ -60,7 +60,7 @@ function map(agentConnectOutputRows: Array<agentConnectOutputRowType>) {
             indicatorDtos.push({
                 date_debut,
                 date,
-                indicateur: 'nombre de connexions réussies',
+                indicateur: 'connexions réussies',
                 unite_mesure: 'unité',
                 nom_service_public_numerique: productName,
                 frequence_monitoring: 'mensuelle',
@@ -81,7 +81,7 @@ function map(agentConnectOutputRows: Array<agentConnectOutputRowType>) {
             indicatorDtos.push({
                 date_debut,
                 date,
-                indicateur: 'pourcentage de connexions réussies',
+                indicateur: '% de connexions réussies',
                 unite_mesure: '%',
                 nom_service_public_numerique: productName,
                 frequence_monitoring: 'mensuelle',
@@ -92,7 +92,7 @@ function map(agentConnectOutputRows: Array<agentConnectOutputRowType>) {
         } catch (error) {
             logger.error({
                 productName,
-                indicator: 'nombre de connexions réussies',
+                indicator: 'pourcentage de connexions réussies',
                 message: error as string,
             });
         }
