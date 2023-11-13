@@ -21,7 +21,7 @@ async function importProducts() {
         const teamId = mappedTeams[`${product.fields.Equipe}`].bddId;
         await productService.upsertProduct(
             {
-                nom_service_public_numerique: product.fields.Produit,
+                nom_service_public_numerique: product.fields.slug,
             },
             teamId,
         );

@@ -2,7 +2,7 @@ import { config } from '../config';
 
 const api = { fetchProducts, fetchTeams, fetchTables };
 
-type productRecordType = { id: number; fields: { Produit: string; Equipe: number } };
+type productRecordType = { id: number; fields: { Produit: string; slug: string; Equipe: number } };
 type teamRecordType = { id: number; fields: { Equipe: string; Phase: number } };
 
 async function fetchProducts() {
