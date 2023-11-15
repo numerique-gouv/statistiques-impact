@@ -63,11 +63,11 @@ describe('utils', () => {
             });
         });
 
-        describe('parseDate', () => {
+        describe('parseStringDate', () => {
             it('parsed the date', () => {
                 const date = '2023-08-01';
 
-                const parsedDate = dateHandler.parseDate(date);
+                const parsedDate = dateHandler.parseStringDate(date);
 
                 expect(parsedDate).toEqual({ year: 2023, month: 8, dayOfMonth: 1 });
             });

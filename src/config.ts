@@ -25,6 +25,7 @@ const config = {
     GRIST_API_KEY: process.env.GRIST_API_KEY,
     GRIST_DOCUMENT_ID: process.env.GRIST_DOCUMENT_ID,
     GRIST_URL: process.env.GRIST_URL,
+    DOCUMENTATION_API_KEY: process.env.DOCUMENTATION_API_KEY,
     ...databaseConfig,
 };
 

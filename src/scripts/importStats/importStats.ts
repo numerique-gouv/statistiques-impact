@@ -14,6 +14,7 @@ import { agentConnectAdaptator } from './adaptators/agentConnect.adaptator';
 import { tchapAdaptator } from './adaptators/tchap.adaptator';
 import { adaptatorType } from './types';
 import { dateHandler } from './utils';
+import { documentationAdaptator } from './adaptators/documentation.adaptator';
 
 const indicatorsToUpdate: Record<string, adaptatorType<any>> = {
     [PRODUCTS.AUDIOCONF.name]: audioconfAdaptator,
@@ -22,21 +23,30 @@ const indicatorsToUpdate: Record<string, adaptatorType<any>> = {
     [PRODUCTS.DATAPASS.name]: datapassAdaptator,
     [PRODUCTS.ANNUAIRE_DES_ENTREPRISES.name]: annuaireDesEntreprisesAdaptator,
     [PRODUCTS.WEBINAIRE.name]: webinaireAdaptator,
-    [PRODUCTS.API_PARTICULIER.name]: apiParticulierAdaptator,
-    [PRODUCTS.API_ENTREPRISE.name]: apiEntrepriseAdaptator,
     [PRODUCTS.AGENT_CONNECT.name]: agentConnectAdaptator,
     [PRODUCTS.TCHAP.name]: tchapAdaptator,
+    [PRODUCTS.DOCUMENTATION.name]: documentationAdaptator,
+    [PRODUCTS.API_PARTICULIER.name]: apiParticulierAdaptator,
+    [PRODUCTS.API_ENTREPRISE.name]: apiEntrepriseAdaptator,
 };
 
 async function importStats() {
+    console.log('IMPORT STATS');
+    console.log('===');
+    console.log(`Initializing database...`);
     await dataSource.initialize();
+    console.log(`Database initialized...`);
+
     const indicatorService = buildIndicatorService(dataSource);
 
     for (const [productName, adaptator] of Object.entries(indicatorsToUpdate)) {
+        console.log(`Fetching indicators for "${productName}"...`);
         try {
             const result = await adaptator.fetch();
             const indicatorDtos = adaptator.map(result).filter(filterUncompletedMonth);
+            console.log(`${indicatorDtos.length} found! Inserting in database...`);
             await indicatorService.upsertIndicators(productName, indicatorDtos);
+            console.log(`Indicators inserted!`);
         } catch (error) {
             logger.error({ productName: productName, message: error as string });
         }
@@ -44,7 +54,7 @@ async function importStats() {
 }
 
 function filterUncompletedMonth(indicatorDto: indicatorDtoType): boolean {
-    const parsedIndicatorDate = dateHandler.parseDate(indicatorDto.date);
+    const parsedIndicatorDate = dateHandler.parseStringDate(indicatorDto.date);
     const now = new Date();
     const parsedNowDate = {
         year: now.getFullYear(),

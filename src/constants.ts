@@ -11,6 +11,7 @@ type PRODUCT_ID =
     | 'DATA_GOUV'
     | 'DATAPASS'
     | 'DEMARCHES_SIMPLIFIEES'
+    | 'DOCUMENTATION'
     | 'DVF'
     | 'FRANCE_CONNECT'
     | 'HUBEE'
@@ -91,6 +92,10 @@ const PRODUCTS: Record<PRODUCT_ID, productType> = {
     DEMARCHES_SIMPLIFIEES: {
         name: 'demarches-simplifiees',
         repositoriesUrl: ['https://github.com/betagouv/doc.demarches-simplifiees.fr'],
+    },
+    DOCUMENTATION: {
+        name: 'documentation',
+        repositoriesUrl: ['https://github.com/numerique-gouv/outline'],
     },
     DVF: {
         name: 'dvf',
