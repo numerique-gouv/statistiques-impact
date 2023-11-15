@@ -1,10 +1,14 @@
-import React from 'react';
 import { Footer as DSFRFooter } from '@codegouvfr/react-dsfr/Footer';
 
 function Footer() {
     return (
         <DSFRFooter
-            brandTop={<>Statistiques</>}
+            brandTop={
+                <>
+                    <div>République</div>
+                    <div>Française</div>
+                </>
+            }
             accessibility="non compliant"
             homeLinkProps={{
                 to: '/',
