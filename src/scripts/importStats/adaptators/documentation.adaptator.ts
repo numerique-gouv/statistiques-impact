@@ -75,7 +75,11 @@ async function fetch(): Promise<Array<outlineUserApiType>> {
             const { data } = await axios.post<outlineApiOutputType>(url, body, {
                 headers,
             });
-            outlineUsers.push(...data.data.map(({ id, lastActiveAt }) => ({ id, lastActiveAt })));
+            outlineUsers.push(
+                ...data.data
+                    .map(({ id, lastActiveAt }) => ({ id, lastActiveAt }))
+                    .filter(({ lastActiveAt }) => !!lastActiveAt),
+            );
             total = data.pagination.total;
             offset += limit;
         } while (offset < total);

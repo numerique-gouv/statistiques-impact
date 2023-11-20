@@ -13,7 +13,7 @@ import { apiEntrepriseAdaptator } from './adaptators/apiEntreprise.adaptator';
 import { agentConnectAdaptator } from './adaptators/agentConnect.adaptator';
 import { tchapAdaptator } from './adaptators/tchap.adaptator';
 import { adaptatorType } from './types';
-import { dateHandler } from './utils';
+import { dateHandler, parsedDateType } from './utils';
 import { documentationAdaptator } from './adaptators/documentation.adaptator';
 
 const indicatorsToUpdate: Record<string, adaptatorType<any>> = {
@@ -43,7 +43,15 @@ async function importStats() {
         console.log(`Fetching indicators for "${productName}"...`);
         try {
             const result = await adaptator.fetch();
-            const indicatorDtos = adaptator.map(result).filter(filterUncompletedMonth);
+            const now = new Date();
+            const parsedNowDate = {
+                year: now.getFullYear(),
+                month: now.getMonth() + 1,
+                dayOfMonth: now.getDate(),
+            };
+            const indicatorDtos = adaptator
+                .map(result)
+                .filter((indicatorDto) => filterUncompletedMonth(indicatorDto, parsedNowDate));
             console.log(`${indicatorDtos.length} found! Inserting in database...`);
             await indicatorService.upsertIndicators(productName, indicatorDtos);
             console.log(`Indicators inserted!`);
@@ -53,16 +61,14 @@ async function importStats() {
     }
 }
 
-function filterUncompletedMonth(indicatorDto: indicatorDtoType): boolean {
+function filterUncompletedMonth(
+    indicatorDto: indicatorDtoType,
+    parsedNowDate: parsedDateType,
+): boolean {
     const parsedIndicatorDate = dateHandler.parseStringDate(indicatorDto.date);
-    const now = new Date();
-    const parsedNowDate = {
-        year: now.getFullYear(),
-        month: now.getMonth() + 1,
-        dayOfMonth: now.getDate(),
-    };
+    const result = dateHandler.compareDates(parsedIndicatorDate, parsedNowDate) !== -1;
 
-    return dateHandler.compareDates(parsedIndicatorDate, parsedNowDate) !== -1;
+    return result;
 }
 
 importStats();

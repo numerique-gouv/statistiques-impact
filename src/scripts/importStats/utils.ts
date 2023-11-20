@@ -160,3 +160,4 @@ function parseReadableDate(humanReadableDate: string) {
 }
 
 export { parseCsv, dateHandler };
+export type { parsedDateType };
