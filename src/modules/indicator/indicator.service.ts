@@ -68,30 +68,32 @@ function buildIndicatorService(dataSource: DataSource) {
             nom_service_public_numerique,
         });
 
-        const indicators = await Promise.all(
-            indicatorDtos.map(async (indicatorDto) => {
-                const indicator = new Indicator();
+        const indicators = indicatorDtos.map((indicatorDto) => {
+            const indicator = new Indicator();
 
-                indicator.product = product;
-                indicator.indicateur = indicatorDto.indicateur;
-                indicator.valeur = indicatorDto.valeur;
-                indicator.unite_mesure = indicatorDto.unite_mesure;
-                indicator.frequence_monitoring = indicatorDto.frequence_monitoring;
-                indicator.date = indicatorDto.date;
-                if (indicatorDto.date_debut) {
-                    indicator.date_debut = indicatorDto.date_debut;
-                }
-                indicator.est_periode = indicatorDto.est_periode;
-                indicator.est_automatise = indicatorDto.est_automatise;
+            indicator.product = product;
+            indicator.indicateur = indicatorDto.indicateur;
+            indicator.valeur = indicatorDto.valeur;
+            indicator.unite_mesure = indicatorDto.unite_mesure;
+            indicator.frequence_monitoring = indicatorDto.frequence_monitoring;
+            indicator.date = indicatorDto.date;
+            if (indicatorDto.date_debut) {
+                indicator.date_debut = indicatorDto.date_debut;
+            }
+            indicator.est_periode = indicatorDto.est_periode;
+            indicator.est_automatise = indicatorDto.est_automatise;
 
-                return indicator;
-            }),
+            return indicator;
+        });
+        return Promise.all(
+            indicators.map((indicator) =>
+                indicatorRepository.upsert(indicator, [
+                    'product',
+                    'indicateur',
+                    'frequence_monitoring',
+                    'date',
+                ]),
+            ),
         );
-        return indicatorRepository.upsert(indicators, [
-            'product',
-            'indicateur',
-            'frequence_monitoring',
-            'date',
-        ]);
     }
 }

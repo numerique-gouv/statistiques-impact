@@ -13,10 +13,9 @@ type indicatorSummaryType = {
     }>;
 };
 
-const indicatorName = 'procédures créées';
 const productName = PRODUCTS.DEMARCHES_SIMPLIFIEES.name;
 
-function map(indicators: Array<{ date: string; csv: string }>) {
+function map(indicators: Array<{ name: string; date: string; csv: string }>) {
     const indicatorDtos = [];
     for (const indicator of indicators) {
         try {
@@ -33,7 +32,7 @@ function map(indicators: Array<{ date: string; csv: string }>) {
                 date: indicator.date,
                 date_debut: dateHandler.substractMonth(indicator.date),
                 valeur: value,
-                indicateur: indicatorName,
+                indicateur: indicator.name,
                 nom_service_public_numerique: productName,
                 unite_mesure: 'unité',
                 frequence_monitoring: 'mensuelle',
@@ -44,7 +43,7 @@ function map(indicators: Array<{ date: string; csv: string }>) {
         } catch (error) {
             logger.error({
                 productName,
-                indicator: indicatorName,
+                indicator: indicator.name,
                 message: error as string,
             });
         }
@@ -52,29 +51,37 @@ function map(indicators: Array<{ date: string; csv: string }>) {
     return indicatorDtos;
 }
 
-async function fetch() {
-    const indicatorSummaryUrl = `https://www.data.gouv.fr/api/2/datasets/62d677bde7e4ca2c759142ce/resources/?page=1&type=main`;
-    const indicatorSummaryApiResult = await axios.get<indicatorSummaryType>(indicatorSummaryUrl);
+const CREATED_PROCESSES_COUNT_REGEX =
+    /^nb-procedures-creees-par-mois-[a-z]+(\d{4})(\d{2})(\d{2})-.+\.csv/;
 
-    const CREATED_PROCESSES_COUNT_REGEX =
-        /^nb-procedures-creees-par-mois-[a-z]+(\d{4})(\d{2})(\d{2})-.+\.csv/;
+const CREATED_FILES_COUNT_REGEX = /^nb-dossiers-crees-par-mois-[a-z]+(\d{4})(\d{2})(\d{2})-.+\.csv/;
+const INDICATORS = [
+    { name: 'procédures créées', regex: CREATED_PROCESSES_COUNT_REGEX },
+    { name: 'dossiers créés', regex: CREATED_FILES_COUNT_REGEX },
+];
+
+async function fetch() {
+    const indicatorSummaryUrl = `https://www.data.gouv.fr/api/2/datasets/62d677bde7e4ca2c759142ce/resources/?page=1&page_size=200&type=main`;
+    const indicatorSummaryApiResult = await axios.get<indicatorSummaryType>(indicatorSummaryUrl);
 
     const fetchedData = [];
 
     for (const indicatorSummary of indicatorSummaryApiResult.data.data) {
-        try {
-            const regexMatch = indicatorSummary.title.match(CREATED_PROCESSES_COUNT_REGEX);
-            if (!regexMatch || regexMatch.length !== 4) {
-                continue;
+        for (const INDICATOR of INDICATORS) {
+            try {
+                const regexMatch = indicatorSummary.title.match(INDICATOR.regex);
+                if (!regexMatch || regexMatch.length !== 4) {
+                    continue;
+                }
+                const year = regexMatch[1];
+                const month = regexMatch[2];
+                const dayOfMonth = regexMatch[3];
+                const date = `${year}-${month}-${dayOfMonth}`;
+                const indicatorApiResult = await axios.get(indicatorSummary.url);
+                fetchedData.push({ date, csv: indicatorApiResult.data, name: INDICATOR.name });
+            } catch (error) {
+                logger.error({ productName, indicator: INDICATOR.name, message: error as string });
             }
-            const year = regexMatch[1];
-            const month = regexMatch[2];
-            const dayOfMonth = regexMatch[3];
-            const date = `${year}-${month}-${dayOfMonth}`;
-            const indicatorApiResult = await axios.get(indicatorSummary.url);
-            fetchedData.push({ date, csv: indicatorApiResult.data });
-        } catch (error) {
-            logger.error({ productName, indicator: indicatorName, message: error as string });
         }
     }
     return fetchedData;
