@@ -3,7 +3,7 @@ import { logger } from '../../../lib/logger';
 import { dateHandler } from '../utils';
 import { PRODUCTS } from '../../../constants';
 
-const padAdaptator = { map, fetch };
+const padAdaptator = { fetch };
 
 type padApiOutputType = {
     dateInf: string;
@@ -13,7 +13,11 @@ type padApiOutputType = {
 
 const productName = PRODUCTS.PAD.name;
 
-function map(padApiOutput: padApiOutputType) {
+async function fetch() {
+    const url = `https://pad.numerique.gouv.fr/stats/users/lastMonth`;
+    const result = await axios.get<padApiOutputType>(url);
+    const padApiOutput = result.data;
+
     let indicatorDtos = [];
     const indicatorName = 'utilisateurs actifs';
 
@@ -45,12 +49,6 @@ function map(padApiOutput: padApiOutputType) {
     }
 
     return indicatorDtos;
-}
-
-async function fetch() {
-    const url = `https://pad.numerique.gouv.fr/stats/users/lastMonth`;
-    const result = await axios.get(url);
-    return result.data;
 }
 
 export { padAdaptator };

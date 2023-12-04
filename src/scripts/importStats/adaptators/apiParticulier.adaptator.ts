@@ -3,17 +3,27 @@ import { dateHandler } from '../utils';
 import { logger } from '../../../lib/logger';
 import { PRODUCTS } from '../../../constants';
 
-const apiParticulierAdaptator = { map, fetch };
+const apiParticulierAdaptator = { fetch };
 
 const productName = PRODUCTS.API_PARTICULIER.name;
 
-type apiParticulierOutputType = Record<string, Array<{ timestamp: string; 'Nb appels': number }>>;
+type apiParticulierSpecificindicatorOutputType = Array<{ timestamp: string; 'Nb appels': number }>;
+type apiParticulierIndicatorsOutputType = Array<{ name: string; url: string; type: string }>;
 
-function map(apiParticulierOutput: apiParticulierOutputType) {
+async function fetch() {
+    const url = 'https://particulier.api.gouv.fr/stats.json';
+    const indicators = await axios.get<apiParticulierIndicatorsOutputType>(url);
+    const apiOutput: Record<string, apiParticulierSpecificindicatorOutputType> = {};
+    for (const indicator of indicators.data) {
+        const indicatorName = indicator.name;
+        const result = await axios.get<apiParticulierSpecificindicatorOutputType>(indicator.url);
+        apiOutput[indicatorName] = result.data;
+    }
+
     const indicatorDtos = [];
-    const indicatorNames = Object.keys(apiParticulierOutput);
+    const indicatorNames = Object.keys(apiOutput);
     for (const indicatorName of indicatorNames) {
-        const indicatorValues = apiParticulierOutput[indicatorName];
+        const indicatorValues = apiOutput[indicatorName];
         for (const indicatorValue of indicatorValues) {
             try {
                 const date_debut = dateHandler.formatDate(indicatorValue.timestamp);
@@ -46,18 +56,6 @@ function map(apiParticulierOutput: apiParticulierOutputType) {
     }
 
     return indicatorDtos;
-}
-
-async function fetch(): Promise<apiParticulierOutputType> {
-    const url = 'https://particulier.api.gouv.fr/stats.json';
-    const indicators = await axios.get(url);
-    const apiOutput: apiParticulierOutputType = {};
-    for (const indicator of indicators.data) {
-        const indicatorName = indicator.name;
-        const result = await axios.get(indicator.url);
-        apiOutput[indicatorName] = result.data;
-    }
-    return apiOutput;
 }
 
 export { apiParticulierAdaptator };

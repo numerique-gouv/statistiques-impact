@@ -3,7 +3,7 @@ import { dateHandler } from '../utils';
 import { logger } from '../../../lib/logger';
 import { PRODUCTS } from '../../../constants';
 
-const annuaireDesEntreprisesAdaptator = { fetch, map };
+const annuaireDesEntreprisesAdaptator = { fetch };
 
 type annuaireDesEntreprisesApiResultType = {
     copyPasteAction: Array<{ label: string; value: number }>;
@@ -14,12 +14,10 @@ const productName = PRODUCTS.ANNUAIRE_DES_ENTREPRISES.name;
 
 async function fetch() {
     const url = `https://annuaire-entreprises.data.gouv.fr/api/data-fetching/stats`;
-    const result = await axios.get(url);
+    const result = await axios.get<annuaireDesEntreprisesApiResultType>(url);
 
-    return result.data;
-}
+    const annuaireDesEntreprisesApiOutput = result.data;
 
-function map(annuaireDesEntreprisesApiOutput: annuaireDesEntreprisesApiResultType) {
     let indicatorDtos = [];
     const indicatorNames = {
         copyPasteAction: 'copier/coller depuis une fiche entreprise',

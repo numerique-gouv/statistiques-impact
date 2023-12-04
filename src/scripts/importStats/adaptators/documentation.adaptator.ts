@@ -4,7 +4,7 @@ import { dateHandler } from '../utils';
 import { PRODUCTS } from '../../../constants';
 import { config } from '../../../config';
 
-const documentationAdaptator = { map, fetch };
+const documentationAdaptator = { fetch };
 
 type outlineApiOutputType = {
     pagination: {
@@ -20,25 +20,6 @@ type outlineUserApiType = { id: string; lastActiveAt: string };
 const productName = PRODUCTS.DOCUMENTATION.name;
 const indicatorName = 'utilisateurs actifs';
 
-function map(outlineUsers: Array<outlineUserApiType>) {
-    let indicatorDtos: any[] = [];
-    const { date, date_debut, activeUsersCount } = getLastMonthIndicator(outlineUsers, new Date());
-
-    indicatorDtos.push({
-        date,
-        date_debut,
-        valeur: activeUsersCount,
-        indicateur: indicatorName,
-        nom_service_public_numerique: productName,
-        unite_mesure: 'unité',
-        frequence_monitoring: 'mensuelle',
-        est_automatise: true,
-        est_periode: true,
-    });
-
-    return indicatorDtos;
-}
-
 function getLastMonthIndicator(outlineUsers: Array<outlineUserApiType>, now: Date) {
     const date = dateHandler.formatDate(now.toISOString());
     const date_debut = dateHandler.substractMonth(date);
@@ -50,7 +31,7 @@ function getLastMonthIndicator(outlineUsers: Array<outlineUserApiType>, now: Dat
     return { activeUsersCount, date, date_debut };
 }
 
-async function fetch(): Promise<Array<outlineUserApiType>> {
+async function fetch() {
     const url = `https://documentation.beta.numerique.gouv.fr/api/users.list`;
     const headers = {
         Accept: 'application/json',
@@ -91,7 +72,22 @@ async function fetch(): Promise<Array<outlineUserApiType>> {
         });
     }
 
-    return outlineUsers;
+    let indicatorDtos: any[] = [];
+    const { date, date_debut, activeUsersCount } = getLastMonthIndicator(outlineUsers, new Date());
+
+    indicatorDtos.push({
+        date,
+        date_debut,
+        valeur: activeUsersCount,
+        indicateur: indicatorName,
+        nom_service_public_numerique: productName,
+        unite_mesure: 'unité',
+        frequence_monitoring: 'mensuelle',
+        est_automatise: true,
+        est_periode: true,
+    });
+
+    return indicatorDtos;
 }
 
 export { documentationAdaptator, getLastMonthIndicator };

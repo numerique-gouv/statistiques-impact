@@ -1,8 +1,7 @@
 import { indicatorDtoType } from '../../modules/indicator';
 
-type adaptatorType<apiOutputT> = {
-    fetch: () => apiOutputT;
-    map: (apiOutput: apiOutputT) => Array<indicatorDtoType>;
+type adaptatorType = {
+    fetch: () => Promise<Array<indicatorDtoType>>;
 };
 
 export type { adaptatorType };
