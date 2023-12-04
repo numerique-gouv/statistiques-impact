@@ -3,16 +3,21 @@ import { dateHandler } from '../utils';
 import { logger } from '../../../lib/logger';
 import { PRODUCTS } from '../../../constants';
 
-const tchapAdaptator = { map, fetch };
+const tchapAdaptator = { fetch };
 
 const productName = PRODUCTS.TCHAP.name;
 
-type tchapOutputRowType = {
+type tchapApiOutputType = Array<{
     Month: string;
     'Valeurs distinctes de User ID': number;
-};
+}>;
 
-function map(tchapOutputRows: Array<tchapOutputRowType>) {
+async function fetch() {
+    const url =
+        'https://stats.tchap.incubateur.net/public/question/beec667e-3471-4598-bd48-d119128ff7b7.json';
+    const result = await axios.get<tchapApiOutputType>(url);
+    const tchapOutputRows = result.data;
+
     const indicatorName = 'utilisateurs actifs';
     const indicatorDtos: any = [];
     for (const tchapOutputRow of tchapOutputRows) {
@@ -46,13 +51,6 @@ function map(tchapOutputRows: Array<tchapOutputRowType>) {
     }
 
     return indicatorDtos;
-}
-
-async function fetch() {
-    const url =
-        'https://stats.tchap.incubateur.net/public/question/beec667e-3471-4598-bd48-d119128ff7b7.json';
-    const result = await axios.get(url);
-    return result.data;
 }
 
 export { tchapAdaptator };

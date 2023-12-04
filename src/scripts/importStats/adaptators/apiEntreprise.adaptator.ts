@@ -3,13 +3,23 @@ import { dateHandler } from '../utils';
 import { logger } from '../../../lib/logger';
 import { PRODUCTS } from '../../../constants';
 
-const apiEntrepriseAdaptator = { map, fetch };
+const apiEntrepriseAdaptator = { fetch };
 
 const productName = PRODUCTS.API_ENTREPRISE.name;
 
-type apiEntrepriseOutputType = Record<string, Array<{ timestamp: string; count: number }>>;
+type apiEntrepriseSpecificindicatorOutputType = Array<{ timestamp: string; count: number }>;
+type apiEntrepriseIndicatorsOutputType = Array<{ name: string; url: string; type: string }>;
 
-function map(apiEntrepriseOutput: apiEntrepriseOutputType) {
+async function fetch() {
+    const url = 'https://entreprise.api.gouv.fr/stats.json';
+    const indicators = await axios.get<apiEntrepriseIndicatorsOutputType>(url);
+    const apiEntrepriseOutput: Record<string, apiEntrepriseSpecificindicatorOutputType> = {};
+    for (const indicator of indicators.data) {
+        const indicatorName = indicator.name;
+        const result = await axios.get<apiEntrepriseSpecificindicatorOutputType>(indicator.url);
+        apiEntrepriseOutput[indicatorName] = result.data;
+    }
+
     const indicatorDtos = [];
     const indicatorNames = Object.keys(apiEntrepriseOutput);
     for (const indicatorName of indicatorNames) {
@@ -46,18 +56,6 @@ function map(apiEntrepriseOutput: apiEntrepriseOutputType) {
     }
 
     return indicatorDtos;
-}
-
-async function fetch(): Promise<apiEntrepriseOutputType> {
-    const url = 'https://entreprise.api.gouv.fr/stats.json';
-    const indicators = await axios.get(url);
-    const apiOutput: apiEntrepriseOutputType = {};
-    for (const indicator of indicators.data) {
-        const indicatorName = indicator.name;
-        const result = await axios.get(indicator.url);
-        apiOutput[indicatorName] = result.data;
-    }
-    return apiOutput;
 }
 
 export { apiEntrepriseAdaptator };

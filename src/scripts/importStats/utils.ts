@@ -44,6 +44,7 @@ const dateHandler = {
     formatDate,
     parseReadableDate,
     parseDate,
+    stringifyParsedDate,
 };
 
 function compareDates(dateA: parsedDateType, dateB: parsedDateType) {
@@ -85,8 +86,12 @@ function addMonth(date: string) {
 function formatValue(value: number) {
     return value < 10 ? `0${value}` : `${value}`;
 }
-function substractMonth(date: string) {
-    const parsedDate = parseStringDate(date);
+
+function substractMonth(date: string): string;
+function substractMonth(date: parsedDateType): parsedDateType;
+
+function substractMonth(date: string | parsedDateType): string | parsedDateType {
+    const parsedDate = typeof date === 'string' ? parseStringDate(date) : date;
     let newYear: number;
     let newMonth: number;
     if (parsedDate.month === 1) {
@@ -96,7 +101,12 @@ function substractMonth(date: string) {
         newYear = parsedDate.year;
         newMonth = parsedDate.month - 1;
     }
-    return `${newYear}-${formatValue(newMonth)}-${formatValue(parsedDate.dayOfMonth)}`;
+    const parsedNewDate = {
+        year: newYear,
+        month: newMonth,
+        dayOfMonth: parsedDate.dayOfMonth,
+    };
+    return typeof date === 'string' ? stringifyParsedDate(parsedNewDate) : parsedNewDate;
 }
 
 const DATE_REGEX = /^(\d{4})-(\d{2})-(\d{2})$/;
@@ -107,6 +117,12 @@ function parseStringDate(date: string): parsedDateType {
         throw new Error(`date "${date}" does not match the format YYYY-MM-DD`);
     }
     return { year: Number(result[1]), month: Number(result[2]), dayOfMonth: Number(result[3]) };
+}
+
+function stringifyParsedDate(parsedDate: parsedDateType): string {
+    return `${parsedDate.year}-${formatValue(parsedDate.month)}-${formatValue(
+        parsedDate.dayOfMonth,
+    )}`;
 }
 
 function parseDate(date: Date): parsedDateType {

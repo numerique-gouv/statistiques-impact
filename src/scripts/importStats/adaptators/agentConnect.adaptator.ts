@@ -3,22 +3,30 @@ import { dateHandler } from '../utils';
 import { logger } from '../../../lib/logger';
 import { PRODUCTS } from '../../../constants';
 
-const agentConnectAdaptator = { map, fetch };
+const agentConnectAdaptator = { fetch };
 
 const productName = PRODUCTS.AGENT_CONNECT.name;
 const CONNEXIONS = ['Initiée', 'Réussie'] as const;
 
-type agentConnectOutputRowType = {
+type agentConnectApiOutputType = Array<{
     Time: string;
     Connexion: (typeof CONNEXIONS)[number];
     Count: number;
-};
+}>;
 
-function map(agentConnectOutputRows: Array<agentConnectOutputRowType>) {
+function map(agentConnectOutputRows: agentConnectApiOutputType) {}
+
+async function fetch() {
+    const url =
+        'http://stats.agentconnect.gouv.fr/public/question/9275fc22-c5c2-4b2b-9d3f-ff50c7982c6d.json';
+    const result = await axios.get<agentConnectApiOutputType>(url);
+
+    const agentConnectOutputRows = result.data;
+
     const indicatorDtos = [];
     const grouppedIndicatorsByDate: Record<
         string,
-        Record<agentConnectOutputRowType['Connexion'], number>
+        Record<(typeof CONNEXIONS)[number], number>
     > = {};
     try {
         agentConnectOutputRows.forEach((agentConnectOutputRow) => {
@@ -99,13 +107,6 @@ function map(agentConnectOutputRows: Array<agentConnectOutputRowType>) {
     }
 
     return indicatorDtos;
-}
-
-async function fetch() {
-    const url =
-        'http://stats.agentconnect.gouv.fr/public/question/9275fc22-c5c2-4b2b-9d3f-ff50c7982c6d.json';
-    const result = await axios.get(url);
-    return result.data;
 }
 
 export { agentConnectAdaptator };

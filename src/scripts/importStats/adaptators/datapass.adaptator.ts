@@ -3,7 +3,7 @@ import { dateHandler } from '../utils';
 import { logger } from '../../../lib/logger';
 import { PRODUCTS } from '../../../constants';
 
-const datapassAdaptator = { fetch, map };
+const datapassAdaptator = { fetch };
 
 type datapassApiResultType = {
     monthly_enrollment_count: Array<{ month: string; validated: number }>;
@@ -13,12 +13,10 @@ const productName = PRODUCTS.DATAPASS.name;
 
 async function fetch() {
     const url = `https://back.datapass.api.gouv.fr/api/stats`;
-    const result = await axios.get(url);
+    const result = await axios.get<datapassApiResultType>(url);
 
-    return result.data;
-}
+    const datapassApiOutput = result.data;
 
-function map(datapassApiOutput: datapassApiResultType) {
     let indicatorDtos = [];
     const indicatorName = 'habilitations validées';
     for (const monthlyValue of datapassApiOutput.monthly_enrollment_count) {

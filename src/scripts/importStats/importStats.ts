@@ -15,8 +15,10 @@ import { tchapAdaptator } from './adaptators/tchap.adaptator';
 import { adaptatorType } from './types';
 import { dateHandler, parsedDateType } from './utils';
 import { documentationAdaptator } from './adaptators/documentation.adaptator';
+import { hubeeAdaptator } from './adaptators/hubee.adaptator';
 
-const indicatorsToUpdate: Record<string, adaptatorType<any>> = {
+const indicatorsToUpdate: Record<string, adaptatorType> = {
+    [PRODUCTS.HUBEE.name]: hubeeAdaptator,
     [PRODUCTS.AUDIOCONF.name]: audioconfAdaptator,
     [PRODUCTS.PAD.name]: padAdaptator,
     [PRODUCTS.DEMARCHES_SIMPLIFIEES.name]: demarchesSimplifieesAdaptator,
@@ -49,9 +51,9 @@ async function importStats() {
                 month: now.getMonth() + 1,
                 dayOfMonth: now.getDate(),
             };
-            const indicatorDtos = adaptator
-                .map(result)
-                .filter((indicatorDto) => filterUncompletedMonth(indicatorDto, parsedNowDate));
+            const indicatorDtos = result.filter((indicatorDto) =>
+                filterUncompletedMonth(indicatorDto, parsedNowDate),
+            );
             console.log(`${indicatorDtos.length} found! Inserting in database...`);
             await indicatorService.upsertIndicators(productName, indicatorDtos);
             console.log(`Indicators inserted!`);
@@ -67,7 +69,6 @@ function filterUncompletedMonth(
 ): boolean {
     const parsedIndicatorDate = dateHandler.parseStringDate(indicatorDto.date);
     const result = dateHandler.compareDates(parsedIndicatorDate, parsedNowDate) !== -1;
-
     return result;
 }
 

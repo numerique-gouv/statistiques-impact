@@ -3,13 +3,18 @@ import { dateHandler } from '../utils';
 import { logger } from '../../../lib/logger';
 import { PRODUCTS } from '../../../constants';
 
-const audioconfAdaptator = { map, fetch };
+const audioconfAdaptator = { fetch };
 
 const productName = PRODUCTS.AUDIOCONF.name;
 
-type audioconfOutputRowType = { 'Date Begin': string; 'Nombre de lignes': number };
+type audioconfApiOutputType = Array<{ 'Date Begin': string; 'Nombre de lignes': number }>;
 
-function map(audioconfOutputRows: Array<audioconfOutputRowType>) {
+async function fetch() {
+    const url =
+        'https://stats.audioconf.numerique.gouv.fr/public/question/f98281a7-5bd6-4f09-8ec6-a278975adfb9.json';
+    const result = await axios.get<audioconfApiOutputType>(url);
+    const audioconfOutputRows = result.data;
+
     const indicatorDtos = [];
     const indicatorName = 'conférences de plus de deux minutes';
     for (const audioconfOutputRow of audioconfOutputRows) {
@@ -45,13 +50,6 @@ function map(audioconfOutputRows: Array<audioconfOutputRowType>) {
     }
 
     return indicatorDtos;
-}
-
-async function fetch() {
-    const url =
-        'https://stats.audioconf.numerique.gouv.fr/public/question/f98281a7-5bd6-4f09-8ec6-a278975adfb9.json';
-    const result = await axios.get(url);
-    return result.data;
 }
 
 export { audioconfAdaptator };

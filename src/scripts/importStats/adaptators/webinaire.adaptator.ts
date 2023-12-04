@@ -3,13 +3,19 @@ import { dateHandler } from '../utils';
 import { logger } from '../../../lib/logger';
 import { PRODUCTS } from '../../../constants';
 
-const webinaireAdaptator = { map, fetch };
+const webinaireAdaptator = { fetch };
 
 const productName = PRODUCTS.WEBINAIRE.name;
 
-type webinaireOutputRowType = { 'Created At': string; 'Nombre de lignes': number };
+type webinaireApiOutputType = Array<{ 'Created At': string; 'Nombre de lignes': number }>;
 
-function map(webinaireOutputRows: Array<webinaireOutputRowType>) {
+async function fetch() {
+    const url =
+        'http://webinaire-metabase.osc-secnum-fr1.scalingo.io/public/question/ddae3b19-ed8b-41db-84b1-24ec5841cce5.json';
+    const result = await axios.get<webinaireApiOutputType>(url);
+
+    const webinaireOutputRows = result.data;
+
     const indicatorDtos = [];
     const indicatorName = 'conférences';
     for (const webinaireOutputRow of webinaireOutputRows) {
@@ -43,13 +49,6 @@ function map(webinaireOutputRows: Array<webinaireOutputRowType>) {
     }
 
     return indicatorDtos;
-}
-
-async function fetch() {
-    const url =
-        'http://webinaire-metabase.osc-secnum-fr1.scalingo.io/public/question/ddae3b19-ed8b-41db-84b1-24ec5841cce5.json';
-    const result = await axios.get(url);
-    return result.data;
 }
 
 export { webinaireAdaptator };
