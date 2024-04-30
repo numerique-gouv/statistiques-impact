@@ -7,6 +7,7 @@ import { Team } from './modules/team';
 
 const dataSource = new DataSource({
     type: 'postgres',
+    ssl: true,
     host: config.DATABASE_HOST,
     port: config.DATABASE_PORT,
     username: config.DATABASE_USER,
