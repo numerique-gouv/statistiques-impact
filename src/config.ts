@@ -15,6 +15,7 @@ if (process.env.DATABASE_URL) {
 }
 
 const config = {
+    DATABASE_CONNECTION_IS_SSL: process.env.DATABASE_CONNECTION_IS_SSL === 'true',
     PORT: process.env.PORT || 3000,
     DATABASE_HOST: process.env.DATABASE_HOST || '',
     DATABASE_PASSWORD: process.env.DATABASE_PASSWORD || '',
