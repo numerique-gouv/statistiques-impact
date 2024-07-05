@@ -1,5 +1,6 @@
 import { DataSource } from 'typeorm';
 import { buildIndicatorService, indicatorDtoType } from './indicator.service';
+import { fileUploadHandler } from '../../lib/fileUploadHandler';
 
 export { buildIndicatorController };
 
@@ -37,9 +38,15 @@ function buildIndicatorController(dataSource: DataSource) {
     }
 
     async function insertRawIndicators(
-        params: { urlParams: { productName: string } },
+        params: { urlParams: { productName: string }; fileBuffer?: Buffer },
         clientId: string,
     ) {
+        if (!params.fileBuffer) {
+            throw new Error(`No file provided`);
+        }
+        const csv = await fileUploadHandler.parseCsv(params.fileBuffer);
+        console.log(csv);
+        console.log(params);
         console.log(clientId);
         return {};
     }

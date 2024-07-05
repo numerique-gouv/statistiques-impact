@@ -6,6 +6,7 @@ import { buildLogEntryController } from './modules/logEntry';
 import { buildProductController } from './modules/product/product.controller';
 import { buildClientController } from './modules/client';
 import { buildAuthenticatedController } from './lib/buildController/buildAuthenticatedController';
+import { fileUploadHandler } from './lib/fileUploadHandler';
 
 function buildRouter(dataSource: DataSource) {
     const router = Express.Router();
@@ -25,13 +26,13 @@ function buildRouter(dataSource: DataSource) {
         '/indicators/:name',
         buildController(indicatorController.getIndicatorsByProductName),
     );
-    router.post(
-        '/products/:productName/indicators',
-        buildAuthenticatedController(indicatorController.insertRawIndicators),
-    );
+    // router.post(
+    //     '/products/:productName/indicators',
+    //     fileUploadHandler.uploadSingleFileMiddleware,
+    //     buildAuthenticatedController(indicatorController.insertRawIndicators),
+    // );
     router.post('/indicators', buildController(indicatorController.upsertIndicators));
     router.delete('/indicators/:indicatorId', buildController(indicatorController.deleteIndicator));
-
     return router;
 }
 
