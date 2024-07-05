@@ -13,9 +13,14 @@ type formattedProductType = {
 function buildProductService(dataSource: DataSource) {
     const productRepository = dataSource.getRepository(Product);
     return {
+        getProductByName,
         getProducts,
         upsertProduct,
     };
+
+    async function getProductByName(productName: Product['nom_service_public_numerique']) {
+        return productRepository.findOneByOrFail({ nom_service_public_numerique: productName });
+    }
 
     async function getProducts() {
         const teamService = buildTeamService(dataSource);
