@@ -19,6 +19,7 @@
     "author": "",
     "license": "ISC",
     "devDependencies": {
+        "@types/jsonwebtoken": "^9.0.6",
         "nodemon": "^2.0.20",
         "ts-jest": "^29.0.3",
         "ts-node": "^10.9.1",
@@ -35,6 +36,7 @@
         "dotenv": "^16.0.3",
         "express": "^4.18.1",
         "http-status": "^1.6.2",
+        "jsonwebtoken": "^9.0.2",
         "node-fetch": "^3.3.2",
         "pg": "^8.8.0",
         "pg-connection-string": "^2.6.0",

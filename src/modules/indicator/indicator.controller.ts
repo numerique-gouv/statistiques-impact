@@ -10,6 +10,7 @@ function buildIndicatorController(dataSource: DataSource) {
         getIndicatorsByProductName,
         deleteIndicator,
         upsertIndicators,
+        insertRawIndicators,
     };
 
     return indicatorController;
@@ -33,5 +34,13 @@ function buildIndicatorController(dataSource: DataSource) {
 
     async function deleteIndicator(params: { urlParams: { indicatorId: string } }) {
         return indicatorService.deleteIndicator(params.urlParams.indicatorId);
+    }
+
+    async function insertRawIndicators(
+        params: { urlParams: { productName: string } },
+        clientId: string,
+    ) {
+        console.log(clientId);
+        return {};
     }
 }

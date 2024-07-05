@@ -24,6 +24,7 @@ const config = {
     DATABASE_PORT: process.env.DATABASE_PORT ? Number(process.env.DATABASE_PORT) : 5432,
     ALLOWED_ORIGIN: process.env.ALLOWED_ORIGIN || '',
     DOCUMENTATION_API_KEY: process.env.DOCUMENTATION_API_KEY,
+    JWT_SECRET: process.env.JWT_SECRET || '',
     ...databaseConfig,
 };
 
