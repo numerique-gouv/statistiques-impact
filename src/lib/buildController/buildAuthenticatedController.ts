@@ -15,7 +15,7 @@ function buildAuthenticatedController<
     bodyT,
 >(
     controller: (
-        params: { query: queryT; urlParams: paramsT; body: bodyT },
+        params: { query: queryT; urlParams: paramsT; body: bodyT; fileBuffer?: Buffer },
         clientId: string,
     ) => any | Promise<any>,
     options?: {
@@ -23,7 +23,10 @@ function buildAuthenticatedController<
         // checkAuthorization?: (params: paramsT, user: User) => void | Promise<void>;
     },
 ) {
+    console.log('BUILD');
     return async (req: Request, res: Response) => {
+        console.log('RUN');
+
         console.log(`${req.method} ${req.originalUrl}`);
 
         let payload: any;
@@ -39,12 +42,15 @@ function buildAuthenticatedController<
             return;
         }
 
+        const fileBuffer = req.file ? req.file.buffer : undefined;
+
         try {
             const result = await controller(
                 {
                     query: req.query as queryT,
                     urlParams: req.params as paramsT,
                     body: req.body,
+                    fileBuffer,
                 },
                 payload.clientId,
             );
