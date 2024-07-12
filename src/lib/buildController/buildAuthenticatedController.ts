@@ -23,10 +23,7 @@ function buildAuthenticatedController<
         // checkAuthorization?: (params: paramsT, user: User) => void | Promise<void>;
     },
 ) {
-    console.log('BUILD');
     return async (req: Request, res: Response) => {
-        console.log('RUN');
-
         console.log(`${req.method} ${req.originalUrl}`);
 
         let payload: any;

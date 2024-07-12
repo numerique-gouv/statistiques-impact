@@ -26,11 +26,11 @@ function buildRouter(dataSource: DataSource) {
         '/indicators/:name',
         buildController(indicatorController.getIndicatorsByProductName),
     );
-    // router.post(
-    //     '/products/:productName/indicators',
-    //     fileUploadHandler.uploadSingleFileMiddleware,
-    //     buildAuthenticatedController(indicatorController.insertRawIndicators),
-    // );
+    router.post(
+        '/products/:productName/indicators',
+        fileUploadHandler.uploadSingleFileMiddleware,
+        buildAuthenticatedController(indicatorController.insertRawIndicators),
+    );
     router.post('/indicators', buildController(indicatorController.upsertIndicators));
     router.delete('/indicators/:indicatorId', buildController(indicatorController.deleteIndicator));
     return router;

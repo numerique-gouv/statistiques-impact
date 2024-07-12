@@ -7,6 +7,7 @@ function buildController<paramsT extends Record<string, string>, bodyT>(
     controller: ({ urlParams, body }: { urlParams: paramsT; body: bodyT }) => any | Promise<any>,
 ) {
     return async (req: Request, res: Response) => {
+        console.log(`${req.method} ${req.originalUrl}`);
         try {
             const result = await controller({ urlParams: req.params as paramsT, body: req.body });
             res.send(result);
