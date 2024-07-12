@@ -44,10 +44,9 @@ function buildIndicatorController(dataSource: DataSource) {
         if (!params.fileBuffer) {
             throw new Error(`No file provided`);
         }
+
         const csv = await fileUploadHandler.parseCsv(params.fileBuffer);
-        console.log(csv);
-        console.log(params);
-        console.log(clientId);
-        return {};
+
+        return indicatorService.insertRawIndicators(csv, params.urlParams.productName);
     }
 }

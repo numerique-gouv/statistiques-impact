@@ -16,7 +16,7 @@ function buildClientService(dataSource: DataSource) {
     async function createToken(clientId: string, clientSecret: string) {
         const client = await clientRepository.findOneByOrFail({ id: clientId });
 
-        if (client.secret === clientSecret) {
+        if (client.secret !== clientSecret) {
             throw new Error(`Wrong secret for clientId ${clientId}`);
         }
 
