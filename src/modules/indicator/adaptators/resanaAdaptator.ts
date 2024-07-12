@@ -9,10 +9,14 @@ function resanaAdaptator(csv: Array<Record<string, string>>, product: Product): 
     const ONE_MONTH_AGO = dateHandler.substractMonth(now);
 
     for (let i = 0; i < csv.length; i++) {
-        const row = csv[i];
-        const lastLoginDate = parseCsvDate(row['derniere_connexion']);
-        if (dateHandler.compareDates(ONE_MONTH_AGO, lastLoginDate) >= 0) {
-            activeUsersCount++;
+        try {
+            const row = csv[i];
+            const lastLoginDate = parseCsvDate(row['derniere_connexion']);
+            if (dateHandler.compareDates(ONE_MONTH_AGO, lastLoginDate) >= 0) {
+                activeUsersCount++;
+            }
+        } catch (error) {
+            console.error(error);
         }
     }
 
