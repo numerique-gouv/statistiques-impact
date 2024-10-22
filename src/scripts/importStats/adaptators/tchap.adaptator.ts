@@ -14,7 +14,7 @@ type tchapApiOutputType = Array<{
 
 async function fetch() {
     const url =
-        'https://stats.tchap.incubateur.net/public/question/beec667e-3471-4598-bd48-d119128ff7b7.json';
+        'https://stats.tchap.incubateur.net/public/question/25a6bdc7-b5e3-4444-ac9c-d6c85161220f.json';
     const result = await axios.get<tchapApiOutputType>(url);
     const tchapOutputRows = result.data;
 
