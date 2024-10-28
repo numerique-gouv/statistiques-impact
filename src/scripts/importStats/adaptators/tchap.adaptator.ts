@@ -9,7 +9,7 @@ const productName = PRODUCTS.TCHAP.name;
 
 type tchapApiOutputType = Array<{
     Month: string;
-    'Valeurs distinctes de User ID': number;
+    'Valeurs distinctes de User ID': string;
 }>;
 
 async function fetch() {
@@ -22,9 +22,9 @@ async function fetch() {
     const indicatorDtos: any = [];
     for (const tchapOutputRow of tchapOutputRows) {
         try {
-            const date_debut = dateHandler.formatDate(tchapOutputRow.Month);
+            const date_debut = parseWrittenDate(tchapOutputRow.Month);
             const date = dateHandler.addMonth(date_debut);
-            const value = Number(tchapOutputRow['Valeurs distinctes de User ID']);
+            const value = Number(tchapOutputRow['Valeurs distinctes de User ID'].replace(/ /g, ''));
             if (isNaN(value)) {
                 throw new Error(
                     `tchapOutputRow['Valeurs distinctes de User ID'] ${tchapOutputRow['Valeurs distinctes de User ID']} is NaN`,
@@ -52,5 +52,30 @@ async function fetch() {
 
     return indicatorDtos;
 }
+
+function parseWrittenDate(writtenDate: string) {
+    const YEAR_REGEX = /^[0-9]{4}$/;
+    const [writtenMonth, year] = writtenDate.split(', ');
+    if (!writtenMonth || !year || !year.match(YEAR_REGEX) || !monthMapping[writtenMonth]) {
+        throw new Error(`Could not parse written date ${writtenDate}`);
+    }
+    const month = monthMapping[writtenMonth];
+    return `${year}-${month}-01`;
+}
+
+const monthMapping: Record<string, string> = {
+    'avr.': '04',
+    mai: '05',
+    juin: '06',
+    'juil.': '07',
+    août: '08',
+    'sept.': '09',
+    'oct.': '10',
+    'nov.': '11',
+    'déc.': '12',
+    'janv.': '01',
+    'févr.': '02',
+    mars: '03',
+};
 
 export { tchapAdaptator };
