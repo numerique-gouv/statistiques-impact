@@ -16,6 +16,7 @@ import { adaptatorType } from './types';
 import { dateHandler, parsedDateType } from './utils';
 import { documentationAdaptator } from './adaptators/documentation.adaptator';
 import { hubeeAdaptator } from './adaptators/hubee.adaptator';
+import { resanaAdaptator } from './adaptators/resana.adaptator';
 
 const indicatorsToUpdate: Record<string, adaptatorType> = {
     [PRODUCTS.HUBEE.name]: hubeeAdaptator,
@@ -30,6 +31,7 @@ const indicatorsToUpdate: Record<string, adaptatorType> = {
     [PRODUCTS.DOCUMENTATION.name]: documentationAdaptator,
     [PRODUCTS.API_PARTICULIER.name]: apiParticulierAdaptator,
     [PRODUCTS.API_ENTREPRISE.name]: apiEntrepriseAdaptator,
+    [PRODUCTS.RESANA.name]: resanaAdaptator,
 };
 
 async function importStats() {
