@@ -87,12 +87,11 @@ function buildIndicatorService(dataSource: DataSource) {
         });
         return Promise.all(
             indicators.map((indicator) =>
-                indicatorRepository.upsert(indicator, [
-                    'product',
-                    'indicateur',
-                    'frequence_monitoring',
-                    'date',
-                ]),
+                indicatorRepository.upsert(indicator, {
+                    upsertType: 'on-conflict-do-update',
+                    skipUpdateIfNoValuesChanged: true,
+                    conflictPaths: ['product', 'indicateur', 'frequence_monitoring', 'date'],
+                }),
             ),
         );
     }
