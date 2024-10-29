@@ -85,10 +85,14 @@ function buildIndicatorService(dataSource: DataSource) {
 
             return indicator;
         });
-        return indicatorRepository.upsert(indicators, {
-            upsertType: 'on-conflict-do-update',
-            skipUpdateIfNoValuesChanged: true,
-            conflictPaths: ['product', 'indicateur', 'frequence_monitoring', 'date'],
-        });
+        return Promise.all(
+            indicators.map((indicator) =>
+                indicatorRepository.upsert(indicator, {
+                    upsertType: 'on-conflict-do-update',
+                    skipUpdateIfNoValuesChanged: true,
+                    conflictPaths: ['product', 'indicateur', 'frequence_monitoring', 'date'],
+                }),
+            ),
+        );
     }
 }
