@@ -23,6 +23,7 @@ import {
     meetAdaptator,
     plankaAdaptator,
     rizomoAdaptator,
+    regieAdaptator,
 } from './adaptators/suite.adaptator';
 
 const indicatorsToUpdate: Record<string, adaptatorType> = {
@@ -43,6 +44,7 @@ const indicatorsToUpdate: Record<string, adaptatorType> = {
     [PRODUCTS.FRANCE_TRANSFERT.name]: franceTransfertAdaptator,
     [PRODUCTS.MEET.name]: meetAdaptator,
     [PRODUCTS.PLANKA.name]: plankaAdaptator,
+    [PRODUCTS.REGIE.name]: regieAdaptator,
     [PRODUCTS.RIZOMO.name]: rizomoAdaptator,
 };
 
