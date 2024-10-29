@@ -7,8 +7,9 @@ function buildCache() {
     async function fetch<dataT>(url: string): Promise<dataT> {
         const dateKey = getDateKey();
         const completeKey = `${dateKey}-${url}`;
-        if (store[completeKey] !== undefined) {
-            return store[completeKey] as dataT;
+        const previousValueStored = store[completeKey];
+        if (previousValueStored) {
+            return JSON.parse(previousValueStored) as dataT;
         }
         const result = await axios.get<dataT>(url);
         store[completeKey] = JSON.stringify(result.data);

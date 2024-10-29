@@ -98,3 +98,4 @@ const PRODUCTS: Record<PRODUCT_ID, productType> = {
 };
 
 export { PRODUCTS };
+export type { PRODUCT_ID };
