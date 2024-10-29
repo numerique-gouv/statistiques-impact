@@ -1,4 +1,4 @@
-import { Client } from './Client';
+import { Client } from './Client.entity';
 import { DataSource } from 'typeorm';
 
 export { buildClientService };

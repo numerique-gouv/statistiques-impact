@@ -1,6 +1,5 @@
 import { DataSource } from 'typeorm';
 import { Product } from './Product.entity';
-import { Team, buildTeamService } from '../team';
 
 type formattedProductType = {
     id: string;
@@ -18,23 +17,13 @@ function buildProductService(dataSource: DataSource) {
     };
 
     async function getProducts() {
-        const teamService = buildTeamService(dataSource);
         const products = await productRepository.find({
-            relations: ['indicators', 'team'],
+            relations: ['indicators'],
             select: {
                 indicators: { date: true, est_automatise: true, valeur: true, indicateur: true },
-                team: { id: true },
             },
         });
-        const teams = await teamService.getAllTeams();
-        const results: Record<
-            string,
-            {
-                id: string;
-                name: string;
-                products: Array<formattedProductType>;
-            }
-        > = {};
+        const formattedProducts: Array<formattedProductType> = [];
         for (const product of products) {
             let est_automatise = false;
             let lastIndicators: string[] = [];
@@ -56,26 +45,14 @@ function buildProductService(dataSource: DataSource) {
                 lastIndicatorDate,
                 est_automatise,
             };
-
-            results[product.team.id] = results[product.team.id]
-                ? {
-                      ...results[product.team.id],
-                      products: [...results[product.team.id].products, formattedProduct],
-                  }
-                : {
-                      id: product.team.id,
-                      name: teams[product.team.id].name,
-                      products: [formattedProduct],
-                  };
+            formattedProducts.push(formattedProduct);
         }
 
-        return results;
+        return formattedProducts;
     }
 
-    async function upsertProduct(productDto: Partial<Product>, teamId?: Team['id']) {
-        return productRepository.upsert({ ...productDto, team: { id: teamId } }, [
-            'nom_service_public_numerique',
-        ]);
+    async function upsertProduct(productDto: Partial<Product>) {
+        return productRepository.upsert({ ...productDto }, ['nom_service_public_numerique']);
     }
 }
 
