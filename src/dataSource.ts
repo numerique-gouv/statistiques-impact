@@ -3,7 +3,6 @@ import { config } from './config';
 import { Indicator } from './modules/indicator/Indicator.entity';
 import { LogEntry } from './modules/logEntry/LogEntry.entity';
 import { Product } from './modules/product/Product.entity';
-import { Team } from './modules/team';
 import { Client } from './modules/client';
 
 const dataSource = new DataSource({
@@ -15,7 +14,7 @@ const dataSource = new DataSource({
     password: config.DATABASE_PASSWORD,
     database: config.DATABASE_NAME,
     logging: ['warn', 'error'],
-    entities: [Indicator, LogEntry, Product, Team, Client],
+    entities: [Indicator, LogEntry, Product, Client],
     subscribers: [],
     migrations: ['**/migrations/*.js'],
 });
