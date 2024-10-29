@@ -5,7 +5,7 @@ import { dateHandler } from '../utils';
 
 type SUITE_PRODUCT_ID = Extract<
     PRODUCT_ID,
-    'RESANA' | 'FRANCE_TRANSFERT' | 'IMPRESS' | 'RIZOMO' | 'MEET' | 'PLANKA' | 'REGIE' | 'PAD'
+    'RESANA' | 'FRANCE_TRANSFERT' | 'DOCS' | 'RIZOMO' | 'VISIO' | 'PLANKA' | 'REGIE' | 'PAD'
 >;
 
 type suiteNumeriqueOutputApiType = Array<{
@@ -16,8 +16,8 @@ type suiteNumeriqueOutputApiType = Array<{
 const proConnectMetabaseNameMapping: Record<SUITE_PRODUCT_ID, string> = {
     RESANA: 'DINUM - RESANA',
     FRANCE_TRANSFERT: 'France transfert',
-    IMPRESS: 'Impress',
-    MEET: 'Meet',
+    DOCS: 'Docs',
+    VISIO: 'Visio',
     PLANKA: 'Planka',
     RIZOMO: 'Rizomo',
     REGIE: 'Régie',
@@ -73,8 +73,8 @@ function buildSuiteAdaptator(productId: SUITE_PRODUCT_ID) {
 
 const resanaAdaptator = buildSuiteAdaptator('RESANA');
 const franceTransfertAdaptator = buildSuiteAdaptator('FRANCE_TRANSFERT');
-const impressAdaptator = buildSuiteAdaptator('IMPRESS');
-const meetAdaptator = buildSuiteAdaptator('MEET');
+const docsAdaptator = buildSuiteAdaptator('DOCS');
+const visioAdaptator = buildSuiteAdaptator('VISIO');
 const plankaAdaptator = buildSuiteAdaptator('PLANKA');
 const rizomoAdaptator = buildSuiteAdaptator('RIZOMO');
 const regieAdaptator = buildSuiteAdaptator('REGIE');
@@ -83,8 +83,8 @@ const padAdaptator = buildSuiteAdaptator('PAD');
 export {
     resanaAdaptator,
     franceTransfertAdaptator,
-    impressAdaptator,
-    meetAdaptator,
+    docsAdaptator,
+    visioAdaptator,
     plankaAdaptator,
     rizomoAdaptator,
     regieAdaptator,

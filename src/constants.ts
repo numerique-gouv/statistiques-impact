@@ -16,8 +16,8 @@ type PRODUCT_ID =
     | 'FRANCE_CONNECT'
     | 'FRANCE_TRANSFERT'
     | 'HUBEE'
-    | 'IMPRESS'
-    | 'MEET'
+    | 'DOCS'
+    | 'VISIO'
     | 'MON_COMPTE_PRO'
     | 'OOTS'
     | 'OSMOSE'
@@ -74,8 +74,8 @@ const PRODUCTS: Record<PRODUCT_ID, productType> = {
         name: 'france-transfert',
     },
     HUBEE: { name: 'hubee' },
-    IMPRESS: { name: 'impress' },
-    MEET: { name: 'meet' },
+    DOCS: { name: 'docs' },
+    VISIO: { name: 'visio' },
     MON_COMPTE_PRO: {
         name: 'mon-compte-pro',
     },
