@@ -14,7 +14,7 @@
         "migration:revert": " npm run buildServer && typeorm migration:revert -d dist/src/dataSource.js",
         "typeorm": "typeorm-ts-node-esm",
         "script:importStats": "npm run buildServer && node dist/src/scripts/importStats/importStats.js",
-        "script:importProducts": "npm run buildServer && node dist/src/scripts/importProducts/importProducts.js"
+        "script:insertProducts": "npm run buildServer && node dist/src/scripts/insertProducts/insertProducts.js"
     },
     "author": "",
     "license": "ISC",
