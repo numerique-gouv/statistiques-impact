@@ -1,6 +1,5 @@
 import { PRODUCTS } from '../../../constants';
 import { audioconfAdaptator } from './audioconf.adaptator';
-import { padAdaptator } from './pad.adaptator';
 import { demarchesSimplifieesAdaptator } from './demarchesSimplifiees.adaptator';
 import { datapassAdaptator } from './datapass.adaptator';
 import { annuaireDesEntreprisesAdaptator } from './annuaireDesEntreprises.adaptator';
@@ -19,6 +18,7 @@ import {
     plankaAdaptator,
     rizomoAdaptator,
     regieAdaptator,
+    padAdaptator,
 } from './suite.adaptator';
 import { indicatorDtoType } from '../../../modules/indicator';
 
