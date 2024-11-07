@@ -1,6 +1,7 @@
 import { Product } from '../product';
 import { Indicator } from './Indicator.entity';
 import { DataSource } from 'typeorm';
+import { adaptators } from './adaptators';
 
 export { buildIndicatorService };
 
@@ -26,6 +27,7 @@ function buildIndicatorService(dataSource: DataSource) {
         getIndicatorsByProductName,
         deleteIndicator,
         upsertIndicators,
+        insertRawIndicators,
     };
 
     return indicatorService;
@@ -58,6 +60,18 @@ function buildIndicatorService(dataSource: DataSource) {
     async function deleteIndicator(indicatorId: string) {
         const result = await indicatorRepository.delete({ id: indicatorId });
         return result.affected === 1;
+    }
+
+    async function insertRawIndicators(csv: Array<Record<string, string>>, productName: string) {
+        const adaptator = adaptators[productName];
+        if (!adaptator) {
+            throw new Error(`No adaptator available for productName "${productName}"`);
+        }
+        const product = await productRepository.findOneByOrFail({
+            nom_service_public_numerique: productName,
+        });
+        const indicator = adaptator(csv, product);
+        return indicatorRepository.insert(indicator);
     }
 
     async function upsertIndicators(
