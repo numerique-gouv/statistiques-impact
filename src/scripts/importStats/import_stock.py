@@ -71,10 +71,10 @@ if __name__ == "__main__":
         exit()
 
     if "asam_osmose_membres" in args.filename:
-        print("C'EST OSMOSE")
+        product = "osmose"
 
     elif "francetransfert_stats" in args.filename:
-        print("C'EST FT")
+        product = "france transfert"
     
         # francetransfert_stats_envoi_quot_head.csv
         # df['month_year'] = df['date'].dt.to_period('M')
