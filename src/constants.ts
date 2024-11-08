@@ -15,6 +15,7 @@ type PRODUCT_ID =
     | 'DVF'
     | 'FRANCE_CONNECT'
     | 'FRANCE_TRANSFERT'
+    | 'GRIST'
     | 'HUBEE'
     | 'DOCS'
     | 'VISIO'
@@ -72,6 +73,9 @@ const PRODUCTS: Record<PRODUCT_ID, productType> = {
     },
     FRANCE_TRANSFERT: {
         name: 'france-transfert',
+    },
+    GRIST: {
+        name: 'grist',
     },
     HUBEE: { name: 'hubee' },
     DOCS: { name: 'docs' },
