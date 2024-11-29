@@ -1,8 +1,11 @@
-import { dateHandler } from '../../../scripts/importStats/utils';
+import { dateHandler, parsedDateType } from '../../../scripts/importStats/utils';
 import { Product } from '../../product';
 import { Indicator } from '../Indicator.entity';
 
-function resanaAdaptator(csv: Array<Record<string, string>>, product: Product): Indicator {
+function resanaAdaptator(
+    csv: Array<Record<string, string | undefined>>,
+    product: Product,
+): Indicator {
     const indicator = new Indicator();
     let activeUsersCount = 0;
     const now = dateHandler.parseDate(new Date());
@@ -11,7 +14,12 @@ function resanaAdaptator(csv: Array<Record<string, string>>, product: Product): 
     for (let i = 0; i < csv.length; i++) {
         try {
             const row = csv[i];
+            if (!row['derniere_connexion']) {
+                console.warn(`No derniere_connexion for line ${i}`);
+                continue;
+            }
             const lastLoginDate = parseCsvDate(row['derniere_connexion']);
+
             if (dateHandler.compareDates(ONE_MONTH_AGO, lastLoginDate) >= 0) {
                 activeUsersCount++;
             }
@@ -33,7 +41,7 @@ function resanaAdaptator(csv: Array<Record<string, string>>, product: Product): 
     return indicator;
 }
 
-function parseCsvDate(date: string) {
+function parseCsvDate(date: string): parsedDateType {
     const REGEX = /^(\d{4})(\d{2})(\d{2})/;
     const match = date.match(REGEX);
     if (!match) {

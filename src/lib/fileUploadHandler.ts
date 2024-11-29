@@ -11,11 +11,15 @@ const uploadSingleFileMiddleware = upload.single('file');
 async function parseCsv(fileBuffer: Buffer): Promise<Array<Record<string, string>>> {
     const results: any[] = [];
     try {
-        await pipeline(Readable.from(fileBuffer.toString()), csvParser(), async function* (source) {
-            for await (const chunk of source) {
-                results.push(chunk);
-            }
-        });
+        await pipeline(
+            Readable.from(fileBuffer.toString()),
+            csvParser({ separator: ';' }),
+            async function* (source) {
+                for await (const chunk of source) {
+                    results.push(chunk);
+                }
+            },
+        );
 
         return results;
     } catch (error: any) {
