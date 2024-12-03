@@ -14,7 +14,7 @@ type tchapApiOutputType = Array<{
 
 async function fetch() {
     const url =
-        'https://stats.tchap.incubateur.net/public/question/25a6bdc7-b5e3-4444-ac9c-d6c85161220f.json';
+        'https://stats.tchap.incubateur.net/public/question/ae34205d-9010-4a00-b1bf-5d6a7c5901fb.json';
     const result = await axios.get<tchapApiOutputType>(url);
     const tchapOutputRows = result.data;
 
@@ -24,10 +24,10 @@ async function fetch() {
         try {
             const date_debut = parseWrittenDate(tchapOutputRow.Month);
             const date = dateHandler.addMonth(date_debut);
-            const value = Number(tchapOutputRow['Valeurs distinctes de User ID'].replace(/ /g, ''));
+            const value = Number(tchapOutputRow['Nombre de lignes'].replace(/ /g, ''));
             if (isNaN(value)) {
                 throw new Error(
-                    `tchapOutputRow['Valeurs distinctes de User ID'] ${tchapOutputRow['Valeurs distinctes de User ID']} is NaN`,
+                    `tchapOutputRow['Nombre de lignes'] ${tchapOutputRow['Nombre de lignes']} is NaN`,
                 );
             }
             indicatorDtos.push({
