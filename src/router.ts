@@ -16,6 +16,10 @@ function buildRouter(dataSource: DataSource) {
     const clientController = buildClientController(dataSource);
 
     router.post('/clients/token', buildController(clientController.createToken));
+    router.patch(
+        '/clients/:clientId/client-secret',
+        buildController(clientController.updateClientSecret),
+    );
     router.post('/clients/:productName', buildController(clientController.createClient));
 
     router.get('/log-entries', buildController(logEntryController.getLogEntries));

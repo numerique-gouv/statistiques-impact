@@ -11,6 +11,7 @@ function buildClientService(dataSource: DataSource) {
     const clientService = {
         createToken,
         createClient,
+        updateClientSecret,
     };
 
     async function createToken(clientId: string, clientSecret: string) {
@@ -40,6 +41,20 @@ function buildClientService(dataSource: DataSource) {
         const id = result.identifiers[0]['id'];
 
         return clientRepository.findOneByOrFail({ id });
+    }
+
+    async function updateClientSecret(clientId: string, previousClientSecret: string) {
+        const client = await clientRepository.findOneByOrFail({ id: clientId });
+
+        if (client.secret !== previousClientSecret) {
+            throw new Error(`Wrong secret for clientId ${clientId}`);
+        }
+
+        const newSecret = crypto.generateSecret();
+
+        await clientRepository.update({ id: client.id }, { secret: newSecret });
+
+        return { secret: newSecret };
     }
 
     return clientService;
