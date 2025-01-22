@@ -1,11 +1,9 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
-// import Joi from 'joi';
-// import { User } from '../../modules/user';
 import { dataSource } from '../../dataSource';
 import { extractBearerToken } from './extractBearerToken';
 import { crypto } from '../crypto';
-// import { extractUserIdFromHeader } from './extractUserIdFromHeader';
+import { AppError } from '../../error';
 
 export { buildAuthenticatedController };
 
@@ -55,7 +53,11 @@ function buildAuthenticatedController<
             res.send(result);
         } catch (error) {
             console.error(error);
-            res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
+            if (error instanceof AppError) {
+                res.status(error.statusCode).send(error.message);
+            } else {
+                res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
     };
 }

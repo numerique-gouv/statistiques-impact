@@ -2,6 +2,7 @@ import { Product } from '../product';
 import { Indicator } from './Indicator.entity';
 import { DataSource } from 'typeorm';
 import { adaptators } from './adaptators';
+import { AppError } from '../../error';
 
 export { buildIndicatorService };
 
@@ -65,12 +66,21 @@ function buildIndicatorService(dataSource: DataSource) {
     async function insertRawIndicators(csv: Array<Record<string, string>>, productName: string) {
         const adaptator = adaptators[productName];
         if (!adaptator) {
-            throw new Error(`No adaptator available for productName "${productName}"`);
+            throw new AppError(`No adaptator available for productName "${productName}"`, 500);
         }
         const product = await productRepository.findOneByOrFail({
             nom_service_public_numerique: productName,
         });
         const indicator = adaptator(csv, product);
+        const indicatorCountAlreadyPresent = await indicatorRepository.countBy({
+            date: indicator.date,
+            product,
+            indicateur: indicator.indicateur,
+            frequence_monitoring: indicator.frequence_monitoring,
+        });
+        if (indicatorCountAlreadyPresent > 0) {
+            throw new AppError(`Indicator already present for date ${indicator.date}`, 409);
+        }
         return indicatorRepository.insert(indicator);
     }
 
