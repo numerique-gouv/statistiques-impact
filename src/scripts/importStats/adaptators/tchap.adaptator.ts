@@ -9,7 +9,7 @@ const productName = PRODUCTS.TCHAP.name;
 
 type tchapApiOutputType = Array<{
     Month: string;
-    'Valeurs distinctes de User ID': string;
+    'Nombre de lignes': string;
 }>;
 
 async function fetch() {
