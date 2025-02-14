@@ -10,6 +10,7 @@ import { agentConnectAdaptator } from './agentConnect.adaptator';
 import { tchapAdaptator } from './tchap.adaptator';
 import { documentationAdaptator } from './documentation.adaptator';
 import { hubeeAdaptator } from './hubee.adaptator';
+import { regieAdaptator } from './regie.adaptator';
 import {
     resanaAdaptator,
     franceTransfertAdaptator,
@@ -17,7 +18,6 @@ import {
     visioAdaptator,
     plankaAdaptator,
     rizomoAdaptator,
-    regieAdaptator,
     padAdaptator,
 } from './suite.adaptator';
 import { indicatorDtoType } from '../../../modules/indicator';
