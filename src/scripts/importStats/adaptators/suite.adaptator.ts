@@ -5,7 +5,7 @@ import { dateHandler } from '../utils';
 
 type SUITE_PRODUCT_ID = Extract<
     PRODUCT_ID,
-    'RESANA' | 'FRANCE_TRANSFERT' | 'DOCS' | 'RIZOMO' | 'VISIO' | 'PLANKA' | 'REGIE' | 'PAD'
+    'RESANA' | 'FRANCE_TRANSFERT' | 'DOCS' | 'RIZOMO' | 'VISIO' | 'PLANKA' | 'PAD'
 >;
 
 type suiteNumeriqueOutputApiType = Array<{
@@ -20,7 +20,6 @@ const proConnectMetabaseNameMapping: Record<SUITE_PRODUCT_ID, string> = {
     VISIO: 'Visio',
     PLANKA: 'Planka',
     RIZOMO: 'Rizomo',
-    REGIE: 'Régie',
     PAD: 'Pad',
 };
 
@@ -77,7 +76,6 @@ const docsAdaptator = buildSuiteAdaptator('DOCS');
 const visioAdaptator = buildSuiteAdaptator('VISIO');
 const plankaAdaptator = buildSuiteAdaptator('PLANKA');
 const rizomoAdaptator = buildSuiteAdaptator('RIZOMO');
-const regieAdaptator = buildSuiteAdaptator('REGIE');
 const padAdaptator = buildSuiteAdaptator('PAD');
 
 export {
@@ -87,6 +85,5 @@ export {
     visioAdaptator,
     plankaAdaptator,
     rizomoAdaptator,
-    regieAdaptator,
     padAdaptator,
 };
