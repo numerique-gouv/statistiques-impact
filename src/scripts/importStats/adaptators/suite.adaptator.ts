@@ -10,7 +10,7 @@ type SUITE_PRODUCT_ID = Extract<
 
 type suiteNumeriqueOutputApiType = Array<{
     'Fournisseur Service': string;
-    'Distinct values of Sub Fi': number;
+    'Valeurs distinctes de Sub FI': number;
 }>;
 
 const proConnectMetabaseNameMapping: Record<SUITE_PRODUCT_ID, string> = {
@@ -29,7 +29,7 @@ function buildSuiteAdaptator(productId: SUITE_PRODUCT_ID) {
 
     async function fetch() {
         const url =
-            'http://stats.agentconnect.gouv.fr/public/question/a26a6b26-3d97-4bb1-8b13-983b4ebbc23b.json';
+            'https://stats.moncomptepro.beta.gouv.fr/public/question/0e3cee98-df38-4d57-8c37-d38c5a2d3231.json';
         const data = await cache.fetch<suiteNumeriqueOutputApiType>(url);
         const indicatorName = 'utilisateurs actifs';
         const indicatorDtos: any = [];
@@ -42,7 +42,7 @@ function buildSuiteAdaptator(productId: SUITE_PRODUCT_ID) {
                     `Could not find "${proConnectMetabaseNameMapping[productId]}" in the JSON.`,
                 );
             }
-            const value = row['Distinct values of Sub Fi'];
+            const value = row['Valeurs distinctes de Sub FI'];
 
             const now = new Date();
             const date = dateHandler.formatDate(now.toISOString());
