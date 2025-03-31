@@ -8,7 +8,7 @@ const tchapAdaptator = { fetch };
 const productName = PRODUCTS.TCHAP.name;
 
 type tchapApiOutputType = Array<{
-    Month: string;
+    'Visit Date': string;
     'Nombre de lignes': string;
 }>;
 
@@ -22,7 +22,7 @@ async function fetch() {
     const indicatorDtos: any = [];
     for (const tchapOutputRow of tchapOutputRows) {
         try {
-            const date_debut = parseWrittenDate(tchapOutputRow.Month);
+            const date_debut = parseWrittenDate(tchapOutputRow['Visit Date']);
             const date = dateHandler.addMonth(date_debut);
             const value = Number(tchapOutputRow['Nombre de lignes'].replace(/ /g, ''));
             if (isNaN(value)) {
