@@ -14,6 +14,7 @@ import { regieAdaptator } from './regie.adaptator';
 import {
     resanaAdaptator,
     franceTransfertAdaptator,
+    gristAdaptator,
     docsAdaptator,
     visioAdaptator,
     plankaAdaptator,
@@ -44,6 +45,7 @@ const indicatorsToUpdate: Record<string, adaptatorType> = {
     [PRODUCTS.FRANCE_TRANSFERT.name]: franceTransfertAdaptator,
     [PRODUCTS.VISIO.name]: visioAdaptator,
     [PRODUCTS.PLANKA.name]: plankaAdaptator,
+    [PRODUCTS.GRIST.name]: gristAdaptator,
     [PRODUCTS.REGIE.name]: regieAdaptator,
     [PRODUCTS.RIZOMO.name]: rizomoAdaptator,
 };
