@@ -18,7 +18,7 @@ function map(agentConnectOutputRows: agentConnectApiOutputType) {}
 
 async function fetch() {
     const url =
-        'http://stats.agentconnect.gouv.fr/public/question/9275fc22-c5c2-4b2b-9d3f-ff50c7982c6d.json';
+        'https://stats.proconnect.gouv.fr/model/112-monthly-active-users-over-time';
     const result = await axios.get<agentConnectApiOutputType>(url);
 
     const agentConnectOutputRows = result.data;
