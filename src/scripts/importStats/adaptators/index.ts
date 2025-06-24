@@ -18,7 +18,6 @@ import {
     docsAdaptator,
     visioAdaptator,
     plankaAdaptator,
-    rizomoAdaptator,
     padAdaptator,
 } from './suite.adaptator';
 import { indicatorDtoType } from '../../../modules/indicator';
@@ -47,7 +46,6 @@ const indicatorsToUpdate: Record<string, adaptatorType> = {
     [PRODUCTS.PLANKA.name]: plankaAdaptator,
     [PRODUCTS.GRIST.name]: gristAdaptator,
     [PRODUCTS.REGIE.name]: regieAdaptator,
-    [PRODUCTS.RIZOMO.name]: rizomoAdaptator,
 };
 
 export { indicatorsToUpdate };
