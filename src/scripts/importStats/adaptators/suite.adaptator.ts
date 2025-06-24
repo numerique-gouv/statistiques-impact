@@ -32,7 +32,8 @@ function buildSuiteAdaptator(productId: SUITE_PRODUCT_ID) {
             'https://stats.moncomptepro.beta.gouv.fr/public/question/0e3cee98-df38-4d57-8c37-d38c5a2d3231.json';
         const data = await cache.fetch<suiteNumeriqueOutputApiType>(url);
         const indicatorName = 'utilisateurs actifs';
-        if (productName == 'RESANA' || productName == 'FRANCE_TRANSFERT'){
+
+        if (productName == 'resana' || productName == 'france-transfert'){
             const indicatorName = 'utilisateurs actifs via PC';
         }
         const indicatorDtos: any = [];
