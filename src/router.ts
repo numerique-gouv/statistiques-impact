@@ -7,6 +7,7 @@ import { buildProductController } from './modules/product/product.controller';
 import { buildClientController } from './modules/client';
 import { buildAuthenticatedController } from './lib/buildController/buildAuthenticatedController';
 import { fileUploadHandler } from './lib/fileUploadHandler';
+import { buildAdminAuthenticatedController } from './lib/buildController/buildAdminAuthenticatedController';
 
 function buildRouter(dataSource: DataSource) {
     const router = Express.Router();
@@ -15,12 +16,15 @@ function buildRouter(dataSource: DataSource) {
     const logEntryController = buildLogEntryController(dataSource);
     const clientController = buildClientController(dataSource);
 
-    router.post('/clients/token', buildController(clientController.createToken));
+    router.post('/clients/token', buildAdminAuthenticatedController(clientController.createToken));
     router.patch(
         '/clients/:clientId/client-secret',
-        buildController(clientController.updateClientSecret),
+        buildAdminAuthenticatedController(clientController.updateClientSecret),
     );
-    router.post('/clients/:productName', buildController(clientController.createClient));
+    router.post(
+        '/clients/:productName',
+        buildAdminAuthenticatedController(clientController.createClient),
+    );
 
     router.get('/log-entries', buildController(logEntryController.getLogEntries));
 
@@ -35,8 +39,14 @@ function buildRouter(dataSource: DataSource) {
         fileUploadHandler.uploadSingleFileMiddleware,
         buildAuthenticatedController(indicatorController.insertRawIndicators),
     );
-    router.post('/indicators', buildController(indicatorController.upsertIndicators));
-    router.delete('/indicators/:indicatorId', buildController(indicatorController.deleteIndicator));
+    router.post(
+        '/indicators',
+        buildAdminAuthenticatedController(indicatorController.upsertIndicators),
+    );
+    router.delete(
+        '/indicators/:indicatorId',
+        buildAdminAuthenticatedController(indicatorController.deleteIndicator),
+    );
     return router;
 }
 

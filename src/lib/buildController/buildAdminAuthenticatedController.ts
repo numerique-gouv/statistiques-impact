@@ -3,32 +3,30 @@ import httpStatus from 'http-status';
 import { extractBearerToken } from './extractBearerToken';
 import { crypto } from '../crypto';
 import { AppError } from '../../error';
+import { extractAdminApiKey } from './extractAdminApiKey';
+import { config } from '../../config';
 
-export { buildAuthenticatedController };
+export { buildAdminAuthenticatedController };
 
-function buildAuthenticatedController<
+function buildAdminAuthenticatedController<
     paramsT extends Record<string, string>,
     queryT extends Record<string, string>,
     bodyT,
 >(
-    controller: (
-        params: { query: queryT; urlParams: paramsT; body: bodyT; fileBuffer?: Buffer },
-        clientId: string,
-    ) => any | Promise<any>,
-    options?: {
-        // schema?: Joi.Schema;
-        // checkAuthorization?: (params: paramsT, user: User) => void | Promise<void>;
-    },
+    controller: (params: {
+        query: queryT;
+        urlParams: paramsT;
+        body: bodyT;
+        fileBuffer?: Buffer;
+    }) => any | Promise<any>,
 ) {
     return async (req: Request, res: Response) => {
         console.log(`${req.method} ${req.originalUrl}`);
 
-        let payload: any;
         try {
-            const token = extractBearerToken(req);
-            payload = crypto.jwtVerify(token);
-            if (!payload.clientId) {
-                throw new Error(`No clientId specified`);
+            const adminApiKey = extractAdminApiKey(req);
+            if (adminApiKey !== config.ADMIN_API_KEY) {
+                throw new Error('Invalid API key');
             }
         } catch (error) {
             console.error(error);
@@ -36,18 +34,13 @@ function buildAuthenticatedController<
             return;
         }
 
-        const fileBuffer = req.file ? req.file.buffer : undefined;
-
         try {
-            const result = await controller(
-                {
-                    query: req.query as queryT,
-                    urlParams: req.params as paramsT,
-                    body: req.body,
-                    fileBuffer,
-                },
-                payload.clientId,
-            );
+            const result = await controller({
+                query: req.query as queryT,
+                urlParams: req.params as paramsT,
+                body: req.body,
+                fileBuffer: req.file ? req.file.buffer : undefined,
+            });
             res.setHeader('Content-Type', 'application/json');
             res.send(result);
         } catch (error) {

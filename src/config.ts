@@ -25,6 +25,7 @@ const config = {
     ALLOWED_ORIGIN: process.env.ALLOWED_ORIGIN || '',
     DOCUMENTATION_API_KEY: process.env.DOCUMENTATION_API_KEY,
     JWT_SECRET: process.env.JWT_SECRET || '',
+    ADMIN_API_KEY: process.env.ADMIN_API_KEY || '',
     ...databaseConfig,
 };
 
