@@ -1,0 +1,25 @@
+{% extends "dsfr/base.html" %}
+{% load static i18n %}
+
+{% block header %}
+  {% include "example_app/blocks/header.html" %}
+{% endblock header %}
+
+{% block footer %}
+  {% include "example_app/blocks/footer.html" %}
+{% endblock footer %}
+
+{% block extra_js %}
+  <script src="{% static 'js/common.js' %}">
+  </script>
+{% endblock extra_js %}
+
+{# djlint:off #}
+{% block lang %}{% get_current_language as LANGUAGE_CODE %}{{ LANGUAGE_CODE }}{% endblock lang %}
+{# djlint:on #}
+
+{% block follow_newsletter_social_media %}
+  <aside>
+    {% include "dsfr/follow.html" %}
+  </aside>
+{% endblock follow_newsletter_social_media %}
