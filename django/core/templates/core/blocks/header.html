@@ -1,0 +1,42 @@
+{% extends "dsfr/header.html" %}
+{% load i18n %}
+{% url 'index' as home_url %}
+
+{% block brand %}
+  <p class="fr-logo">
+    {{ SITE_CONFIG.header_brand_html|default_if_none:"république<br />française" | safe }}
+  </p>
+{% endblock brand %}
+
+{% block service_title %}
+  <a href="{{ home_url }}" title="Accueil — {{ SITE_CONFIG.site_title }}">
+    <p class="fr-header__service-title">
+      {{ SITE_CONFIG.site_title }}
+      {% if SITE_CONFIG.beta_tag %}
+        <span class="fr-badge fr-badge--sm fr-badge--green-emeraude">BETA</span>
+      {% endif %}
+    </p>
+  </a>
+{% endblock service_title %}
+
+{% block header_tools %}
+  <li>
+    <button class="fr-btn--display fr-btn"
+            aria-controls="fr-theme-modal"
+            data-fr-opened="false">
+      {% translate "Display settings" %}
+    </button>
+  </li>
+  {% if "127.0.0.1" in request.get_host %}
+    <li>
+      {% include "core/blocks/language_selector.html" %}
+    </li>
+  {% endif %}
+{% endblock header_tools %}
+
+{# Leave burger_menu and main_menu blocks empty if the main menu is not used #}
+{% block burger_menu %}
+{% endblock burger_menu %}
+
+{% block main_menu %}
+{% endblock main_menu %}
