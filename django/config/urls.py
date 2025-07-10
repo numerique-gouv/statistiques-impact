@@ -16,10 +16,12 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path
-from core import views
+from django.urls import path, re_path
+from django.conf import settings
+
+from revproxy.views import ProxyView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", views.index, name="index"),
+    re_path(r"(?P<path>.*)", ProxyView.as_view(upstream=settings.UPSTREAM_EXPRESS)),
 ]
