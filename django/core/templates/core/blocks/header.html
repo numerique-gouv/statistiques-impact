@@ -27,11 +27,6 @@
       {% translate "Display settings" %}
     </button>
   </li>
-  {% if "127.0.0.1" in request.get_host %}
-    <li>
-      {% include "core/blocks/language_selector.html" %}
-    </li>
-  {% endif %}
 {% endblock header_tools %}
 
 {# Leave burger_menu and main_menu blocks empty if the main menu is not used #}
