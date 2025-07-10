@@ -19,9 +19,12 @@ from django.contrib import admin
 from django.urls import path, re_path
 from django.conf import settings
 
+from core import views
+
 from revproxy.views import ProxyView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("accessibility", views.accessibility, name="accessibility"),
     re_path(r"(?P<path>.*)", ProxyView.as_view(upstream=settings.UPSTREAM_EXPRESS)),
 ]

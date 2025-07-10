@@ -1,7 +1,10 @@
-# Create your views here.
-
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpRequest
+from django.shortcuts import render
 
 
 def index(request):
-    return HttpResponse("Hello, world.")
+    return render(request, "core/index.html")
+
+
+def accessibility(request: HttpRequest) -> HttpResponse:
+    return render(request, "core/accessibility.html")
