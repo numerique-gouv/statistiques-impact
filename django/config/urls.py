@@ -1,3 +1,7 @@
+"""
+URL configuration for stats projects
+"""
+
 from django.urls import include, path, re_path
 from django.conf import settings
 
