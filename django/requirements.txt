@@ -1,9 +1,12 @@
 asgiref==3.9.1
+dj-database-url==3.0.1
 Django==5.2.4
 django-dsfr==3.0.0
 django-revproxy==0.13.0
+gunicorn==23.0.0
 psycopg2-binary==2.9.10
 python-dotenv==1.1.1
 ruff==0.12.2
 sqlparse==0.5.3
 typing_extensions==4.14.1
+whitenoise==6.9.0
