@@ -62,11 +62,10 @@ class User(AbstractBaseUser):
 
 
 class Product(BaseModel):
-    nom_service_public_numerique = models.CharField(
-        _("name"), max_length=100, unique=True
-    )
+    nom_service_public_numerique = models.CharField(max_length=100, unique=True)
 
     class Meta:
+        db_table = "product"
         verbose_name = _("product")
         verbose_name_plural = _("products")
         managed = False
@@ -86,6 +85,7 @@ class Indicator(BaseModel):
     est_automatise = models.BooleanField()
 
     class Meta:
+        db_table = "indicator"
         verbose_name = _("indicator")
         verbose_name_plural = _("indicators")
         managed = False
