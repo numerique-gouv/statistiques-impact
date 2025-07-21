@@ -1,0 +1,61 @@
+{% extends "core/base.html" %}
+{% load i18n static %}
+
+{% block title %}
+  <title>Liste des produits</title>
+{% endblock title %}
+
+{% block content %}
+<div class="fr-table">
+    <div class="fr-table__wrapper">
+        <div class="fr-table__container">
+            <div class="fr-table__content">
+                <table>
+                    <caption>Produits référencés</caption>
+                    <thead>
+                        <th scope="col">Produit</th>
+                        <th scope="col">Date dernière stat</th>
+                        <th scope="col">Dernière stat</th>
+                        <th scope="col">Récupération auto ?</th>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                        <tr>
+                            <td>{{ product.nom_service_public_numerique }}</td>
+                            
+                            {% if product.last_indicators %}
+                                <td>
+                                    {{ product.last_indicators.0.date }}
+                                </td>
+                                <td>
+                                    <ul>
+                                        {% for indicator in  product.last_indicators %}
+                                            <li>{{ indicator.valeur|floatformat:"0" }} {{ indicator.indicateur }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        {% for indicator in product.last_indicators %}
+                                        <li>
+                                            {{ indicator.est_automatise }}
+                                        </li>                                            
+                                        {% endfor %}
+                                    </ul>
+                                    
+                                </td>
+                            </td>    
+                            {% else %}
+                            <td>N/A</td>
+                            <td>N/A</td>
+                            <td>N/A</td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

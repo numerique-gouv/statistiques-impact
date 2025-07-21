@@ -70,6 +70,12 @@ class Product(BaseModel):
         verbose_name_plural = _("products")
         managed = False
 
+    @property
+    def last_indicators(self):
+        recent_indicators = Indicator.objects.filter(product=self).order_by("date")
+        last_entry_date = recent_indicators[0].date
+        return recent_indicators.filter(date=last_entry_date)
+
 
 class Indicator(BaseModel):
     product = models.ForeignKey(
