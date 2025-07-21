@@ -5,21 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.base_user import AbstractBaseUser
 
 
-class BaseModel(models.Model):
-    """
-    Serves as an abstract base model for other models, ensuring that records are validated
-    before saving as Django doesn't do it by default.
-
-    Includes fields common to all models: a UUID primary key and creation/update timestamps.
-    """
-
-    id = models.UUIDField(
-        verbose_name=_("id"),
-        help_text=_("primary key for the record as UUID"),
-        primary_key=True,
-        default=uuid.uuid4,
-        editable=False,
-    )
+class User(AbstractBaseUser):
     created_at = models.DateTimeField(
         verbose_name=_("created at"),
         help_text=_("date and time at which a record was created"),
@@ -32,17 +18,6 @@ class BaseModel(models.Model):
         auto_now=True,
         editable=False,
     )
-
-    class Meta:
-        abstract = True
-
-    def save(self, *args, **kwargs):
-        """Call `full_clean` before saving."""
-        self.full_clean()
-        return super().save(*args, **kwargs)
-
-
-class User(AbstractBaseUser):
     email = models.EmailField(_("email address"))
     is_staff = models.BooleanField(
         _("staff status"),
@@ -61,7 +36,14 @@ class User(AbstractBaseUser):
     USERNAME_FIELD = "email"
 
 
-class Product(BaseModel):
+class Product(models.Model):
+    id = models.UUIDField(
+        verbose_name=_("id"),
+        help_text=_("primary key for the record as UUID"),
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+    )
     nom_service_public_numerique = models.CharField(max_length=100, unique=True)
 
     class Meta:
@@ -72,21 +54,33 @@ class Product(BaseModel):
 
     @property
     def last_indicators(self):
-        recent_indicators = Indicator.objects.filter(product=self).order_by("date")
+        recent_indicators = Indicator.objects.filter(productid=self.id).order_by(
+            "date"
+        )
         last_entry_date = recent_indicators[0].date
         return recent_indicators.filter(date=last_entry_date)
 
 
-class Indicator(BaseModel):
-    product = models.ForeignKey(
-        Product, on_delete=models.PROTECT, related_name="indicators"
+class Indicator(models.Model):
+    id = models.UUIDField(
+        verbose_name=_("id"),
+        help_text=_("primary key for the record as UUID"),
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
     )
-    indicateur = models.CharField("utilisateurs actifs", max_length=100)
+    productid = models.ForeignKey(
+        "Product",
+        on_delete=models.PROTECT,
+        db_column="productId",
+        default="aaaa-bbbb-aaaa-cccc",
+    )
+    indicateur = models.CharField(max_length=100)
     valeur = models.FloatField()
     unite_mesure = models.CharField()
     frequence_monitoring = models.CharField()
-    date = models.DateField()
-    date_debut = models.DateField()
+    date = models.CharField()
+    date_debut = models.CharField(blank=True, null=True)
     est_periode = models.BooleanField()
     est_automatise = models.BooleanField()
 
