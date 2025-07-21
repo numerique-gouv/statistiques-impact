@@ -9,7 +9,7 @@ function Header() {
                     <div>Française</div>
                 </>
             }
-            serviceTitle="Statistiques d'impact"
+            serviceTitle="Statistiques d'usage"
             homeLinkProps={{
                 to: '/',
                 title: 'Accueil',

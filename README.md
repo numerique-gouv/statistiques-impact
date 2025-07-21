@@ -1,6 +1,6 @@
-# Statistiques d'impact
+# Statistiques d'usage
 
-Ce site répertorie les produits opérés par l'Opérateur de Produits Interministériels (OPI), ainsi que leurs statistiques d'impact. 
+Ce site répertorie les produits opérés par l'Opérateur de Produits Interministériels (OPI), ainsi que leurs statistiques d'usage. 
 
 ## Installation 
 
