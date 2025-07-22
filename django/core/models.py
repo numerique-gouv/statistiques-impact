@@ -54,9 +54,10 @@ class Product(models.Model):
 
     @property
     def last_indicators(self):
-        recent_indicators = Indicator.objects.filter(productid=self.id).order_by(
-            "date"
-        )
+        recent_indicators = Indicator.objects.filter(productid=self.id).order_by("-date")
+        if not recent_indicators:
+            return []
+
         last_entry_date = recent_indicators[0].date
         return recent_indicators.filter(date=last_entry_date)
 
