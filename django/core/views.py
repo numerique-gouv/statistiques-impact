@@ -9,7 +9,6 @@ def index(request):
 
 def products(request: HttpRequest) -> HttpResponse:
     products = Product.objects.all()
-
     return render(request, "core/products.html", context={"products": products})
 
 
