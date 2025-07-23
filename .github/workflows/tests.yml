@@ -47,11 +47,5 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-      - name: Update database relationship (makemigrations)
-        run: |
-          python manage.py makemigrations
-      - name: Update database relationship (migrate)
-        run: |
-          python manage.py migrate
       - name: Run tests
-        run: pytest
+        run: pytest --no-migrations

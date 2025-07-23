@@ -77,6 +77,7 @@ class Indicator(models.Model):
         "Product",
         on_delete=models.PROTECT,
         db_column="productId",
+        related_name="indicators",
     )
     indicateur = models.CharField(max_length=100)
     valeur = models.FloatField()
