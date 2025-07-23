@@ -149,3 +149,4 @@ REST_FRAMEWORK = {
 
 # Setting for revproxy
 UPSTREAM_EXPRESS = os.getenv("UPSTREAM_EXPRESS")
+ENVIRONMENT = os.getenv("ENVIRONMENT")

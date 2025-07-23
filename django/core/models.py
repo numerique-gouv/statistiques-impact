@@ -3,6 +3,7 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.base_user import AbstractBaseUser
+from django.conf import settings
 
 
 class User(AbstractBaseUser):
@@ -50,11 +51,13 @@ class Product(models.Model):
         db_table = "product"
         verbose_name = _("product")
         verbose_name_plural = _("products")
-        managed = False
+        managed = True if settings.ENVIRONMENT in ["Development", "Test"] else False
 
     @property
     def last_indicators(self):
-        recent_indicators = Indicator.objects.filter(productid=self.id).order_by("-date")
+        recent_indicators = Indicator.objects.filter(productid=self.id).order_by(
+            "-date"
+        )
         if not recent_indicators:
             return []
 
@@ -74,7 +77,6 @@ class Indicator(models.Model):
         "Product",
         on_delete=models.PROTECT,
         db_column="productId",
-        default="aaaa-bbbb-aaaa-cccc",
     )
     indicateur = models.CharField(max_length=100)
     valeur = models.FloatField()
@@ -89,4 +91,5 @@ class Indicator(models.Model):
         db_table = "indicator"
         verbose_name = _("indicator")
         verbose_name_plural = _("indicators")
-        managed = False
+        unique_together = (("productid", "indicateur", "frequence_monitoring", "date"),)
+        managed = True if settings.ENVIRONMENT in ["Development", "Test"] else False
