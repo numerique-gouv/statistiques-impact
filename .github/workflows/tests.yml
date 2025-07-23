@@ -34,6 +34,7 @@ jobs:
       SECRET_KEY: averysecretsecret
       DEBUG: True
       DATABASE_URL: postgresql://stats:password@localhost:5432/stats
+      ENVIRONMENT: "Test"
 
 
     steps:
@@ -46,5 +47,11 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
+      - name: Update database relationship (makemigrations)
+        run: |
+          python manage.py makemigrations
+      - name: Update database relationship (migrate)
+        run: |
+          python manage.py migrate
       - name: Run tests
         run: pytest
