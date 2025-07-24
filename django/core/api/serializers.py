@@ -9,6 +9,8 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class IndicatorSerializer(serializers.ModelSerializer):
+    valeur = serializers.IntegerField()
+
     class Meta:
         model = Indicator
         fields = "__all__"

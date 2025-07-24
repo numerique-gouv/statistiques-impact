@@ -14,32 +14,40 @@ pytestmark = pytest.mark.django_db
 # LIST
 def test_api_indicators_list__anonymous_ok():
     """Anonymous users should not be allowed to list indicators."""
-    indicator = factories.IndicatorFactory()
+    product = factories.ProductFactory()
+    indicators = factories.IndicatorFactory.create_batch(2, productid=product)
 
-    response = APIClient().get(f"/api/products/{indicator.productid}/indicators/")
+    # indicator for another product. should not be listed
+    factories.IndicatorFactory()
+
+    response = APIClient().get(f"/api/products/{product.id}/indicators/")
     assert response.status_code == status.HTTP_200_OK
-    import pdb
-
-    pdb.set_trace()
-    assert response.json() == {
-        "id": indicator.id,
-        "indicateur": indicator.indicator,
-        "valeur": indicator.valeur,
-        "unite_mesure": indicator.unite,
-        "frequence_monitoring": indicator.frequence_monitoring,
-        "date": indicator.date,
-        "date_debut": indicator.date_debut,
-        "est_periode": indicator.est_periode,
-        "est_automatise": indicator.est_automatise,
-        "productid": indicator.productid,
-    }
+    assert len(response.json()) == 2
+    assert response.json() == [
+        {
+            "id": str(indicator.id),
+            "indicateur": indicator.indicateur,
+            "valeur": indicator.valeur,
+            "unite_mesure": indicator.unite_mesure,
+            "frequence_monitoring": indicator.frequence_monitoring,
+            "date": str(indicator.date),
+            "date_debut": str(indicator.date_debut),
+            "est_periode": indicator.est_periode,
+            "est_automatise": indicator.est_automatise,
+            "productid": str(indicator.productid.id),
+        }
+        for indicator in indicators
+    ]
 
 
 @pytest.mark.parametrize("verb", ["post"])
-def test_api_indicators_list__anonymous_read_only(verb):
-    """Anonymous users should not be allowed to create products."""
+def test_api_indicators_list__anonymous_cannot_create(verb):
+    """Anonymous users should not be allowed to create indicators."""
+    product = factories.ProductFactory()
+
     response = APIClient().post(
-        "/api/products/", body="{'nom_service_public_numerique': 'product'}"
+        f"/api/products/{product.id}/indicators/",
+        body="{'nom_service_public_numerique': 'product'}",
     )
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    assert not models.Product.objects.exists()
+    assert len(models.Product.objects.all()) == 1

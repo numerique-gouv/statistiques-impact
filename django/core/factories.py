@@ -2,6 +2,7 @@
 Test application factories
 """
 
+import datetime
 import factory.fuzzy
 from faker import Faker
 import random
@@ -31,7 +32,7 @@ class IndicatorFactory(factory.django.DjangoModelFactory):
     valeur = random.randint(1, 300000)
     unite_mesure = "unite"
     frequence_monitoring = "mensuelle"
-    date = f"2025-{format(random.randint(1, 12), '02d')}-30"
+    date = factory.fuzzy.FuzzyDate(datetime.date(2025, 1, 1))
     est_periode = True
     est_automatise = random.choice([True, False])
     date_debut = ""
