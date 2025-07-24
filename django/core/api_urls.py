@@ -24,7 +24,7 @@ urlpatterns = [
             [
                 *product_router.urls,
                 re_path(
-                    r"^products/(?P<product_id>[\w-]+)/?$",
+                    r"^products/(?P<product_id>[\w-]+)/?",
                     include(indicator_router.urls),
                 ),
             ]
