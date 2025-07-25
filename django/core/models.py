@@ -4,6 +4,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.template.defaultfilters import slugify
+from rest_framework_api_key.models import AbstractAPIKey
 
 
 class User(AbstractBaseUser):
@@ -105,3 +106,19 @@ class Indicator(models.Model):
         verbose_name = _("indicator")
         verbose_name_plural = _("indicators")
         unique_together = (("productid", "indicateur", "frequence_monitoring", "date"),)
+
+
+class ProductAPIKey(AbstractAPIKey):
+    product = models.ForeignKey(
+        "Product",
+        models.DO_NOTHING,
+        db_column="product",
+        blank=False,
+        null=False,
+        related_name="api_keys",
+    )
+
+    class Meta:
+        db_table = "api_keys"
+        verbose_name = _("API key")
+        verbose_name_plural = _("API keys")
