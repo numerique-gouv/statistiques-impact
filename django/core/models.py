@@ -64,7 +64,10 @@ class Product(models.Model):
 
     @property
     def last_indicators_date(self):
-        return self.last_indicators[0].date
+        if len(self.last_indicators) != 0:
+            return self.last_indicators[0].date
+
+        return "N/A"
 
 
 class Indicator(models.Model):
