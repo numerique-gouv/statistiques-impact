@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "dsfr",
     "core",
     "rest_framework",
+    "rest_framework_api_key",
 ]
 
 MIDDLEWARE = [
@@ -131,8 +132,7 @@ MEDIA_URL = "media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 STATIC_URL = "static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -146,6 +146,7 @@ REST_FRAMEWORK = {
     ],
 }
 
+API_KEY_CUSTOM_HEADER = "HTTP_X_API_KEY"
 
 # Setting for revproxy
 UPSTREAM_EXPRESS = os.getenv("UPSTREAM_EXPRESS")
