@@ -1,5 +1,6 @@
 from django.contrib import admin
 from core import models
+from rest_framework_api_key.admin import APIKeyModelAdmin
 
 
 @admin.register(models.Product)
@@ -22,3 +23,25 @@ class IndicatorAdmin(admin.ModelAdmin):
         "valeur",
     )
     readonly_fields = ("id",)
+
+
+@admin.register(models.ProductAPIKey)
+class ProductAPIKeyAdmin(APIKeyModelAdmin):
+    """Api keys admin interface declaration."""
+
+    list_display = [
+        *APIKeyModelAdmin.list_display,
+        "productid__nom_service_public_numerique",
+    ]
+    search_fields = [
+        *APIKeyModelAdmin.search_fields,
+        "productid",
+    ]
+    fields = [
+        "prefix",
+        "name",
+        "expiry_date",
+        "revoked",
+        "productid",
+    ]
+    readonly_fields = ["prefix", "created"]
