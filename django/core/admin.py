@@ -31,17 +31,17 @@ class ProductAPIKeyAdmin(APIKeyModelAdmin):
 
     list_display = [
         *APIKeyModelAdmin.list_display,
-        "productid__nom_service_public_numerique",
+        "product__nom_service_public_numerique",
     ]
     search_fields = [
         *APIKeyModelAdmin.search_fields,
-        "productid",
+        "product",
     ]
     fields = [
         "prefix",
         "name",
         "expiry_date",
         "revoked",
-        "productid",
+        "product",
     ]
     readonly_fields = ["prefix", "created"]
