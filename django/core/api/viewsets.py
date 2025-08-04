@@ -12,7 +12,7 @@ class ProductViewSet(
 
     queryset = models.Product.objects.all()
     serializer_class = serializers.ProductSerializer
-    lookup_field = "id"
+    lookup_field = "slug"
 
 
 class IndicatorViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -25,7 +25,7 @@ class IndicatorViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     def get_queryset(self, *args, **kwargs):
         queryset = super().get_queryset()
-        if product_id := self.kwargs.get("product_id"):
-            product = models.Product.objects.get(id=product_id)
+        if product_slug := self.kwargs.get("product_id"):
+            product = models.Product.objects.get(slug=product_slug)
             queryset = queryset.filter(productid=product)
         return queryset

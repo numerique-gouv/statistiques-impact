@@ -20,7 +20,7 @@ def test_api_indicators_list__anonymous_ok():
     # indicator for another product. should not be listed
     factories.IndicatorFactory()
 
-    response = APIClient().get(f"/api/products/{product.id}/indicators/")
+    response = APIClient().get(f"/api/products/{product.slug}/indicators/")
     assert response.status_code == status.HTTP_200_OK
     assert len(response.json()) == 2
     assert response.json() == [
@@ -40,13 +40,12 @@ def test_api_indicators_list__anonymous_ok():
     ]
 
 
-@pytest.mark.parametrize("verb", ["post"])
-def test_api_indicators_list__anonymous_cannot_create(verb):
+def test_api_indicators_create__anonymous_cannot_create():
     """Anonymous users should not be allowed to create indicators."""
     product = factories.ProductFactory()
 
     response = APIClient().post(
-        f"/api/products/{product.id}/indicators/",
+        f"/api/products/{product.slug}/indicators/",
         body="{'nom_service_public_numerique': 'product'}",
     )
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
