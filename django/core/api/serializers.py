@@ -14,3 +14,12 @@ class IndicatorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Indicator
         fields = "__all__"
+        read_only_fields = [
+            "productid",
+        ]
+
+    def validate(self, attrs):
+        product = Product.objects.filter(slug=self.context["view"].kwargs["product_id"])
+        if product.exists():
+            attrs["productid"] = product[0]
+        return super().validate(attrs)
