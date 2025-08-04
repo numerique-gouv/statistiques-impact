@@ -3,6 +3,7 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.base_user import AbstractBaseUser
+from django.template.defaultfilters import slugify
 
 
 class User(AbstractBaseUser):
@@ -45,6 +46,7 @@ class Product(models.Model):
         editable=False,
     )
     nom_service_public_numerique = models.CharField(max_length=100, unique=True)
+    slug = models.SlugField(null=False, blank=False, unique=True)
 
     class Meta:
         db_table = "product"
@@ -68,6 +70,11 @@ class Product(models.Model):
             return self.last_indicators[0].date
 
         return "N/A"
+
+    def save(self, *args, **kwargs):
+        if not self.slug or self.slug == "":
+            self.slug = slugify(self.nom_service_public_numerique)
+        return super().save(*args, **kwargs)
 
 
 class Indicator(models.Model):

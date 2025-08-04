@@ -41,7 +41,7 @@ def test_api_products_retrieve__anonymous_ok():
     """Anonymous users should be allowed to retrieve info on a given product."""
     product = factories.ProductFactory()
 
-    response = APIClient().get(f"/api/products/{product.id}/")
+    response = APIClient().get(f"/api/products/{product.slug}/")
     assert response.status_code == status.HTTP_200_OK
     assert response.json() == {
         "id": str(product.id),
@@ -55,7 +55,7 @@ def test_api_products_retrieve__anonymous_read_only(verb):
     product = factories.ProductFactory()
 
     response = getattr(APIClient(), verb)(
-        f"/api/products/{product.id}/",
+        f"/api/products/{product.slug}/",
         body="{'nom_service_public_numerique': 'product'}",
     )
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED

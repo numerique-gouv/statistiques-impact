@@ -8,6 +8,7 @@ class ProductAdmin(admin.ModelAdmin):
 
     list_display = ("nom_service_public_numerique", "last_indicators_date")
     readonly_fields = ("id",)
+    prepopulated_fields = {"slug": ("nom_service_public_numerique",)}
 
 
 @admin.register(models.Indicator)
