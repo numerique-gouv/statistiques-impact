@@ -107,11 +107,6 @@ class Indicator(models.Model):
         verbose_name_plural = _("indicators")
         unique_together = (("productid", "indicateur", "frequence_monitoring", "date"),)
 
-    def save(self, *args, **kwargs):
-        """Call `full_clean` before saving."""
-        self.full_clean()
-        return super().save(*args, **kwargs)
-
 
 class ProductAPIKey(AbstractAPIKey):
     product = models.ForeignKey(

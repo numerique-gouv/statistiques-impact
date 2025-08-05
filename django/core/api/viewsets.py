@@ -1,7 +1,8 @@
-from rest_framework import viewsets, mixins, exceptions
+from rest_framework import viewsets, mixins
 from core import models
 from core.api import serializers, permissions
-from django.core.exceptions import ValidationError
+from django.db.utils import IntegrityError
+from django.core import exceptions
 
 
 class ProductViewSet(
@@ -40,8 +41,15 @@ class IndicatorViewSet(
         return queryset
 
     def perform_create(self, serializer):
-        """Validate uniqueness constraints after adding productid."""
-        try:
-            return super().perform_create(serializer)
-        except ValidationError as exc:
-            raise exceptions.ValidationError(exc)
+        """Set the product ."""
+        product = models.Product.objects.filter(slug=self.kwargs["product_id"])
+        if product.exists():
+            serializer.validated_data["productid"] = product[0]
+
+            try:
+                indicator = super().perform_create(serializer)
+            except IntegrityError:
+                raise exceptions.ValidationError(
+                    message={"NON_FIELD_ERRORS": "Cannot create duplicate key"}
+                )
+            return indicator
