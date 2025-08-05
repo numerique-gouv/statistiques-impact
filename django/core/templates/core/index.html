@@ -1,16 +1,94 @@
 {% extends "core/base.html" %}
 {% load static %}
 {% block content %}
-<h1>Statistiques d'usage des produits de l'opérateur</h1>
+<div class="fr-notice fr-notice--info">
+    <div class="fr-container">
+        <div class="fr-notice__body">
+            <p>
+                <span class="fr-notice__title">Ce service est en cours de construction.</span>
+                <span class="fr-notice__desc">Des erreurs peuvent encore apparaître, merci pour votre compréhension.</span>
+            </p>
+        </div>
+    </div>
+</div>
 
-<h2>La Suite Numérique</h2>
-<ul>
-    <li>ProConnect</li>
-    <li>Tchap</li>
-    <li>France Transfert</li>
-    <li>Grist</li>
-    <li>Docs</li>
-    <li>Visio</li>
-    <li>Messagerie</li>
-</ul>
+<div class="fr-container fr-pt-4w">
+    <h1>Statistiques d'usage des produits de l'Opérateur</h1>
+</div>
+
+<div class="fr-container fr-py-5w fr-mt-5w fr-mb-5w">
+    <p>Le département "Opérateur de Produits Intérministériels" (OPI) de la Direction Interministérielle du Numérique publie ici les données d'usage d'une partie de ses services, en complément du 
+    <a target="_blank" href="https://www.data.gouv.fr/organizations/direction-interministerielle-du-numerique/">compte de la DINUM sur data.gouv.fr</a>. Ce service propose :</p>
+
+    <div class="fr-container cmsfr-block-item_grid">
+        <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--top fr-mb-2w">
+            <div class="fr-col-12 fr-col-md-6 fr-col-lg-4">
+                <div class="fr-tile">
+                    <div class="fr-tile__body">
+                        <div class="fr-tile__content">
+                            <h3 class="fr-tile__title">
+                                Une API publique
+                            </h3>
+                            <p class="fr-tile__desc">
+                                Une API publique et gratuite pour lister les produits de l'Opérateur et obtenir des détails sur leur principaux indicateurs d'usage.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="fr-col-12 fr-col-md-6 fr-col-lg-4">
+                <div class="fr-tile">
+                    <div class="fr-tile__body">
+                        <div class="fr-tile__content">
+                            <h3 class="fr-tile__title">
+                                La visualisation des indicateurs
+                            </h3>
+                            <p class="fr-tile__desc">
+                                Visualisation et exploration des données via 
+                                <a href="https://superset.beta.numerique.gouv.fr/dashboard/list/?pageIndex=0&sortColumn=changed_on_delta_humanized&sortOrder=desc&viewMode=table" target="_blank">notre instance Superset</a>
+                                (bientôt intégrée ici).
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="fr-col-12 fr-col-md-6 fr-col-lg-4">
+                <div class="fr-tile">
+                    <div class="fr-tile__body">
+                        <div class="fr-tile__content">
+                            <h3 class="fr-tile__title">
+                                Automatisation des publications
+                            </h3>
+                            <p class="fr-tile__desc">
+                                Récupération et bientôt publication des données d'usage vers data.gouv.fr chaque début de mois.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+
+<div class="fr-py-5w fr-mt-5w fr-mb-5w">
+    <div class="fr-col-12">
+        <h2>Questions fréquentes</h2>
+    </div>
+    
+    <h3>À qui s'adresse ce service ?</h3>
+    <p>Ce service s'adresse à toutes les personnes souhaitant consulter et visualiser les données d'usage des produits de l'Opérateur.</p>
+
+    <h3>Quels produits puis-je retrouver sur ce service ?</h3>
+    <p>Les produits de l'opérateur dont l'usage est déjà mesuré et récupéré mensuellement par ce service. Parmi ceux-là, les produits de 
+        <a href="https://lasuite.numerique.gouv.fr/" target="_blank">la Suite Numérique</a> tels que ProConnect ou Visio.
+    </p>
+
+    <h3>J'ai une autre question / je rencontre un souci avec le site</h3>
+    <p>N'hésitez pas à nous contacter par mail à 
+        <b>
+            opendata@numerique.gouv.fr
+        </b>
+        ou ouvrez une issue sur 
+        <a href="https://github.com/numerique-gouv/statistiques-impact">notre repo de code</a>.
+    </p>
+</div>
 {% endblock content %}
