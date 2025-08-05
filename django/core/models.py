@@ -109,10 +109,10 @@ class Indicator(models.Model):
 
 
 class ProductAPIKey(AbstractAPIKey):
-    product = models.ForeignKey(
+    productid = models.ForeignKey(
         "Product",
         models.DO_NOTHING,
-        db_column="product",
+        db_column="productId",
         blank=False,
         null=False,
         related_name="api_keys",
