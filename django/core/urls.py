@@ -7,6 +7,7 @@ from core import views
 from . import api_urls
 
 urlpatterns = [
+    path("", views.index, name="index"),
     path("admin/", admin.site.urls),
     re_path(r"accessibility/?$", views.accessibility, name="accessibility"),
     re_path(r"products/?$", views.products, name="products"),
