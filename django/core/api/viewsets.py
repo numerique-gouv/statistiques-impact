@@ -1,7 +1,6 @@
-from rest_framework import viewsets, mixins, permissions
+from rest_framework import viewsets, mixins
 from core import models
 from core.api import serializers
-from rest_framework_api_key.permissions import HasAPIKey
 
 
 class ProductViewSet(
@@ -23,7 +22,6 @@ class IndicatorViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     serializer_class = serializers.IndicatorSerializer
     queryset = models.Indicator.objects.all()
-    permission_classes = [HasAPIKey | permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self, *args, **kwargs):
         queryset = super().get_queryset()

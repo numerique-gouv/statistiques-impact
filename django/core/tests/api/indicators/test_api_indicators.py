@@ -48,5 +48,5 @@ def test_api_indicators_create__anonymous_cannot_create():
         f"/api/products/{product.slug}/indicators/",
         body="{'nom_service_public_numerique': 'product'}",
     )
-    assert response.status_code == status.HTTP_403_FORBIDDEN
+    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
     assert len(models.Product.objects.all()) == 1
