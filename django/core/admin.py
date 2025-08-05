@@ -20,8 +20,15 @@ class IndicatorAdmin(admin.ModelAdmin):
         "productid__nom_service_public_numerique",
         "indicateur",
         "date",
+        "frequence_monitoring",
         "valeur",
     )
+    search_fields = ("productid__nom_service_public_numerique", "indicateur")
+    list_filter = [
+        "productid__nom_service_public_numerique",
+        "indicateur",
+        ("date", admin.DateFieldListFilter),
+    ]
     readonly_fields = ("id",)
 
 
