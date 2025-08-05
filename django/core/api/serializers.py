@@ -14,6 +14,3 @@ class IndicatorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Indicator
         fields = "__all__"
-        read_only_fields = [
-            "productid",
-        ]
