@@ -27,7 +27,7 @@ def test_api_indicators_list__anonymous_ok():
         {
             "id": str(indicator.id),
             "indicateur": indicator.indicateur,
-            "valeur": indicator.valeur,
+            "valeur": float(indicator.valeur),
             "unite_mesure": indicator.unite_mesure,
             "frequence_monitoring": indicator.frequence_monitoring,
             "date": str(indicator.date),

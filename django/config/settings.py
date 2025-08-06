@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "widget_tweaks",
     "dsfr",
     "core",
+    "cron_tasks",
     "rest_framework",
     "rest_framework_api_key",
 ]
