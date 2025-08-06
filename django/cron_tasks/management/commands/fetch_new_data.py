@@ -10,5 +10,5 @@ class Command(BaseCommand):
     """
 
     def handle(self, *args, **options):
-        adaptor = ProConnectAdaptor()
-        adaptor.create_indicator()
+        pc_adaptor = ProConnectAdaptor()
+        pc_adaptor.create_indicator(pc_adaptor.indicators[0])

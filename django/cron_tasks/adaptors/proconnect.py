@@ -1,7 +1,7 @@
 import requests
 from core import models
 from django.core import exceptions
-from cron_tasks.utils import get_previous_day
+from cron_tasks import utils
 
 
 class ProConnectAdaptor:
@@ -20,7 +20,7 @@ class ProConnectAdaptor:
         """Fetch data from url."""
         response = requests.get(url)
 
-        indicator_date = get_previous_day(response.json()[0]["Time - Mois"])
+        indicator_date = utils.get_last_day_of_month(response.json()[0]["Time: Mois"])
         value = response.json()[0]["Valeurs distinctes de Sub Fi"]
         return indicator_date, value
 
@@ -35,7 +35,9 @@ class ProConnectAdaptor:
                 unite_mesure="unite",
                 frequence_monitoring=indicator["frequency"],
                 date=date,
-                date_debut=date.replace(day=1),
+                date_debut=date.replace(day=1)
+                if indicator["frequency"] == "mensuelle"
+                else "",
                 est_automatise=automatic_call,
                 est_periode=True,
             )
