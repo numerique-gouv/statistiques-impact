@@ -23,3 +23,10 @@ class IndicatorSerializer(serializers.ModelSerializer):
         if product.exists():
             attrs["productid"] = product[0]
         return super().validate(attrs)
+
+
+class IndicatorSubmitSerializer(serializers.Serializer):
+    file_uploaded = serializers.FileField()
+
+    class Meta:
+        fields = ["file_uploaded"]

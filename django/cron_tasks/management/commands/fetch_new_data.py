@@ -11,4 +11,4 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         pc_adaptor = ProConnectAdaptor()
-        pc_adaptor.create_indicator(pc_adaptor.indicators[0])
+        pc_adaptor.fetch_latest_data()

@@ -1,7 +1,11 @@
 from rest_framework import viewsets, mixins, exceptions
+from rest_framework.response import Response
+from rest_framework.generics import UpdateAPIView
 from core import models
 from core.api import serializers, permissions
 from django.core.exceptions import ValidationError
+from rest_framework.parsers import FileUploadParser
+from cron_tasks.adaptors import france_transfert
 
 
 class ProductViewSet(
@@ -45,3 +49,17 @@ class IndicatorViewSet(
             return super().perform_create(serializer)
         except ValidationError as exc:
             raise exceptions.ValidationError(exc)
+
+
+class IndicatorSubmissionView(UpdateAPIView):
+    parser_classes = (FileUploadParser,)
+    serializer_class = serializers.IndicatorSubmitSerializer
+
+    def post(self, request, *args, **kwargs):
+        """A endpoint for submission of external data."""
+        product = models.Product.objects.filter(slug=kwargs["product_id"])
+        if product.exists():
+            file = request.data["file"]
+            adaptor = france_transfert.FranceTransfertAdaptor()
+            response = adaptor.create_indicators_from_csv(file)
+        return Response(data=response, status=200)
