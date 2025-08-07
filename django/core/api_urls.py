@@ -16,7 +16,6 @@ indicator_router.register(
     basename="indicators",
 )
 
-
 urlpatterns = [
     path(
         "",
@@ -27,7 +26,12 @@ urlpatterns = [
                     r"^products/(?P<product_id>[\w-]+)/?",
                     include(indicator_router.urls),
                 ),
+                re_path(
+                    r"^products/(?P<product_id>[\w-]+)/submission/?",
+                    viewsets.IndicatorSubmissionView.as_view(),
+                    name="submission",
+                ),
             ]
         ),
-    )
+    ),
 ]

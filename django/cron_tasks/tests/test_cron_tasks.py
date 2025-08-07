@@ -26,7 +26,7 @@ def test_proconnect_active_users():
         content_type="application/json",
     )
 
-    new_entry = adaptor.create_indicator(adaptor.indicators[0])
+    new_entry = adaptor.fetch_latest_data()
     assert models.Indicator.objects.exists()
     assert new_entry.date == "2024-02-29"
     assert new_entry.date_debut == "2024-02-01"

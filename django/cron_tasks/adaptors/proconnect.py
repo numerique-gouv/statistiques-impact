@@ -1,10 +1,9 @@
 import requests
-from core import models
-from django.core import exceptions
 from cron_tasks import utils
+from cron_tasks.adaptors.base_adaptor import BaseAdaptor
 
 
-class ProConnectAdaptor:
+class ProConnectAdaptor(BaseAdaptor):
     """Adaptor to fetch and send ProConnect's indicators."""
 
     slug = "agent-connect"
@@ -16,46 +15,15 @@ class ProConnectAdaptor:
         }
     ]
 
-    def _fetch_data(self, url):
+    def fetch_latest_data(self):
+        """Grab and push all indicators."""
+        for indicator in self.indicators:
+            date, value = self._get_data(indicator["url"])
+            return self.create_indicator(indicator, date, value)
+
+    def _get_data(self, url):
         """Fetch data from url."""
         response = requests.get(url)
-
         indicator_date = utils.get_last_day_of_month(response.json()[0]["Time: Mois"])
         value = response.json()[0]["Valeurs distinctes de Sub Fi"]
         return indicator_date, value
-
-    def create_indicator(self, indicator, automatic_call=True):
-        date, value = self._fetch_data(indicator["url"])
-        product = models.Product.objects.get(slug=self.slug)
-        try:
-            new_entry = models.Indicator.objects.create(
-                productid=product,
-                indicateur=indicator["name"],
-                valeur=float(value),
-                unite_mesure="unite",
-                frequence_monitoring=indicator["frequency"],
-                date=date,
-                date_debut=date.replace(day=1)
-                if indicator["frequency"] == "mensuelle"
-                else "",
-                est_automatise=automatic_call,
-                est_periode=True,
-            )
-        except exceptions.ValidationError:
-            print(
-                product,
-                indicator["name"],
-                date,
-                indicator["frequency"],
-                "already exists",
-            )
-            return None
-        else:
-            print(
-                product,
-                indicator["name"],
-                date,
-                indicator["frequency"],
-                "added",
-            )
-            return new_entry
