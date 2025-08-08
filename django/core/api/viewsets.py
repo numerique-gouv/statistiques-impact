@@ -54,6 +54,7 @@ class IndicatorViewSet(
 class IndicatorSubmissionView(UpdateAPIView):
     parser_classes = (FileUploadParser,)
     serializer_class = serializers.IndicatorSubmitSerializer
+    permission_classes = [permissions.HasValidAPIKeyOrReadOnly]
 
     def post(self, request, *args, **kwargs):
         """A endpoint for submission of external data."""
