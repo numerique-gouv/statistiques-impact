@@ -77,6 +77,9 @@ class Product(models.Model):
             self.slug = slugify(self.nom_service_public_numerique)
         return super().save(*args, **kwargs)
 
+    def __str__(self):
+        return self.nom_service_public_numerique
+
 
 class Indicator(models.Model):
     id = models.UUIDField(
