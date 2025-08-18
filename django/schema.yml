@@ -1,0 +1,284 @@
+openapi: 3.0.3
+info:
+  title: Statistique d'usage
+  version: 2.0.0
+  description: Your project description
+paths:
+  /api/products/:
+    get:
+      operationId: products_list
+      description: API endpoint to list existing products.
+      tags:
+      - products
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+          description: ''
+  /api/products/{product_id}/indicators/:
+    get:
+      operationId: products_indicators_list
+      description: |-
+        API endpoint to list and manage indicators of a given product.
+
+        GET /api/products/<your-product>/indicators/
+            Return a list of public indicators for this product.
+            Can be filtered by indicateur with ?indicateur=<your desired indicateur>
+      parameters:
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - products
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Indicator'
+          description: ''
+    post:
+      operationId: products_indicators_create
+      description: |-
+        API endpoint to list and manage indicators of a given product.
+
+        GET /api/products/<your-product>/indicators/
+            Return a list of public indicators for this product.
+            Can be filtered by indicateur with ?indicateur=<your desired indicateur>
+      parameters:
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Indicator'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Indicator'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Indicator'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Indicator'
+          description: ''
+  /api/products/{product_id}/indicators/{id}/:
+    get:
+      operationId: products_indicators_retrieve
+      description: |-
+        API endpoint to list and manage indicators of a given product.
+
+        GET /api/products/<your-product>/indicators/
+            Return a list of public indicators for this product.
+            Can be filtered by indicateur with ?indicateur=<your desired indicateur>
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          description: primary key for the record as UUID
+        required: true
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - products
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Indicator'
+          description: ''
+    delete:
+      operationId: products_indicators_destroy
+      description: |-
+        API endpoint to list and manage indicators of a given product.
+
+        GET /api/products/<your-product>/indicators/
+            Return a list of public indicators for this product.
+            Can be filtered by indicateur with ?indicateur=<your desired indicateur>
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          description: primary key for the record as UUID
+        required: true
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - products
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/products/{product_id}/submission/:
+    post:
+      operationId: products_submission_create
+      description: An endpoint for submission of external data in .csv format.
+      parameters:
+      - in: path
+        name: product_id
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - products
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/IndicatorSubmit'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndicatorSubmit'
+          description: ''
+  /api/products/{slug}/:
+    get:
+      operationId: products_retrieve
+      description: API endpoint to list existing products.
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - products
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+components:
+  schemas:
+    Indicator:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+          description: primary key for the record as UUID
+        valeur:
+          type: integer
+        indicateur:
+          type: string
+          maxLength: 100
+        unite_mesure:
+          type: string
+        frequence_monitoring:
+          type: string
+        date:
+          type: string
+        date_debut:
+          type: string
+          nullable: true
+        est_periode:
+          type: boolean
+        est_automatise:
+          type: boolean
+        productid:
+          type: string
+          format: uuid
+          description: primary key for the record as UUID
+          readOnly: true
+      required:
+      - date
+      - est_automatise
+      - est_periode
+      - frequence_monitoring
+      - id
+      - indicateur
+      - productid
+      - unite_mesure
+      - valeur
+    IndicatorSubmit:
+      type: object
+      properties:
+        file_uploaded:
+          type: string
+          format: uri
+      required:
+      - file_uploaded
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+          description: primary key for the record as UUID
+        nom_service_public_numerique:
+          type: string
+          maxLength: 100
+      required:
+      - id
+      - nom_service_public_numerique
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
