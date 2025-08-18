@@ -67,8 +67,8 @@ def test_api_submissions__unauthorized_cannot_submit():
     reason="Test broken because of csv boundaries.\
     Code works as expected when calling with Postman or curl + same file."
 )
-def test_api_submissions__france_transert():
-    """Correctly formatted request should create expected indicators."""
+def test_api_submissions__france_transert_upload_stats():
+    """Submitting an FT upload_stats file should create expected indicators."""
     product = factories.ProductFactory(nom_service_public_numerique="france-transfert")
     _, key = models.ProductAPIKey.objects.create_key(name="valid_key", product=product)
     filename = "core/tests/api/examples/ip-127-0-0-1_FranceTransfert_2025-07-23_upload_stats.csv"
@@ -90,4 +90,33 @@ def test_api_submissions__france_transert():
     assert response.status_code == status.HTTP_200_OK
     assert models.Indicator.objects.filter(
         productid=product, indicateur="Nombre de plis (machine1)"
+    ).exists()
+
+
+@pytest.mark.skip(
+    reason="Test broken because of csv boundaries.\
+    Code works as expected when calling with Postman or curl + same file."
+)
+def test_api_submissions__france_transert_download_stats():
+    """Submitting an FT download_stats file should create expected indicators."""
+    product = factories.ProductFactory(nom_service_public_numerique="france-transfert")
+    _, key = models.ProductAPIKey.objects.create_key(name="valid_key", product=product)
+    filename = "core/tests/api/examples/ip-127-0-0-1_FranceTransfert_2025-05-11_download_stats.csv"
+
+    response = APIClient().post(
+        f"/api/products/{product}/submission/",
+        data={
+            "upload_file": open(
+                filename,
+                "rb",
+            )
+        },
+        headers={
+            "x-api-key": key,
+            "Content-Disposition": f"attachment; filename={filename}",
+        },
+    )
+    assert response.status_code == status.HTTP_200_OK
+    assert models.Indicator.objects.filter(
+        productid=product, indicateur="Nombre de plis téléchargés (machine1)"
     ).exists()

@@ -13,7 +13,6 @@ class FranceTransfertAdaptor(BaseAdaptor):
         code_machine = file.name.split("_")[0].split("-")[4]
 
         response = []
-
         if "upload_stats" in file.name:
             indicators = [
                 {
@@ -33,19 +32,31 @@ class FranceTransfertAdaptor(BaseAdaptor):
                 # (bloqué car dépend du calcul Go émis)
                 # sum_go_sent / df["TAILLE"].count()
             ]
-
-            for indicator in indicators:
-                result = self.create_indicator(indicator, date, indicator["value"])
-                if isinstance(result, models.Indicator):
-                    response.append(serializers.IndicatorSerializer(result).data)
-                else:
-                    response.append(result)
+        elif "download_stats" in file.name:
+            indicators = [
+                {
+                    "name": f"Nombre de plis téléchargés (M{code_machine})",
+                    "frequency": "quotidienne",
+                    "value": df["ID_PLIS"].nunique(),
+                },
+                {
+                    "name": f"Nombre d’utilisateurs téléchargements (M{code_machine})",
+                    "frequency": "quotidienne",
+                    "value": df["HASH_EXPE"].nunique(),
+                },
+                # + Go téléchargés
+            ]
         else:
-            # FICHIERS DONNEES DE TELECHARGEMENT
-            # Nombre de téléchargements des plis
-            # Go téléchargés
-            # Nombre d’utilisateurs téléchargements
+            # Restent à implémenter :
+            # - le traitement des fichiers de satisfaction
+            # - le calcul des Go émis et téléchargés et taille moyenne d'un pli
             response.append("Not implemented yet.")
             pass
 
+        for indicator in indicators:
+            result = self.create_indicator(indicator, date, indicator["value"])
+            if isinstance(result, models.Indicator):
+                response.append(serializers.IndicatorSerializer(result).data)
+            else:
+                response.append(result)
         return response
