@@ -1,6 +1,6 @@
 from rest_framework import viewsets, mixins, exceptions
 from rest_framework.response import Response
-from rest_framework.generics import UpdateAPIView
+from rest_framework.generics import CreateAPIView
 from core import models
 from core.api import serializers, permissions
 from django.core.exceptions import ValidationError
@@ -55,13 +55,13 @@ class IndicatorViewSet(
             raise exceptions.ValidationError(exc)
 
 
-class IndicatorSubmissionView(UpdateAPIView):
+class IndicatorSubmissionView(CreateAPIView):
     parser_classes = (FileUploadParser,)
     serializer_class = serializers.IndicatorSubmitSerializer
     permission_classes = [permissions.HasValidAPIKeyOrReadOnly]
 
     def post(self, request, *args, **kwargs):
-        """A endpoint for submission of external data."""
+        """An endpoint for submission of external data in .csv format."""
         product = models.Product.objects.filter(slug=kwargs["product_id"])
         if product.exists():
             file = request.data["file"]
