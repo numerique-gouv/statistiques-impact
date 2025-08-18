@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     "cron_tasks",
     "rest_framework",
     "rest_framework_api_key",
+    "drf_spectacular",
+    "drf_spectacular_sidecar",
 ]
 
 MIDDLEWARE = [
@@ -146,6 +148,7 @@ REST_FRAMEWORK = {
         "rest_framework.renderers.JSONRenderer",
         "rest_framework.renderers.BrowsableAPIRenderer",
     ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 API_KEY_CUSTOM_HEADER = "HTTP_X_API_KEY"
@@ -153,3 +156,15 @@ API_KEY_CUSTOM_HEADER = "HTTP_X_API_KEY"
 # Setting for revproxy
 UPSTREAM_EXPRESS = os.getenv("UPSTREAM_EXPRESS")
 ENVIRONMENT = os.getenv("ENVIRONMENT")
+
+
+# Spectacular settings
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Statistique d'usage",
+    "DESCRIPTION": "API pour les statistiques d'usage des produits de l'OPI",
+    "VERSION": "2.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SWAGGER_UI_DIST": "SIDECAR",
+    "SWAGGER_UI_FAVICON_HREF": "SIDECAR",
+    "REDOC_DIST": "SIDECAR",
+}

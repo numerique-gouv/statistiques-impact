@@ -6,6 +6,12 @@ from rest_framework.routers import DefaultRouter
 
 from core.api import viewsets
 
+from drf_spectacular.views import (
+    SpectacularJSONAPIView,
+    SpectacularSwaggerView,
+    SpectacularRedocView,
+)
+
 product_router = DefaultRouter()
 product_router.register("products", viewsets.ProductViewSet, basename="products")
 
@@ -33,5 +39,23 @@ urlpatterns = [
                 ),
             ]
         ),
+    ),
+    # Schema
+    path(
+        "swagger.json",
+        SpectacularJSONAPIView.as_view(
+            urlconf="core.api_urls",
+        ),
+        name="api-schema",
+    ),
+    re_path(
+        r"swagger/?",
+        SpectacularSwaggerView.as_view(url_name="api-schema"),
+        name="swagger-ui",
+    ),
+    re_path(
+        r"redoc/?",
+        SpectacularRedocView.as_view(url_name="api-schema"),
+        name="redoc-schema",
     ),
 ]

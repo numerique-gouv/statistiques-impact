@@ -29,6 +29,10 @@ class IndicatorViewSet(
 ):
     """
     API endpoint to list and manage indicators of a given product.
+
+    GET /api/products/<your-product>/indicators/
+        Return a list of public indicators for this product.
+        Can be filtered by indicateur with ?indicateur=<your desired indicateur>
     """
 
     serializer_class = serializers.IndicatorSerializer
