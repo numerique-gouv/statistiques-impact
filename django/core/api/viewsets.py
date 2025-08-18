@@ -41,6 +41,10 @@ class IndicatorViewSet(
         if product_slug := self.kwargs.get("product_id"):
             product = models.Product.objects.get(slug=product_slug)
             queryset = queryset.filter(productid=product)
+
+        query = self.request.query_params
+        if indicateur := query.get("indicateur"):
+            queryset = queryset.filter(indicateur=indicateur)
         return queryset
 
     def perform_create(self, serializer):

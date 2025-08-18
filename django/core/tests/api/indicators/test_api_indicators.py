@@ -44,6 +44,33 @@ def test_api_indicators_list__anonymous_ok():
     )
 
 
+def test_api_indicators_list__filter_ok():
+    """Can filter by indicateur."""
+    product = factories.ProductFactory()
+    factories.IndicatorFactory(indicateur="somethingelse", productid=product)
+    indicator = factories.IndicatorFactory(productid=product)
+
+    response = APIClient().get(
+        f"/api/products/{product.slug}/indicators/?indicateur=utilisateurs%20actifs"
+    )
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.json()) == 1
+    assert response.json() == [
+        {
+            "id": str(indicator.id),
+            "indicateur": indicator.indicateur,
+            "valeur": indicator.valeur,
+            "unite_mesure": indicator.unite_mesure,
+            "frequence_monitoring": indicator.frequence_monitoring,
+            "date": str(indicator.date),
+            "date_debut": str(indicator.date_debut),
+            "est_periode": indicator.est_periode,
+            "est_automatise": indicator.est_automatise,
+            "productid": str(indicator.productid.id),
+        }
+    ]
+
+
 # CREATE
 def test_api_indicators_create__anonymous_cannot_create():
     """Anonymous users should not be allowed to create indicators."""
