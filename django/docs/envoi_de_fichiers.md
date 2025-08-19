@@ -4,14 +4,14 @@
 
 Certains indicateurs ne sont pas récupérés automatiquement par notre API en début de mois mais générés à partir de fichiers qui nous sont envoyés. C'est notamment le cas des indicateurs de France Transfert. Vous trouverez ci-dessous quelques explications pour configurer vos appels.
 
-## Format d'appel
+## Exemple d'appel
 
 ```bash
 curl -L 'http://stats.beta.numerique.gouv.fr/api/products/france-transfert/submission/' 
 -H 'Content-Type: text/csv' 
 -H 'x-api-key: <votre-clé-secrète>' 
 -H 'Content-Disposition: attachment; filename=ip-127-0-0-1_FranceTransfert_2025-07-14_upload_stats.csv' 
--d '@/home/marie/Dev/operateur/statistiques-impact/django/core/tests/api/examples/ip-127-0-0-1_FranceTransfert_2025-07-24_upload_stats.csv'
+-d '@/home/france-transfert/statistiques/ip-127-0-0-1_FranceTransfert_2025-07-24_upload_stats.csv'
 ```
 
 > [!NOTE]   
