@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from core import models, factories
+from django.test import override_settings
 
 pytestmark = pytest.mark.django_db
 
@@ -132,6 +133,30 @@ def test_api_indicators_create__valid_api_key_can_create():
     )
     assert response.status_code == status.HTTP_201_CREATED
     assert models.Indicator.objects.exists()
+
+
+@override_settings(ADMIN_API_KEY="admin_key")
+def test_api_indicators_create__admin_can_create():
+    """Calls bearing the ADMIN API KEY can create indicator on every products."""
+    products = factories.ProductFactory.create_batch(2)
+
+    for product in products:
+        response = APIClient().post(
+            f"/api/products/{product.slug}/indicators/",
+            {
+                "indicateur": "participants",
+                "valeur": 3,
+                "unite_mesure": "unite",
+                "frequence_monitoring": "mensuelle",
+                "date": "2025-06-30",
+                "date_debut": "2025-04-01",
+                "est_periode": "true",
+                "est_automatise": "false",
+            },
+            headers={"x-api-key": "admin_key"},
+        )
+        assert response.status_code == status.HTTP_201_CREATED
+    assert models.Indicator.objects.count() == 2
 
 
 def test_api_indicators_create__cannot_create_duplicate():

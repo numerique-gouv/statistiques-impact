@@ -152,6 +152,7 @@ REST_FRAMEWORK = {
 }
 
 API_KEY_CUSTOM_HEADER = "HTTP_X_API_KEY"
+ADMIN_API_KEY = os.getenv("ADMIN_API_KEY")
 
 # Setting for revproxy
 UPSTREAM_EXPRESS = os.getenv("UPSTREAM_EXPRESS")
