@@ -41,10 +41,7 @@
       <div class="fr-header__menu-links">
       </div>
       {% translate "Main menu" as main_menu_label %}
-      <nav role="navigation"
-            class="fr-nav"
-            id="fr-navigation"
-            aria-label="{{ main_menu_label }}">
+      <nav class="fr-nav" id="fr-navigation" aria-label="{{ main_menu_label }}">
         <ul class="fr-nav__list">
           <li class="fr-nav__item">
             <a class="fr-nav__link" href="{% url 'index' %} " target="_self">{% translate "Accueil" %}</a>
