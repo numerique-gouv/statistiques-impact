@@ -31,4 +31,35 @@
 {% endblock burger_menu %}
 
 {% block main_menu %}
+  <div class="fr-header__menu fr-modal"
+        id="fr-menu-mobile"
+        aria-labelledby="fr-btn-menu-mobile">
+    <div class="fr-container">
+      <button class="fr-btn--close fr-btn" aria-controls="fr-menu-mobile">
+        {% translate "Close" %}
+      </button>
+      <div class="fr-header__menu-links">
+      </div>
+      {% translate "Main menu" as main_menu_label %}
+      <nav role="navigation"
+            class="fr-nav"
+            id="fr-navigation"
+            aria-label="{{ main_menu_label }}">
+        <ul class="fr-nav__list">
+          <li class="fr-nav__item">
+            <a class="fr-nav__link" href="{% url 'index' %} " target="_self">{% translate "Accueil" %}</a>
+          </li>
+          <li class="fr-nav__item">
+            <a class="fr-nav__link" href="{% url 'products' %}" target="_self">{% translate "Derniers indicateurs" %}</a>
+          </li>
+          <li class="fr-nav__item">
+            <a class="fr-nav__link" href="{% url 'swagger-ui' %}" target="_blank">API</a>
+          </li>
+          <li class="fr-nav__item">
+            <a class="fr-nav__link" href="https://superset.beta.numerique.gouv.fr/dashboard/list/" target="_blank">Superset</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
 {% endblock main_menu %}
