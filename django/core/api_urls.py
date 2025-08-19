@@ -2,7 +2,7 @@
 
 from django.urls import include, path, re_path
 
-from rest_framework.routers import DefaultRouter
+from rest_framework.routers import DefaultRouter, SimpleRouter
 
 from core.api import viewsets
 
@@ -13,9 +13,9 @@ from drf_spectacular.views import (
 )
 
 product_router = DefaultRouter()
-product_router.register("products", viewsets.ProductViewSet, basename="products")
+product_router.register(r"products", viewsets.ProductViewSet, basename="products")
 
-indicator_router = DefaultRouter()
+indicator_router = SimpleRouter()
 indicator_router.register(
     "indicators",
     viewsets.IndicatorViewSet,
@@ -23,22 +23,12 @@ indicator_router.register(
 )
 
 urlpatterns = [
-    path(
-        "",
-        include(
-            [
-                *product_router.urls,
-                re_path(
-                    r"^products/(?P<product_id>[\w-]+)/?",
-                    include(indicator_router.urls),
-                ),
-                re_path(
-                    r"^products/(?P<product_id>[\w-]+)/submission/?",
-                    viewsets.IndicatorSubmissionView.as_view(),
-                    name="submission",
-                ),
-            ]
-        ),
+    path("", include(product_router.urls)),
+    re_path(r"^products/(?P<product_slug>[\w-]+)/?", include(indicator_router.urls)),
+    re_path(
+        r"^products/(?P<product_slug>[\w-]+)/submission/?",
+        viewsets.IndicatorSubmissionView.as_view(),
+        name="submission",
     ),
     # Schema
     path(

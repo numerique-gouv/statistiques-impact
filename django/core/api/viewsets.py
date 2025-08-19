@@ -14,6 +14,9 @@ class ProductViewSet(
 ):
     """
     API endpoint to list existing products.
+
+    - GET products/ lists all product
+    - GET products/<product_slug>/ retrieves info on this product
     """
 
     queryset = models.Product.objects.all()
@@ -44,7 +47,7 @@ class IndicatorViewSet(
     def get_queryset(self, *args, **kwargs):
         queryset = super().get_queryset()
 
-        if product_slug := self.kwargs.get("product_id"):
+        if product_slug := self.kwargs.get("product_slug"):
             product = get_object_or_404(models.Product, slug=product_slug)
             queryset = queryset.filter(productid=product)
 
@@ -68,7 +71,7 @@ class IndicatorSubmissionView(CreateAPIView):
 
     def post(self, request, *args, **kwargs):
         """An endpoint for submission of external data in .csv format."""
-        product = models.Product.objects.filter(slug=kwargs["product_id"])
+        product = models.Product.objects.filter(slug=kwargs["product_slug"])
         if product.exists():
             file = request.data["file"]
             adaptor = france_transfert.FranceTransfertAdaptor()

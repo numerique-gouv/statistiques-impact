@@ -19,7 +19,9 @@ class IndicatorSerializer(serializers.ModelSerializer):
         ]
 
     def validate(self, attrs):
-        product = Product.objects.filter(slug=self.context["view"].kwargs["product_id"])
+        product = Product.objects.filter(
+            slug=self.context["view"].kwargs["product_slug"]
+        )
         if product.exists():
             attrs["productid"] = product[0]
         return super().validate(attrs)
