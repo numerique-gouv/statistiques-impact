@@ -6,6 +6,7 @@ from core.api import serializers, permissions
 from django.core.exceptions import ValidationError
 from rest_framework.parsers import FileUploadParser
 from cron_tasks.adaptors import france_transfert
+from django.shortcuts import get_object_or_404
 
 
 class ProductViewSet(
@@ -42,8 +43,9 @@ class IndicatorViewSet(
 
     def get_queryset(self, *args, **kwargs):
         queryset = super().get_queryset()
+
         if product_slug := self.kwargs.get("product_id"):
-            product = models.Product.objects.get(slug=product_slug)
+            product = get_object_or_404(models.Product, slug=product_slug)
             queryset = queryset.filter(productid=product)
 
         query = self.request.query_params
