@@ -2,12 +2,16 @@ openapi: 3.0.3
 info:
   title: Statistique d'usage
   version: 2.0.0
-  description: Your project description
+  description: API pour les statistiques d'usage des produits de l'OPI
 paths:
   /api/products/:
     get:
       operationId: products_list
-      description: API endpoint to list existing products.
+      description: |-
+        API endpoint to list existing products.
+
+        - GET products/ lists all product
+        - GET products/<product_slug>/ retrieves info on this product
       tags:
       - products
       security:
@@ -23,7 +27,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/Product'
           description: ''
-  /api/products/{product_id}/indicators/:
+  /api/products/{product_slug}/indicators/:
     get:
       operationId: products_indicators_list
       description: |-
@@ -34,7 +38,7 @@ paths:
             Can be filtered by indicateur with ?indicateur=<your desired indicateur>
       parameters:
       - in: path
-        name: product_id
+        name: product_slug
         schema:
           type: string
           pattern: ^[\w-]+$
@@ -63,7 +67,7 @@ paths:
             Can be filtered by indicateur with ?indicateur=<your desired indicateur>
       parameters:
       - in: path
-        name: product_id
+        name: product_slug
         schema:
           type: string
           pattern: ^[\w-]+$
@@ -92,7 +96,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Indicator'
           description: ''
-  /api/products/{product_id}/indicators/{id}/:
+  /api/products/{product_slug}/indicators/{id}/:
     get:
       operationId: products_indicators_retrieve
       description: |-
@@ -110,7 +114,7 @@ paths:
           description: primary key for the record as UUID
         required: true
       - in: path
-        name: product_id
+        name: product_slug
         schema:
           type: string
           pattern: ^[\w-]+$
@@ -144,7 +148,7 @@ paths:
           description: primary key for the record as UUID
         required: true
       - in: path
-        name: product_id
+        name: product_slug
         schema:
           type: string
           pattern: ^[\w-]+$
@@ -157,13 +161,13 @@ paths:
       responses:
         '204':
           description: No response body
-  /api/products/{product_id}/submission/:
+  /api/products/{product_slug}/submission/:
     post:
       operationId: products_submission_create
       description: An endpoint for submission of external data in .csv format.
       parameters:
       - in: path
-        name: product_id
+        name: product_slug
         schema:
           type: string
           pattern: ^[\w-]+$
@@ -189,7 +193,11 @@ paths:
   /api/products/{slug}/:
     get:
       operationId: products_retrieve
-      description: API endpoint to list existing products.
+      description: |-
+        API endpoint to list existing products.
+
+        - GET products/ lists all product
+        - GET products/<product_slug>/ retrieves info on this product
       parameters:
       - in: path
         name: slug

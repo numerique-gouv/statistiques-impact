@@ -16,7 +16,7 @@ class HasValidAPIKeyOrReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        product = get_object_or_404(models.Product, slug=view.kwargs["product_id"])
+        product = get_object_or_404(models.Product, slug=view.kwargs["product_slug"])
         if key := request.headers.get("X-Api-Key"):
             try:
                 api_key = models.ProductAPIKey.objects.get_from_key(key)
