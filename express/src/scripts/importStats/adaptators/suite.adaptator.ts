@@ -34,7 +34,7 @@ function buildSuiteAdaptator(productId: SUITE_PRODUCT_ID) {
         var indicatorName = 'utilisateurs actifs';
 
         if (productName == 'resana' || productName == 'france-transfert'){
-            indicatorName = 'utilisateurs actifs via PC';
+            indicatorName = 'utilisateurs actifs via ProConnect';
         }
         const indicatorDtos: any = [];
         try {
