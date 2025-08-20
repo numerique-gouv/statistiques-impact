@@ -8,6 +8,11 @@
       "groupName": "ignored python dependencies",
       "matchManagers": ["pep621"],
       "matchPackageNames": []
+    },
+    {
+      "groupName": "Ignore express folder",
+      "ignorePaths": ["**/express/**"],
+      "matchManagers": ["npm"]
     }
   ]
 }
