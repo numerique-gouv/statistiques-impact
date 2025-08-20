@@ -3,7 +3,5 @@
   "extends": [
     "config:recommended"
   ],
-  "no-express": {
-    "ignorePaths": ["express/**"]
-  }
+  "ignorePaths": ["**/express/**"]
 }
