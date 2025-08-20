@@ -1,7 +1,13 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended"
-  ],
-  "ignorePaths": ["**/express/**"]
+  "extends": ["github>numerique-gouv/renovate-configuration"],
+  "dependencyDashboard": true,
+  "labels": ["dependencies"],
+  "packageRules": [
+    {
+      "enabled": false,
+      "groupName": "ignored python dependencies",
+      "matchManagers": ["pep621"],
+      "matchPackageNames": []
+    }
+  ]
 }
