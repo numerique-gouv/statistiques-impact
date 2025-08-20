@@ -20,8 +20,15 @@ class ProductViewSet(
     """
 
     queryset = models.Product.objects.all()
-    serializer_class = serializers.ProductSerializer
+    serializer_class = serializers.ProductListSerializer
     lookup_field = "slug"
+
+    def get_serializer_class(self):
+        """Return list or detail serializer depending on the action."""
+        if self.action == "retrieve":
+            return serializers.ProductDetailSerializer
+
+        return self.serializer_class
 
 
 class IndicatorViewSet(

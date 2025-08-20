@@ -49,10 +49,12 @@ def test_api_indicators_list__filter_ok():
     """Can filter by indicateur."""
     product = factories.ProductFactory()
     factories.IndicatorFactory(indicateur="somethingelse", productid=product)
-    indicator = factories.IndicatorFactory(productid=product)
+    indicator = factories.IndicatorFactory(
+        indicateur="utilisateurs actifs", productid=product
+    )
 
     response = APIClient().get(
-        f"/api/products/{product.slug}/indicators/?indicateur=utilisateurs%20actifs"
+        f"/api/products/{product.slug}/indicators/?indicateur=utilisateurs actifs"
     )
     assert response.status_code == status.HTTP_200_OK
     assert len(response.json()) == 1
