@@ -28,7 +28,7 @@ class IndicatorFactory(factory.django.DjangoModelFactory):
         model = models.Indicator
 
     productid = factory.SubFactory(ProductFactory)
-    indicateur = "utilisateurs actifs"
+    indicateur = factory.Faker("text", max_nb_chars=30)
     valeur = random.randint(1, 300000)
     unite_mesure = "unite"
     frequence_monitoring = "mensuelle"

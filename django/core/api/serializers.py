@@ -2,12 +2,6 @@ from core.models import Product, Indicator
 from rest_framework import serializers
 
 
-class ProductSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Product
-        fields = ["id", "nom_service_public_numerique"]
-
-
 class IndicatorSerializer(serializers.ModelSerializer):
     valeur = serializers.IntegerField()
 
@@ -32,3 +26,22 @@ class IndicatorSubmitSerializer(serializers.Serializer):
 
     class Meta:
         fields = ["file_uploaded"]
+
+
+class ProductDetailSerializer(serializers.ModelSerializer):
+    """Serializer for Product objects. Add most recent indicators."""
+
+    last_indicators = serializers.SerializerMethodField("get_last_indicators")
+
+    class Meta:
+        model = Product
+        fields = ["nom_service_public_numerique", "slug", "last_indicators"]
+
+    def get_last_indicators(self, instance):
+        return IndicatorSerializer(instance.last_indicators, many=True).data
+
+
+class ProductListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ["nom_service_public_numerique", "slug"]
