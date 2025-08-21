@@ -14,8 +14,8 @@
                     <caption>Produits référencés</caption>
                     <thead>
                         <th scope="col">Produit</th>
-                        <th scope="col">Date dernière stat</th>
-                        <th scope="col">Dernière stat</th>
+                        <th scope="col">Date dernières stat</th>
+                        <th scope="col">Dernières stat</th>
                         <th scope="col">Récupération auto ?</th>
                     </thead>
                     <tbody>
@@ -30,14 +30,14 @@
                                 <td>
                                     <ul>
                                         {% for indicator in  product.last_indicators %}
-                                            <li>{{ indicator.valeur|floatformat:"0" }} {{ indicator.indicateur }}</li>
+                                            <li style="list-style-type: none;">{{ indicator.valeur|floatformat:"0" }} {{ indicator.indicateur }}</li>
                                         {% endfor %}
                                     </ul>
                                 </td>
                                 <td>
                                     <ul>
                                         {% for indicator in product.last_indicators %}
-                                        <li>
+                                        <li style="list-style-type: none;">
                                             {{ indicator.est_automatise }}
                                         </li>                                            
                                         {% endfor %}

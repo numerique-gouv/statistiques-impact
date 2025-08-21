@@ -3,23 +3,17 @@
 
 {% block footer_links %}
   <li class="fr-footer__bottom-item">
-    <a class="fr-footer__bottom-link" href="#">{% translate "Sitemap" %}</a>
-  </li>
-  <li class="fr-footer__bottom-item">
     <a class="fr-footer__bottom-link" href="{% url 'accessibility' %}">
       {% translate "Accessibilité : non conforme" %}
     </a>
   </li>
   <li class="fr-footer__bottom-item">
-    <a class="fr-footer__bottom-link" href="#">{% translate "Legal notice" %}</a>
+    <a class="fr-footer__bottom-link" href="{% url 'legal-notice' %}">{% translate "Legal notice" %}</a>
   </li>
   <li class="fr-footer__bottom-item">
     <a class="fr-footer__bottom-link" href="#">{% translate "Personal data" %}</a>
   </li>
   <li class="fr-footer__bottom-item">
-    <a class="fr-footer__bottom-link" href="#">{% translate "Cookie management" %}</a>
-  </li>
-  <li class="fr-footer__bottom-item">
-    <a class="fr-footer__bottom-link" target="_blank" href="https://github.com/numerique-gouv/statistiques-impact">{% translate "Source code" %}</a>
+    <a class="fr-footer__bottom-link" target="_blank" href="https://github.com/numerique-gouv/statistiques-impact">{% translate "Le logiciel est libre" %}</a>
   </li>
 {% endblock footer_links %}

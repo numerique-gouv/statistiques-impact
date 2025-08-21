@@ -2,6 +2,7 @@
 
 from django.urls import include, path, re_path
 from django.contrib import admin
+from django.views.generic import TemplateView
 
 from core import views
 from . import api_urls
@@ -9,8 +10,9 @@ from . import api_urls
 urlpatterns = [
     path("", views.index, name="index"),
     path("admin/", admin.site.urls),
-    re_path(r"accessibility/?$", views.accessibility, name="accessibility"),
-    re_path(r"products/?$", views.products, name="products"),
+    re_path(r"accessibilite/?$", views.accessibility, name="accessibility"),
+    re_path(r"mentions-legales/?$", TemplateView.as_view(template_name='core/legal_notice.html'), name="legal-notice"),
+    re_path(r"produits/?$", views.products, name="products"),
     path(
         "api/",
         include(api_urls),
