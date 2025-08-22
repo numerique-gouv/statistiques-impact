@@ -11,7 +11,11 @@ urlpatterns = [
     path("", views.index, name="index"),
     path("admin/", admin.site.urls),
     re_path(r"accessibilite/?$", views.accessibility, name="accessibility"),
-    re_path(r"mentions-legales/?$", TemplateView.as_view(template_name='core/legal_notice.html'), name="legal-notice"),
+    re_path(
+        r"mentions-legales/?$",
+        TemplateView.as_view(template_name="core/legal_notice.html"),
+        name="legal-notice",
+    ),
     re_path(r"produits/?$", views.products, name="products"),
     path(
         "api/",

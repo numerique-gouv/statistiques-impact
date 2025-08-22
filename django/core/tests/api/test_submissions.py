@@ -89,5 +89,5 @@ def test_api_submissions__france_transert():
     )
     assert response.status_code == status.HTTP_200_OK
     assert models.Indicator.objects.filter(
-        productid=product, indicateur="Nombre de plis (machine1)"
+        productid=product, indicateur="plis émis (machine1)"
     ).exists()

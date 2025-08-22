@@ -17,12 +17,12 @@ class FranceTransfertAdaptor(BaseAdaptor):
         if "upload_stats" in file.name:
             indicators = [
                 {
-                    "name": f"Nombre de plis émis (M{code_machine})",
+                    "name": f"plis émis (M{code_machine})",
                     "frequency": "quotidienne",
                     "value": df["ID_PLIS"].nunique(),
                 },
                 {
-                    "name": f"Nombre d’utilisateurs envoi (M{code_machine})",
+                    "name": f"utilisateurs en envoi (M{code_machine})",
                     "frequency": "quotidienne",
                     "value": df["HASH_EXPE"].nunique(),
                 },
