@@ -3,5 +3,6 @@ from datetime import date, timedelta
 
 def get_last_day_of_month(input_date: date) -> date:
     input_date = date.fromisoformat(input_date)
-    last_day = input_date.replace(month=input_date.month + 1, day=1) - timedelta(days=1)
-    return last_day
+    # timedelta doesn't have a "month" attribute so we have to :
+    next_month = input_date.replace(day=28) + timedelta(days=4)  # go through next month
+    return next_month - timedelta(days=next_month.day)  # substract a few days
