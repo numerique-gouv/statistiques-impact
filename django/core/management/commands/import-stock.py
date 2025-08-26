@@ -5,6 +5,7 @@ from core import models
 import os
 import json
 from cron_tasks import utils
+from datetime import date as dtdate
 
 
 class Command(BaseCommand):
@@ -35,12 +36,23 @@ class Command(BaseCommand):
         """Parse and create missing indicators for 'webinaire'."""
         if "nombre_de_participants" in file_path:
             indicateur = "participants"
+            cle_valeur = "Somme de Attendee Count"
+        elif "visio_par_mois" in file_path:
+            indicateur = "visios"
+            cle_valeur = "Nombre de lignes"
         else:
             raise CommandError("Ce type de fichier n'est pas encore traité.")
 
         self.stdout.write("Loading file ...")
         with open(file_path, "rb") as infile:
             data = json.load(infile)
+
+            # remove current month as we only save count for whole months
+            if data[-1]["Created At: Mois"].split("T")[0] == str(
+                dtdate.today().replace(day=1)
+            ):
+                data.pop(-1)
+
             existing_records = models.Indicator.objects.filter(
                 productid=product, indicateur=indicateur
             )
@@ -49,7 +61,7 @@ class Command(BaseCommand):
             self.stdout.write("Date\tValeur enregistrée\tComparaison valeur fichier")
             for entry in data:
                 date = entry["Created At: Mois"].split("T")[0]
-                valeur = entry["Somme de Attendee Count"]
+                valeur = entry[cle_valeur]
                 self.stdout.write(f"{date}", ending="\t")
                 try:
                     record = existing_records.get(date_debut=date)
