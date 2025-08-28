@@ -8,15 +8,23 @@ from core import views
 from . import api_urls
 
 urlpatterns = [
-    path("", views.index, name="index"),
+    path("", TemplateView.as_view(template_name="core/index.html"), name="index"),
     path("admin/", admin.site.urls),
-    re_path(r"accessibilite/?$", views.accessibility, name="accessibility"),
+    re_path(
+        r"accessibilite/?$",
+        TemplateView.as_view(template_name="core/accessibility.html"),
+        name="accessibility",
+    ),
     re_path(
         r"mentions-legales/?$",
         TemplateView.as_view(template_name="core/legal_notice.html"),
         name="legal-notice",
     ),
-    re_path(r"produits/?$", views.products, name="products"),
+    re_path(
+        r"produits/?$",
+        views.products,
+        name="products",
+    ),
     path(
         "api/",
         include(api_urls),
