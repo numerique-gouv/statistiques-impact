@@ -1,5 +1,4 @@
 import requests
-from core.utils import date_utils
 from core.adaptors.base_adaptor import BaseAdaptor
 
 
@@ -15,19 +14,12 @@ class ProConnectAdaptor(BaseAdaptor):
         }
     ]
 
-    def fetch_latest_data(self):
+    def get_last_month_data(self):
         """Grab and push all indicators."""
-        for indicator in self.indicators:
-            date, value = self._get_data(indicator["url"])
-            return self.create_indicator(
-                indicator["name"], date, value, indicator["frequency"]
-            )
+        self.indicators[0]["value"] = self._get_data(self.indicators[0]["url"])
+        return self.indicators
 
     def _get_data(self, url):
         """Fetch data from url."""
         response = requests.get(url)
-        indicator_date = date_utils.get_last_day_of_month(
-            response.json()[0]["Time: Mois"]
-        )
-        value = response.json()[0]["Valeurs distinctes de Sub Fi"]
-        return indicator_date, value
+        return int(response.json()[0]["Valeurs distinctes de Sub Fi"])
