@@ -1,4 +1,4 @@
-"""Test France Transfert adaptor."""
+"""Test every adaptors."""
 
 import pytest
 from rest_framework import status
@@ -6,10 +6,33 @@ from rest_framework.test import APIClient
 import responses
 from core import models, factories
 import json
-from core.adaptors.france_transfert import FranceTransfertAdaptor
 from freezegun import freeze_time
+from core import adaptors
+import re
+from core.tests import fixtures
 
 pytestmark = pytest.mark.django_db
+
+
+# PROCONNECT
+
+
+@responses.activate
+def test_proconnect_active_users():
+    factories.ProductFactory(nom_service_public_numerique="agent-connect")
+    adaptor = adaptors.ProConnectAdaptor()
+
+    # Mock successful response
+    responses.get(
+        re.compile(r".*/*.json"),
+        b'[{"Time: Mois": "2024-02-01", "Valeurs distinctes de Sub Fi": "200000"}]',
+        status=status.HTTP_200_OK,
+        content_type="application/json",
+    )
+    assert adaptor.get_last_month_data()[0]["value"] == 200000
+
+
+# FRANCE TRANSFERT
 
 
 @freeze_time("2025-10-02")
@@ -20,7 +43,7 @@ def test_france_transfert_indicators():
         dataset_id="68b86764fd43cc1591faa6a5",
     )  # démo dataset = 68b86764fd43cc1591faa6a5
 
-    ft_client = FranceTransfertAdaptor()
+    ft_client = adaptors.FranceTransfertAdaptor()
     result = ft_client.get_last_month_data()
     assert result == [
         {"name": "utilisateurs actifs (téléchargement)", "value": 1},
@@ -129,3 +152,23 @@ def test_api_submissions__no_dataset_id_fails():
         },
     )
     assert response.json() == {"detail": "Please provide a data.gouv.fr dataset"}
+
+
+# MESSAGERIE
+
+
+@freeze_time("2025-07-02")
+@responses.activate
+def test_messagerie_active_users():
+    factories.ProductFactory(nom_service_public_numerique="messagerie")
+    adaptor = adaptors.MessagerieAdaptor()
+
+    # Mock data.gouv.fr API response
+    responses.get(
+        re.compile(adaptor.indicators[0]["url"]),
+        body=fixtures.datagouv_messagerie_data,
+        status=status.HTTP_200_OK,
+        content_type="application/json",
+    )
+
+    assert adaptor.get_monthly_active_users() == 580
