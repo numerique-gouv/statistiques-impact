@@ -48,6 +48,7 @@ class Product(models.Model):
     )
     nom_service_public_numerique = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(null=False, blank=False, unique=True)
+    dataset_id = models.CharField(blank=True, null=False)
 
     class Meta:
         db_table = "product"
