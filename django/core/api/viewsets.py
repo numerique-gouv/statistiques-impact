@@ -90,7 +90,11 @@ class IndicatorSubmissionView(CreateAPIView):
         product = get_object_or_404(models.Product, slug=kwargs["product_slug"])
         file = request.FILES["file"]
         client = DataGouvClient()
-        response = client.upload_file(file, product)
+
+        # A temporary hack for test products to send data to demo.data.gouv.fr
+        env = "demo" if kwargs["product_slug"] == "france-transfert-tests" else "prod"
+
+        response = client.upload_file(file, product, env)
         return Response(
             data={"file": file.name, "success": response.json()["success"]},
             status=response.status_code,
