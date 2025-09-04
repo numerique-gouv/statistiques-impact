@@ -4,15 +4,17 @@ from rest_framework import exceptions, status
 
 
 class DataGouvClient:
-    API = settings.DATAGOUV_API_URL
+    API_URL = settings.DATAGOUV_API_URL
 
-    def get_headers(self):
-        """Simple headers for API KEY."""
+    def get_headers(self, env="prod"):
+        """Simple headers to provide auth, but key depends on env."""
         return {
-            "X-API-KEY": settings.DATAGOUV_API_KEY,
+            "x-api-key": settings.DATAGOUV_DEMO_API_KEY
+            if env == "demo"
+            else settings.DATAGOUV_API_KEY,
         }
 
-    def upload_file(self, file, product):
+    def upload_file(self, file, product, env="prod"):
         """Upload a file to a dataset."""
         if not product.dataset_id:
             raise exceptions.APIException(
@@ -20,15 +22,12 @@ class DataGouvClient:
                 code=status.HTTP_400_BAD_REQUEST,
             )
 
-        API = self.API
-        if product.slug == "france-transfert-tests":
-            API = "https://demo.data.gouv.fr/api/1"
-
+        API_URL = "https://demo.data.gouv.fr/api/1" if env == "demo" else self.API_URL
         # Upload directly to API because package upload method expects a path
         response = requests.post(
-            url=f"{API}/datasets/{product.dataset_id}/upload/",
+            url=f"{API_URL}/datasets/{product.dataset_id}/upload/",
             files={"file": (file.name, file.file.getvalue(), "text/csv")},
-            headers=self.get_headers(),
+            headers=self.get_headers(env),
         )
         response.raise_for_status()
         return response
