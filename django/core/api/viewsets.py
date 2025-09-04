@@ -5,8 +5,8 @@ from core import models
 from core.api import serializers, permissions
 from django.core.exceptions import ValidationError
 from rest_framework.parsers import FileUploadParser
-from cron_tasks.adaptors import france_transfert
 from django.shortcuts import get_object_or_404
+from core.utils.datagouv_client import DataGouvClient
 
 
 class ProductViewSet(
@@ -78,9 +78,20 @@ class IndicatorSubmissionView(CreateAPIView):
 
     def post(self, request, *args, **kwargs):
         """An endpoint for submission of external data in .csv format."""
-        product = models.Product.objects.filter(slug=kwargs["product_slug"])
-        if product.exists():
-            file = request.data["file"]
-            adaptor = france_transfert.FranceTransfertAdaptor()
-            response = adaptor.create_indicators_from_csv(file)
-        return Response(data=response, status=200)
+
+        if kwargs["product_slug"] not in [
+            "france-transfert",
+            "france-transfert-tests",
+        ]:
+            raise exceptions.MethodNotAllowed(
+                method="Soumission", detail="Soumission non autorisée pour ce produit."
+            )
+
+        product = get_object_or_404(models.Product, slug=kwargs["product_slug"])
+        file = request.FILES["file"]
+        client = DataGouvClient()
+        response = client.upload_file(file, product)
+        return Response(
+            data={"file": file.name, "success": response.json()["success"]},
+            status=response.status_code,
+        )

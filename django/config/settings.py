@@ -172,3 +172,7 @@ SPECTACULAR_SETTINGS = {
 
 
 USE_THOUSAND_SEPARATOR = True
+
+# DATAGOUV SETTINGS
+DATAGOUV_API_URL = os.getenv("DATAGOUV_API_URL", "https://demo.data.gouv.fr/api/1")
+DATAGOUV_API_KEY = os.getenv("DATAGOUV_API_KEY", None)
