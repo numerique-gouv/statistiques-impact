@@ -17,6 +17,7 @@
                         <th scope="col">Date dernières stat</th>
                         <th scope="col">Dernières stat</th>
                         <th scope="col">Récupération auto ?</th>
+                        <th scope="col">Dataset data.gouv.fr</th>
                     </thead>
                     <tbody>
                         {% for product in products %}
@@ -36,14 +37,20 @@
                                     {% for indicator in product.last_indicators %}
                                         {{ indicator.est_automatise }}<br>
                                     {% endfor %}
-                                    
                                 </td>
-                            </td>    
                             {% else %}
-                            <td>N/A</td>
-                            <td>N/A</td>
-                            <td>N/A</td>
+                                <td>N/A</td>
+                                <td>N/A</td>
+                                <td>N/A</td>
                             {% endif %}
+                            
+                            <td>
+                                {% if product.dataset_id %}
+                                    <a href="https://www.data.gouv.fr/datasets/{{product.dataset_id}}/" target="_blank">Ouvrir</a>
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
