@@ -30,5 +30,5 @@ Votre serveur local sera joignable à l'url http://127.0.0.1:8000/
 
 Vous pouvez faire tourner la suite de tests dans votre environnement Python, avec la commande :
 ```
-pytest --no-migrations
+make test
 ```
