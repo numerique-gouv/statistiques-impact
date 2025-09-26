@@ -1,62 +1,68 @@
-import pandas
 from cron_tasks.adaptors.base_adaptor import BaseAdaptor
-from core import models
-from core.api import serializers
+from core.utils.datagouv_client import DataGouvClient
+from cron_tasks import utils
 
 
 class FranceTransfertAdaptor(BaseAdaptor):
     slug = "france-transfert"
 
-    def create_indicators_from_csv(self, file):
-        df = pandas.read_csv(file, delimiter=",")
-        date = file.name.split("_")[2]
-        code_machine = file.name.split("_")[0].split("-")[4]
+    def calculate_usage_stats(self, dataframe):
+        """Calculate indicators value from stats dataframe."""
+        return [
+            {
+                "name": "utilisateurs actifs (téléchargement)",
+                "value": dataframe[dataframe["TYPE_ACTION"] == "download"][
+                    "HASH_EXPE"
+                ].nunique(),
+            },
+            {
+                "name": "utilisateurs actifs (émission)",
+                "value": dataframe[dataframe["TYPE_ACTION"] == "upload"][
+                    "HASH_EXPE"
+                ].nunique(),
+            },
+            {
+                "name": "utilisateurs actifs",
+                "value": dataframe["HASH_EXPE"].nunique(),
+            },
+            {
+                "name": "téléchargements",
+                "value": int(
+                    dataframe[dataframe["TYPE_ACTION"] == "download"]["ID_PLIS"].count()
+                ),
+                # pas "unique" ici. On ne veut pas savoir combien de plis différents
+                # ont été téléchargés mais combien de téléchargements ont eu lieu
+            },
+            {
+                "name": "plis émis",
+                "value": dataframe[dataframe["TYPE_ACTION"] == "upload"][
+                    "ID_PLIS"
+                ].nunique(),
+            },
+            # Go émis
+            # téléchargés
+            # taille moyenne d'un pli
+            # {"name": "Nombre Go émis", "frequency": "quotidienne", à calculer},
+            # Chaque taille contient son unité donc il faudra faire un peu de magie pour reconvertir en B ou en KB
+            # sum_go_sent = int(pandas.to_numeric(df["TAILLE"]).sum()) / 1073741824
+            # {"name": "Taille moyenne d'un pli (Mo)", "frequency": "quotidienne", df["HASH_EXPE"].nunique()},
+            # (bloqué car dépend du calcul Go émis)
+            # sum_go_sent / df["TAILLE"].count()
+        ]
 
-        response = []
-        if "upload_stats" in file.name:
-            indicators = [
-                {
-                    "name": f"plis émis (M{code_machine})",
-                    "frequency": "quotidienne",
-                    "value": df["ID_PLIS"].nunique(),
-                },
-                {
-                    "name": f"utilisateurs en envoi (M{code_machine})",
-                    "frequency": "quotidienne",
-                    "value": df["HASH_EXPE"].nunique(),
-                },
-                # {"name": "Nombre Go émis", "frequency": "quotidienne", à calculer},
-                # Chaque taille contient son unité donc il faudra faire un peu de magie pour reconvertir en B ou en KB
-                # sum_go_sent = int(pandas.to_numeric(df["TAILLE"]).sum()) / 1073741824
-                # {"name": "Taille moyenne d'un pli (Mo)", "frequency": "quotidienne", df["HASH_EXPE"].nunique()},
-                # (bloqué car dépend du calcul Go émis)
-                # sum_go_sent / df["TAILLE"].count()
-            ]
-        elif "download_stats" in file.name:
-            indicators = [
-                {
-                    "name": f"Nombre de plis téléchargés (M{code_machine})",
-                    "frequency": "quotidienne",
-                    "value": df["ID_PLIS"].nunique(),
-                },
-                {
-                    "name": f"Nombre d’utilisateurs téléchargements (M{code_machine})",
-                    "frequency": "quotidienne",
-                    "value": df["HASH_EXPE"].nunique(),
-                },
-                # + Go téléchargés
-            ]
-        else:
-            # Restent à implémenter :
-            # - le traitement des fichiers de satisfaction
-            # - le calcul des Go émis et téléchargés et taille moyenne d'un pli
-            response.append("Not implemented yet.")
-            pass
+    def calculate_satisfaction_stats(self, dataframe):
+        """Calculate indicators value from satisfaction dataframe."""
+        # Not implemented yet
+        return []
 
-        for indicator in indicators:
-            result = self.create_indicator(indicator, date, indicator["value"])
-            if isinstance(result, models.Indicator):
-                response.append(serializers.IndicatorSerializer(result).data)
-            else:
-                response.append(result)
-        return response
+    def get_last_month_data(self):
+        """Get last month data and return indicators."""
+        month = str(utils.get_last_month_limits()[0])[0:-3]
+
+        client = DataGouvClient()
+        df_stats, df_satisfaction = client.aggregate_monthly_stats(
+            self.product.dataset_id, month
+        )
+        return self.calculate_usage_stats(df_stats) + self.calculate_satisfaction_stats(
+            df_satisfaction
+        )
