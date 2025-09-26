@@ -19,7 +19,9 @@ class ProConnectAdaptor(BaseAdaptor):
         """Grab and push all indicators."""
         for indicator in self.indicators:
             date, value = self._get_data(indicator["url"])
-            return self.create_indicator(indicator, date, value)
+            return self.create_indicator(
+                indicator["name"], date, value, indicator["frequency"]
+            )
 
     def _get_data(self, url):
         """Fetch data from url."""
