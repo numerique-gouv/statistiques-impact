@@ -29,7 +29,7 @@ class IndicatorAdmin(admin.ModelAdmin):
         "indicateur",
         ("date", admin.DateFieldListFilter),
     ]
-    readonly_fields = ("id",)
+    readonly_fields = ("id", "created_at", "updated_at")
 
 
 @admin.register(models.ProductAPIKey)

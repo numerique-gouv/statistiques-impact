@@ -37,6 +37,8 @@ def test_api_indicators_list__anonymous_ok():
                 "est_periode": indicator.est_periode,
                 "est_automatise": indicator.est_automatise,
                 "productid": str(indicator.productid.id),
+                "created_at": indicator.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "updated_at": indicator.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
             }
             for indicator in indicators
         ],
@@ -70,6 +72,8 @@ def test_api_indicators_list__filter_ok():
             "est_periode": indicator.est_periode,
             "est_automatise": indicator.est_automatise,
             "productid": str(indicator.productid.id),
+            "created_at": indicator.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+            "updated_at": indicator.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
         }
     ]
 
@@ -212,6 +216,8 @@ def test_api_indicators_retrieve__anonymous_ok():
         "est_periode": indicator.est_periode,
         "est_automatise": indicator.est_automatise,
         "productid": str(indicator.productid.id),
+        "created_at": indicator.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+        "updated_at": indicator.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
     }
 
 
