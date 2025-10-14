@@ -1,7 +1,7 @@
 asgiref==3.9.1
 datagouv_client==0.1.4
 dj-database-url==3.0.1
-Django==5.2.4
+Django==5.2.7
 django-dsfr==3.0.0
 django-revproxy==0.13.0
 djangorestframework==3.16.0
