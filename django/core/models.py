@@ -102,6 +102,18 @@ class Indicator(models.Model):
     date_debut = models.CharField(blank=True, null=True)
     est_periode = models.BooleanField()
     est_automatise = models.BooleanField()
+    created_at = models.DateTimeField(
+        verbose_name=_("created at"),
+        help_text=_("date and time at which a record was created"),
+        auto_now_add=True,
+        editable=False,
+    )
+    updated_at = models.DateTimeField(
+        verbose_name=_("updated at"),
+        help_text=_("date and time at which a record was last updated"),
+        auto_now=True,
+        editable=False,
+    )
 
     class Meta:
         db_table = "indicator"

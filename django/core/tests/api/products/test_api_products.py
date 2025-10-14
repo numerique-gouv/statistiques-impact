@@ -75,6 +75,8 @@ def test_api_products_retrieve__last_indicators_ok():
                 "est_periode": indicator.est_periode,
                 "est_automatise": indicator.est_automatise,
                 "productid": str(indicator.productid.id),
+                "created_at": indicator.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "updated_at": indicator.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
             }
             for indicator in most_recent_indicators
         ],

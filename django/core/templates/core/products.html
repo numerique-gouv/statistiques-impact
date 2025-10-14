@@ -25,7 +25,7 @@
                             
                             {% if product.last_indicators %}
                                 <td>
-                                    {{ product.last_indicators.0.date }}
+                                    {{ product.last_indicators.0.created_at.date }}
                                 </td>
                                 <td>
                                     {% for indicator in  product.last_indicators %}
