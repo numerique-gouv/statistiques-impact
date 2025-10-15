@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand, CommandError
 from core import models
 import os
 import json
-from cron_tasks import utils
+from core.utils import date_utils
 from datetime import date as dtdate
 
 
@@ -78,7 +78,7 @@ class Command(BaseCommand):
                         indicateur=indicateur,
                         valeur=valeur,
                         date_debut=date,
-                        date=utils.get_last_day_of_month(date),
+                        date=date_utils.get_last_day_of_month(date),
                         unite_mesure="unite",
                         frequence_monitoring="mensuelle",
                         est_automatise=False,

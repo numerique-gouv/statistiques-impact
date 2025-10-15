@@ -6,7 +6,7 @@ from rest_framework.test import APIClient
 import responses
 from core import models, factories
 import json
-from cron_tasks.adaptors.france_transfert import FranceTransfertAdaptor
+from core.adaptors.france_transfert import FranceTransfertAdaptor
 from freezegun import freeze_time
 
 pytestmark = pytest.mark.django_db
@@ -35,7 +35,7 @@ def test_france_transfert_active_users():
 def test_api_submissions__files_sent_to_datagouv():
     """When a file is submitted, it's succesfully sent to data.gouv.fr."""
     product = factories.ProductFactory(
-        nom_service_public_numerique="france-transfert",
+        nom_service_public_numerique="france-transfert-tests",
         dataset_id="68b86764fd43cc1591faa6a5",
     )
     _, key = models.ProductAPIKey.objects.create_key(name="valid_key", product=product)
@@ -44,7 +44,7 @@ def test_api_submissions__files_sent_to_datagouv():
 
     # Mock successfull response from data.gouv.fr
     responses.post(
-        f"https://www.data.gouv.fr/api/1/datasets/{product.dataset_id}/upload/",
+        f"https://demo.data.gouv.fr/api/1/datasets/{product.dataset_id}/upload/",
         json.dumps(
             {
                 "checksum": {

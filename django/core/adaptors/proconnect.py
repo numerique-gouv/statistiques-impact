@@ -1,6 +1,6 @@
 import requests
-from cron_tasks import utils
-from cron_tasks.adaptors.base_adaptor import BaseAdaptor
+from core.utils import date_utils
+from core.adaptors.base_adaptor import BaseAdaptor
 
 
 class ProConnectAdaptor(BaseAdaptor):
@@ -26,6 +26,8 @@ class ProConnectAdaptor(BaseAdaptor):
     def _get_data(self, url):
         """Fetch data from url."""
         response = requests.get(url)
-        indicator_date = utils.get_last_day_of_month(response.json()[0]["Time: Mois"])
+        indicator_date = date_utils.get_last_day_of_month(
+            response.json()[0]["Time: Mois"]
+        )
         value = response.json()[0]["Valeurs distinctes de Sub Fi"]
         return indicator_date, value
