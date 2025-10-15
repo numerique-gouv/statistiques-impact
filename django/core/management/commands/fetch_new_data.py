@@ -1,9 +1,9 @@
 """Management command to fetch data from."""
 
 from django.core.management.base import BaseCommand
-from cron_tasks.adaptors.proconnect import ProConnectAdaptor
-from cron_tasks.adaptors.france_transfert import FranceTransfertAdaptor
-from cron_tasks import utils
+from core.adaptors.proconnect import ProConnectAdaptor
+from core.adaptors.france_transfert import FranceTransfertAdaptor
+from core.utils import date_utils
 
 
 class Command(BaseCommand):
@@ -13,7 +13,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """Call all adaptors to create indicators."""
-        date_fin = utils.get_last_month_limits()[1]
+        date_fin = date_utils.get_last_month_limits()[1]
         pc_adaptor = ProConnectAdaptor()
         pc_adaptor.fetch_latest_data()
 

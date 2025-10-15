@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     "widget_tweaks",
     "dsfr",
     "core",
-    "cron_tasks",
     "rest_framework",
     "rest_framework_api_key",
     "drf_spectacular",
@@ -174,6 +173,6 @@ SPECTACULAR_SETTINGS = {
 USE_THOUSAND_SEPARATOR = True
 
 # DATAGOUV SETTINGS
-DATAGOUV_API_URL = os.getenv("DATAGOUV_API_URL", "https://demo.data.gouv.fr/api/1")
+DATAGOUV_API_URL = os.getenv("DATAGOUV_API_URL", None)
 DATAGOUV_API_KEY = os.getenv("DATAGOUV_API_KEY", None)
 DATAGOUV_DEMO_API_KEY = os.getenv("DATAGOUV_DEMO_API_KEY", None)

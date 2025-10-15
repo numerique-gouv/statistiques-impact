@@ -5,7 +5,7 @@ Unit tests for the product API
 import re
 import pytest
 from core import factories, models
-from cron_tasks.adaptors import proconnect
+from core.adaptors import proconnect
 import responses
 from rest_framework import status
 from django.core.management import call_command

@@ -6,7 +6,7 @@ from core.api import serializers, permissions
 from django.core.exceptions import ValidationError
 from rest_framework.parsers import FileUploadParser
 from django.shortcuts import get_object_or_404
-from cron_tasks.adaptors.france_transfert import FranceTransfertAdaptor
+from core.adaptors.france_transfert import FranceTransfertAdaptor
 
 
 class ProductViewSet(

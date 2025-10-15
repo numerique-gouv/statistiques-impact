@@ -1,6 +1,6 @@
-from cron_tasks.adaptors.base_adaptor import BaseAdaptor
+from core.adaptors.base_adaptor import BaseAdaptor
 from core.utils.datagouv_client import DataGouvClient
-from cron_tasks import utils
+from core.utils import date_utils
 
 
 class FranceTransfertAdaptor(BaseAdaptor):
@@ -63,7 +63,7 @@ class FranceTransfertAdaptor(BaseAdaptor):
 
     def get_last_month_data(self):
         """Get last month data and return indicators."""
-        month = str(utils.get_last_month_limits()[0])[0:-3]
+        month = str(date_utils.get_last_month_limits()[0])[0:-3]
 
         client = DataGouvClient()
         df_stats, df_satisfaction = client.aggregate_monthly_stats(
