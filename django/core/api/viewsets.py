@@ -6,7 +6,7 @@ from core.api import serializers, permissions
 from django.core.exceptions import ValidationError
 from rest_framework.parsers import FileUploadParser
 from django.shortcuts import get_object_or_404
-from core.utils.datagouv_client import DataGouvClient
+from cron_tasks.adaptors.france_transfert import FranceTransfertAdaptor
 
 
 class ProductViewSet(
@@ -78,23 +78,21 @@ class IndicatorSubmissionView(CreateAPIView):
 
     def post(self, request, *args, **kwargs):
         """An endpoint for submission of external data in .csv format."""
-
-        if kwargs["product_slug"] not in [
-            "france-transfert",
-            "france-transfert-tests",
-        ]:
-            raise exceptions.MethodNotAllowed(
-                method="Soumission", detail="Soumission non autorisée pour ce produit."
-            )
+        file = request.FILES["file"]
 
         product = get_object_or_404(models.Product, slug=kwargs["product_slug"])
-        file = request.FILES["file"]
-        client = DataGouvClient()
+        match product.nom_service_public_numerique:
+            case "france-transfert":
+                adaptor = FranceTransfertAdaptor()
+            case "france-transfert-tests":
+                adaptor = FranceTransfertAdaptor(is_test=True)
+            case _:
+                raise exceptions.MethodNotAllowed(
+                    method="Submission",
+                    detail="File submission not authorized for this product.",
+                )
 
-        # A temporary hack for test products to send data to demo.data.gouv.fr
-        env = "demo" if kwargs["product_slug"] == "france-transfert-tests" else "prod"
-
-        response = client.upload_file(file, product, env)
+        response = adaptor.process_file(file=file)
         return Response(
             data={"file": file.name, "success": response.json()["success"]},
             status=response.status_code,
