@@ -6,6 +6,12 @@ from cron_tasks import utils
 class FranceTransfertAdaptor(BaseAdaptor):
     slug = "france-transfert"
 
+    def __init__(self, is_test=False):
+        """Fix to include tests for france-transfert."""
+        if is_test:
+            self.slug = "france-transfert-tests"
+        return super().__init__()
+
     def calculate_usage_stats(self, dataframe):
         """Calculate indicators value from stats dataframe."""
         return [
@@ -66,3 +72,15 @@ class FranceTransfertAdaptor(BaseAdaptor):
         return self.calculate_usage_stats(df_stats) + self.calculate_satisfaction_stats(
             df_satisfaction
         )
+
+    def process_file(self, file):
+        """Upon reception, send stat and satisfaction files to data.gouv.fr."""
+        # A temporary hack for test products to send data to demo.data.gouv.fr
+        env = (
+            "demo"
+            if self.product.nom_service_public_numerique == "france-transfert-tests"
+            else "prod"
+        )
+
+        client = DataGouvClient()
+        return client.upload_file(file, self.product, env)
