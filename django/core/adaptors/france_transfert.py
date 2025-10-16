@@ -1,6 +1,7 @@
 from core.adaptors.base_adaptor import BaseAdaptor
 from core.utils.datagouv_client import DataGouvClient
 from core.utils import date_utils
+from pandas import to_numeric
 
 
 class FranceTransfertAdaptor(BaseAdaptor):
@@ -14,6 +15,29 @@ class FranceTransfertAdaptor(BaseAdaptor):
 
     def calculate_usage_stats(self, dataframe):
         """Calculate indicators value from stats dataframe."""
+        if str(dataframe.dtypes["TAILLE"]) != "float64":
+            dataframe["TAILLE2"] = dataframe["TAILLE"]
+            dataframe["TAILLE2"] = to_numeric(
+                dataframe["TAILLE"].str.replace(r" [GMK]?B", "", regex=True)
+            )
+            dataframe.loc[dataframe["TAILLE"].str.contains("K"), "TAILLE2"] = (
+                dataframe.loc[dataframe["TAILLE"].str.contains("K"), "TAILLE2"] * 1000
+            )
+            dataframe.loc[dataframe["TAILLE"].str.contains("M"), "TAILLE2"] = (
+                dataframe.loc[dataframe["TAILLE"].str.contains("M"), "TAILLE2"]
+                * (1000 * 1000)
+            )
+            dataframe.loc[dataframe["TAILLE"].str.contains("G"), "TAILLE2"] = (
+                dataframe.loc[dataframe["TAILLE"].str.contains("G"), "TAILLE2"]
+                * (1000 * 1000 * 1000)
+            )
+            dataframe["TAILLE"] = dataframe["TAILLE2"]
+
+        go_emis = float(
+            dataframe[dataframe["TYPE_ACTION"] == "upload"]["TAILLE"].sum()
+            / (1000 * 1000 * 1000)
+        )
+        plis_emis = dataframe[dataframe["TYPE_ACTION"] == "upload"]["ID_PLIS"].nunique()
         return [
             {
                 "name": "utilisateurs actifs (téléchargement)",
@@ -22,7 +46,7 @@ class FranceTransfertAdaptor(BaseAdaptor):
                 ].nunique(),
             },
             {
-                "name": "utilisateurs actifs (émission)",
+                "name": "utilisateurs actifs (envoi)",
                 "value": dataframe[dataframe["TYPE_ACTION"] == "upload"][
                     "HASH_EXPE"
                 ].nunique(),
@@ -41,25 +65,56 @@ class FranceTransfertAdaptor(BaseAdaptor):
             },
             {
                 "name": "plis émis",
-                "value": dataframe[dataframe["TYPE_ACTION"] == "upload"][
-                    "ID_PLIS"
-                ].nunique(),
+                "value": plis_emis,
             },
-            # Go émis
-            # téléchargés
-            # taille moyenne d'un pli
-            # {"name": "Nombre Go émis", "frequency": "quotidienne", à calculer},
-            # Chaque taille contient son unité donc il faudra faire un peu de magie pour reconvertir en B ou en KB
-            # sum_go_sent = int(pandas.to_numeric(df["TAILLE"]).sum()) / 1073741824
-            # {"name": "Taille moyenne d'un pli (Mo)", "frequency": "quotidienne", df["HASH_EXPE"].nunique()},
-            # (bloqué car dépend du calcul Go émis)
-            # sum_go_sent / df["TAILLE"].count()
+            {
+                "name": "Go émis",
+                "value": round(go_emis, 2),
+            },
+            {
+                "name": "Go téléchargés",
+                "value": float(
+                    round(
+                        dataframe[dataframe["TYPE_ACTION"] == "download"][
+                            "TAILLE"
+                        ].sum()
+                        / (1024 * 1024 * 1024),
+                        2,
+                    )
+                ),
+            },
+            {
+                "name": "Taille pli moyen (Mo)",
+                "value": round(
+                    1000 * go_emis / plis_emis, 2
+                ),  # More convenient in Mo than in Go
+            },
+            {
+                "name": "top 5 domaines expéditeurs",
+                "value": ", ".join(
+                    dataframe["DOMAINE_EXPEDITEUR"].value_counts().index.tolist()[:5]
+                ),
+            },
         ]
 
     def calculate_satisfaction_stats(self, dataframe):
         """Calculate indicators value from satisfaction dataframe."""
-        # Not implemented yet
-        return []
+        return [
+            {
+                "name": "avis émis",
+                "value": int(dataframe["ID_PLIS"].count()),
+            },
+            {
+                "name": "pourcentage satisfaction",
+                "value": round(
+                    100
+                    * (
+                        int(dataframe[dataframe["NOTE"] == 3]["ID_PLIS"].count())
+                        / int(dataframe["ID_PLIS"].count())
+                    )
+                ),
+            },
+        ]
 
     def get_last_month_data(self):
         """Get last month data and return indicators."""
