@@ -13,7 +13,7 @@ pytestmark = pytest.mark.django_db
 
 
 @freeze_time("2025-10-02")
-def test_france_transfert_active_users():
+def test_france_transfert_indicators():
     """Monthly retrieval should fetch csv files from data.gouv.fr and compute expected indicators."""
     factories.ProductFactory(
         nom_service_public_numerique="france-transfert",
@@ -24,10 +24,19 @@ def test_france_transfert_active_users():
     result = ft_client.get_last_month_data()
     assert result == [
         {"name": "utilisateurs actifs (téléchargement)", "value": 1},
-        {"name": "utilisateurs actifs (émission)", "value": 2},
+        {"name": "utilisateurs actifs (envoi)", "value": 2},
         {"name": "utilisateurs actifs", "value": 3},
         {"name": "téléchargements", "value": 4},
         {"name": "plis émis", "value": 30},
+        {"name": "Go émis", "value": 10.38},
+        {"name": "Go téléchargés", "value": 0.36},
+        {"name": "Taille pli moyen (Mo)", "value": 345.89},
+        {
+            "name": "top 5 domaines expéditeurs",
+            "value": "actongroup.com, mail.numerique.gouv.fr",
+        },
+        {"name": "avis émis", "value": 1},
+        {"name": "pourcentage satisfaction", "value": 100},
     ]
 
 

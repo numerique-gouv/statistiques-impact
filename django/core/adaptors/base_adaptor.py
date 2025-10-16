@@ -18,7 +18,7 @@ class BaseAdaptor:
             new_entry = models.Indicator.objects.create(
                 productid=product,
                 indicateur=name,
-                valeur=float(value),
+                valeur=value,
                 unite_mesure="unite",
                 frequence_monitoring=frequency,
                 date=date,
