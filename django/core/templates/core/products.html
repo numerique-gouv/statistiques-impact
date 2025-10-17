@@ -11,29 +11,33 @@
         <div class="fr-table__container">
             <div class="fr-table__content">
                 <table>
-                    <caption>Produits référencés</caption>
+                    <caption>Derniers indicateurs</caption>
                     <thead>
                         <th scope="col">Produit</th>
-                        <th scope="col">Date dernières stat</th>
-                        <th scope="col">Dernières stat</th>
+                        <th scope="col">Dernier indicateur</th>
                         <th scope="col">Période</th>
-                        <th scope="col">Mesure<br>automatisée</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Ajout<br>automatisé</th>
                     </thead>
                     <tbody>
                         {% for product in products %}
                         <tr>
                             <td>{{ product.name }}</td>
                             <td>
-                                {{ product.last_indicators.0.created_at.date }}
-                            </td>
-                            <td>
                                 {% for indicator in product.last_indicators %}
                                     {{ indicator.valeur|floatformat:"0" }} {{ indicator.indicateur }}<br>
                                 {% endfor %}
                             </td>
-                            <td>{% for indicator in product.last_indicators %}
-                                    {{ indicator.frequence_monitoring}}<br>
-                                {% endfor %}</td>
+                            <td>
+                                {% for indicator in product.last_indicators %}
+                                    {{ indicator.frequence_monitoring }}<br>
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% for indicator in product.last_indicators %}
+                                    {{ indicator.date }}<br>
+                                {% endfor %}
+                            </td>
                             <td>
                                 {% for indicator in product.last_indicators %}
                                     {{ indicator.est_automatise }}<br>
