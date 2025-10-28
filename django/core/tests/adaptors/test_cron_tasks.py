@@ -3,6 +3,7 @@ Unit tests for the product API
 """
 
 import re
+import json
 import pytest
 from core import factories, models
 import responses
@@ -18,7 +19,7 @@ pytestmark = pytest.mark.django_db
 @responses.activate
 def test_commands_fetch_new_data(settings):
     settings.DEBUG = True
-    products = ["proconnect", "messagerie"]
+    products = ["proconnect", "messagerie", "tchap"]
     for product in products:
         factories.ProductFactory(nom_service_public_numerique=product)
     factories.ProductFactory(
@@ -28,7 +29,7 @@ def test_commands_fetch_new_data(settings):
 
     # Mock expected response
     responses.get(
-        re.compile(r".*/*.json"),
+        re.compile(r"https://stats.moncomptepro.beta.gouv.fr/*"),
         b'[{"Time: Mois": "2025-09-01", "Valeurs distinctes de Sub Fi": "200000"}]',
         status=status.HTTP_200_OK,
         content_type="application/json",
@@ -36,6 +37,12 @@ def test_commands_fetch_new_data(settings):
     responses.get(
         re.compile(r"https://www.data.gouv.fr/*"),
         body=fixtures.datagouv_messagerie_data.replace("2025-07", "2025-10"),
+        status=status.HTTP_200_OK,
+        content_type="application/json",
+    )
+    responses.get(
+        re.compile(r"https://stats.tchap.incubateur.net/*"),
+        body=json.dumps([{"Visit Date": "sept., 2025", "Nombre de lignes": "367 146"}]),
         status=status.HTTP_200_OK,
         content_type="application/json",
     )
@@ -58,4 +65,10 @@ def test_commands_fetch_new_data(settings):
             productid__slug="france-transfert", date="2025-09-30"
         ).count()
         == 10
+    )
+    assert (
+        models.Indicator.objects.filter(
+            productid__slug="tchap", date="2025-09-30"
+        ).count()
+        == 1
     )
