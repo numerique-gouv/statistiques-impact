@@ -19,7 +19,7 @@ pytestmark = pytest.mark.django_db
 
 @responses.activate
 def test_proconnect_active_users():
-    factories.ProductFactory(nom_service_public_numerique="agent-connect")
+    factories.ProductFactory(nom_service_public_numerique="proconnect")
     adaptor = adaptors.ProConnectAdaptor()
 
     # Mock successful response

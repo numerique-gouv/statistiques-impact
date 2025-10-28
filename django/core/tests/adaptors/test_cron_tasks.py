@@ -18,7 +18,7 @@ pytestmark = pytest.mark.django_db
 @responses.activate
 def test_commands_fetch_new_data(settings):
     settings.DEBUG = True
-    products = ["agent-connect", "messagerie"]
+    products = ["proconnect", "messagerie"]
     for product in products:
         factories.ProductFactory(nom_service_public_numerique=product)
     factories.ProductFactory(
@@ -43,7 +43,7 @@ def test_commands_fetch_new_data(settings):
 
     assert (
         models.Indicator.objects.filter(
-            productid__slug="agent-connect", date="2025-09-30"
+            productid__slug="proconnect", date="2025-09-30"
         ).count()
         == 1
     )

@@ -33,7 +33,7 @@ type PRODUCT_ID =
 
 const PRODUCTS: Record<PRODUCT_ID, productType> = {
     AGENT_CONNECT: {
-        name: 'agent-connect',
+        name: 'proconnect',
     },
     ANNUAIRE_DES_ENTREPRISES: {
         name: 'annuaire-des-entreprises',

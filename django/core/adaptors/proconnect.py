@@ -5,7 +5,7 @@ from core.adaptors.base_adaptor import BaseAdaptor
 class ProConnectAdaptor(BaseAdaptor):
     """Adaptor to fetch and send ProConnect's indicators."""
 
-    slug = "agent-connect"
+    slug = "proconnect"
     indicators = [
         {
             "name": "utilisateurs actifs",
