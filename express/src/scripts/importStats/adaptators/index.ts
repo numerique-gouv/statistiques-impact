@@ -7,7 +7,6 @@ import { webinaireAdaptator } from './webinaire.adaptator';
 import { apiParticulierAdaptator } from './apiParticulier.adaptator';
 import { apiEntrepriseAdaptator } from './apiEntreprise.adaptator';
 import { agentConnectAdaptator } from './agentConnect.adaptator';
-import { tchapAdaptator } from './tchap.adaptator';
 import { documentationAdaptator } from './documentation.adaptator';
 import { hubeeAdaptator } from './hubee.adaptator';
 import { regieAdaptator } from './regie.adaptator';
@@ -35,7 +34,6 @@ const indicatorsToUpdate: Record<string, adaptatorType> = {
     [PRODUCTS.ANNUAIRE_DES_ENTREPRISES.name]: annuaireDesEntreprisesAdaptator,
     [PRODUCTS.WEBINAIRE.name]: webinaireAdaptator,
     [PRODUCTS.AGENT_CONNECT.name]: agentConnectAdaptator,
-    [PRODUCTS.TCHAP.name]: tchapAdaptator,
     [PRODUCTS.DOCUMENTATION.name]: documentationAdaptator,
     // [PRODUCTS.API_PARTICULIER.name]: apiParticulierAdaptator,
     // [PRODUCTS.API_ENTREPRISE.name]: apiEntrepriseAdaptator,

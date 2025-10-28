@@ -27,7 +27,6 @@ type PRODUCT_ID =
     | 'REGIE'
     | 'RESANA'
     | 'RIZOMO'
-    | 'TCHAP'
     | 'WEBCONF'
     | 'WEBINAIRE';
 
@@ -90,9 +89,6 @@ const PRODUCTS: Record<PRODUCT_ID, productType> = {
     REGIE: { name: 'regie' },
     RESANA: { name: 'resana' },
     RIZOMO: { name: 'rizomo' },
-    TCHAP: {
-        name: 'tchap',
-    },
     WEBCONF: {
         name: 'webconf',
     },
