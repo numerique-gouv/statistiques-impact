@@ -172,3 +172,27 @@ def test_messagerie_active_users():
     )
 
     assert adaptor.get_monthly_active_users() == 580
+
+
+## TCHAP
+@responses.activate
+def test_tchap_indicators():
+    factories.ProductFactory(nom_service_public_numerique="tchap")
+    adaptor = adaptors.TchapAdaptor()
+
+    # Mock data.gouv.fr API response
+    responses.get(
+        re.compile(r"https://stats.tchap.incubateur.net/*"),
+        body=json.dumps([{"Visit Date": "sept., 2025", "Nombre de lignes": "367 146"}]),
+        status=status.HTTP_200_OK,
+        content_type="application/json",
+    )
+
+    assert adaptor.get_last_month_data() == [
+        {
+            "frequency": "mensuelle",
+            "name": "utilisateurs actifs",
+            "method": "get_last_month_active_users",
+            "value": 367146,
+        }
+    ]
