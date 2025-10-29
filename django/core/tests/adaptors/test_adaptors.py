@@ -15,8 +15,6 @@ pytestmark = pytest.mark.django_db
 
 
 # PROCONNECT
-
-
 @responses.activate
 def test_proconnect_active_users():
     factories.ProductFactory(nom_service_public_numerique="proconnect")
@@ -33,8 +31,6 @@ def test_proconnect_active_users():
 
 
 # FRANCE TRANSFERT
-
-
 @freeze_time("2025-10-02")
 def test_france_transfert_indicators():
     """Monthly retrieval should fetch csv files from data.gouv.fr and compute expected indicators."""
@@ -155,8 +151,6 @@ def test_api_submissions__no_dataset_id_fails():
 
 
 # MESSAGERIE
-
-
 @freeze_time("2025-07-02")
 @responses.activate
 def test_messagerie_active_users():
