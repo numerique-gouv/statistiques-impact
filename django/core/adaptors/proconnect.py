@@ -10,16 +10,12 @@ class ProConnectAdaptor(BaseAdaptor):
         {
             "name": "utilisateurs actifs",
             "frequency": "mensuelle",
-            "url": "https://stats.moncomptepro.beta.gouv.fr/public/question/cd934f6d-fb60-413b-a955-581859451141.json",
+            "method": "get_last_month_active_users",
         }
     ]
 
-    def get_last_month_data(self):
-        """Grab and push all indicators."""
-        self.indicators[0]["value"] = self._get_data(self.indicators[0]["url"])
-        return self.indicators
-
-    def _get_data(self, url):
+    def get_last_month_active_users(self):
         """Fetch data from url."""
+        url = "https://stats.moncomptepro.beta.gouv.fr/public/question/cd934f6d-fb60-413b-a955-581859451141.json"
         response = requests.get(url)
         return int(response.json()[0]["Valeurs distinctes de Sub Fi"])

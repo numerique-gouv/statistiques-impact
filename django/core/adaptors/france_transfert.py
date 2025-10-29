@@ -13,6 +13,18 @@ class FranceTransfertAdaptor(BaseAdaptor):
             self.slug = "france-transfert-tests"
         return super().__init__()
 
+    def get_last_month_data(self):
+        """Get last month data and return indicators."""
+        month = str(date_utils.get_last_month_limits()[0])[0:-3]
+
+        client = DataGouvClient()
+        df_stats, df_satisfaction = client.aggregate_monthly_stats(
+            self.product.dataset_id, month
+        )
+        return self.calculate_usage_stats(df_stats) + self.calculate_satisfaction_stats(
+            df_satisfaction
+        )
+
     def calculate_usage_stats(self, dataframe):
         """Calculate indicators value from stats dataframe."""
         if str(dataframe.dtypes["TAILLE"]) != "float64":
@@ -115,18 +127,6 @@ class FranceTransfertAdaptor(BaseAdaptor):
                 ),
             },
         ]
-
-    def get_last_month_data(self):
-        """Get last month data and return indicators."""
-        month = str(date_utils.get_last_month_limits()[0])[0:-3]
-
-        client = DataGouvClient()
-        df_stats, df_satisfaction = client.aggregate_monthly_stats(
-            self.product.dataset_id, month
-        )
-        return self.calculate_usage_stats(df_stats) + self.calculate_satisfaction_stats(
-            df_satisfaction
-        )
 
     def process_file(self, file):
         """Upon reception, send stat and satisfaction files to data.gouv.fr."""
