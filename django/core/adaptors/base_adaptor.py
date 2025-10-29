@@ -4,19 +4,28 @@ from datetime import date as dtdate
 
 
 class BaseAdaptor:
-    """Adaptor to fetch product's data and create indicators."""
+    """Base adaptor to fetch product's data and create indicators."""
+
+    slug = "product_slug"
+    # example indicator
+    # indicators = [
+    #     {
+    #         "name": "indicator_name",
+    #         "frequency": "frequency",
+    #         "method": "custom_method_name" # to get last month's data
+    #     }
+    # ]
 
     def __init__(self):
         self.product = models.Product.objects.get(slug=self.slug)
 
     def create_indicator(self, name, date, value, frequency, automatic_call=True):
-        product = models.Product.objects.get(slug=self.slug)
         if type(date) is str:
             date = dtdate.fromisoformat(date)
 
         try:
             new_entry = models.Indicator.objects.create(
-                productid=product,
+                productid=self.product,
                 indicateur=name,
                 valeur=value,
                 unite_mesure="unite",
