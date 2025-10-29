@@ -177,13 +177,23 @@ def test_messagerie_active_users():
 ## TCHAP
 @responses.activate
 def test_tchap_indicators():
+    """Tchap adaptor should retrieve expected data."""
     factories.ProductFactory(nom_service_public_numerique="tchap")
     adaptor = adaptors.TchapAdaptor()
 
     # Mock data.gouv.fr API response
     responses.get(
-        re.compile(r"https://stats.tchap.incubateur.net/*"),
-        body=json.dumps([{"Visit Date": "sept., 2025", "Nombre de lignes": "367 146"}]),
+        re.compile(r"https://stats.tchap.incubateur.net/public/question/ae34205d-*"),
+        json=[{"Visit Date": "sept., 2025", "Nombre de lignes": "367 146"}],
+        status=status.HTTP_200_OK,
+        content_type="application/json",
+    )
+    responses.get(
+        re.compile(r"https://stats.tchap.incubateur.net/public/question/84a9b0bc-*"),
+        json=[
+            {"Hour": "août, 2025", "Somme de Events": "5 404 085"},
+            {"Hour": "sept., 2025", "Somme de Events": "10 877 632"},
+        ],
         status=status.HTTP_200_OK,
         content_type="application/json",
     )
@@ -194,5 +204,11 @@ def test_tchap_indicators():
             "name": "utilisateurs actifs",
             "method": "get_last_month_active_users",
             "value": 367146,
-        }
+        },
+        {
+            "frequency": "mensuelle",
+            "name": "messages échangés",
+            "method": "get_last_month_messages_count",
+            "value": 10877632,
+        },
     ]
