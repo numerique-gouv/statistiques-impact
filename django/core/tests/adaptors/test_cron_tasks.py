@@ -41,10 +41,17 @@ def test_commands_fetch_new_data(settings):
         content_type="application/json",
     )
     responses.get(
-        re.compile(r"https://stats.tchap.incubateur.net/*"),
+        re.compile(r"https://stats.tchap.incubateur.net/public/question/ae34205d-*"),
         body=json.dumps([{"Visit Date": "sept., 2025", "Nombre de lignes": "367 146"}]),
         status=status.HTTP_200_OK,
         content_type="application/json",
+    )
+    responses.get(
+        re.compile(r"https://stats.tchap.incubateur.net/public/question/84a9b0bc-*"),
+        json=[
+            {"Hour": "août, 2025", "Somme de Events": "5 404 085"},
+            {"Hour": "sept., 2025", "Somme de Events": "10 877 632"},
+        ],
     )
     call_command("fetch_new_data")
 
@@ -70,5 +77,5 @@ def test_commands_fetch_new_data(settings):
         models.Indicator.objects.filter(
             productid__slug="tchap", date="2025-09-30"
         ).count()
-        == 1
+        == 2
     )
