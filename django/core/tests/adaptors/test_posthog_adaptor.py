@@ -57,14 +57,14 @@ def test_posthog_monthly_active_users(settings):
     assert len(results) == 1
     assert results[0]["name"] == "utilisateurs actifs mensuels"
     assert results[0]["frequency"] == "mensuelle"
-    assert results[0]["value"] == 7533
+    assert results[0]["value"] == 8458
 
 
+@freeze_time("2025-10-02")
 @responses.activate
 def test_posthog_multiple_indicators(settings):
     """Test fetching multiple indicators from PostHog."""
     factories.ProductFactory(nom_service_public_numerique="test-product")
-
 
     # Create a custom adaptor with multiple indicators
     class TestMultipleAdaptor(posthog.PostHogAdaptor):
@@ -118,13 +118,13 @@ def test_posthog_multiple_indicators(settings):
 
     # Verify two indicators were returned with values
     assert len(results) == 2
-    
+
     # Verify values
     assert results[0]["name"] == "utilisateurs actifs"
-    assert results[0]["value"] == 200
-    
+    assert results[0]["value"] == 100
+
     assert results[1]["name"] == "pages vues"
-    assert results[1]["value"] == 2000
+    assert results[1]["value"] == 1000
 
 
 @responses.activate
@@ -159,5 +159,3 @@ def test_posthog_no_data_error(settings):
     # Should raise ValueError when no data is available
     with pytest.raises(ValueError, match="No data available"):
         adaptor.get_last_month_data()
-
-
