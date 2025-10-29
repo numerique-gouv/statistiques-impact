@@ -159,13 +159,13 @@ def test_messagerie_active_users():
 
     # Mock data.gouv.fr API response
     responses.get(
-        re.compile(adaptor.indicators[0]["url"]),
+        re.compile(r"https://www.data.gouv.fr/*"),
         body=fixtures.datagouv_messagerie_data,
         status=status.HTTP_200_OK,
         content_type="application/json",
     )
 
-    assert adaptor.get_monthly_active_users() == 580
+    assert adaptor.get_last_month_active_users() == 580
 
 
 ## TCHAP

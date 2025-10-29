@@ -10,14 +10,20 @@ class BaseAdaptor:
     # example indicator
     # indicators = [
     #     {
-    #         "name": "indicator_name",
-    #         "frequency": "frequency",
-    #         "method": "custom_method_name" # to get last month's data
+    #         "name": "utilisateurs actifs",
+    #         "frequency": "mensuelle",
+    #         "method": "get_last_month_active_users"
     #     }
     # ]
 
     def __init__(self):
         self.product = models.Product.objects.get(slug=self.slug)
+
+    def get_last_month_data(self):
+        """Get latest values for all indicators."""
+        for indicator in self.indicators:
+            indicator["value"] = getattr(self, indicator["method"])()
+        return self.indicators
 
     def create_indicator(self, name, date, value, frequency, automatic_call=True):
         if type(date) is str:
