@@ -16,12 +16,17 @@ class Command(BaseCommand):
 
         for adaptor in all_adaptors:
             adaptor = adaptor()
-            for indicator in adaptor.get_last_month_data():
-                if "frequency" not in indicator:
-                    indicator["frequency"] = "mensuelle"
-                adaptor.create_indicator(
-                    name=indicator["name"],
-                    date=date_fin,
-                    value=indicator["value"],
-                    frequency=indicator["frequency"],
-                )
+            try:
+                # to catch ValueError possibly raised in adaptors
+                for indicator in adaptor.get_last_month_data():
+                    if "frequency" not in indicator:
+                        indicator["frequency"] = "mensuelle"
+                    adaptor.create_indicator(
+                        name=indicator["name"],
+                        date=date_fin,
+                        value=indicator["value"],
+                        frequency=indicator["frequency"],
+                    )
+            except ValueError:
+                # should we log errors ?
+                pass

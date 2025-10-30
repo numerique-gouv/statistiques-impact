@@ -33,7 +33,7 @@ function buildSuiteAdaptator(productId: SUITE_PRODUCT_ID) {
         const data = await cache.fetch<suiteNumeriqueOutputApiType>(url);
         var indicatorName = 'utilisateurs actifs';
 
-        if (productName == 'resana' || productName == 'france-transfert'){
+        if (productName == 'resana' || productName == 'france-transfert' || productName == 'visio'){
             indicatorName = 'utilisateurs actifs via ProConnect';
         }
         const indicatorDtos: any = [];
