@@ -81,7 +81,7 @@ class IndicatorSubmissionView(CreateAPIView):
         file = request.FILES["file"]
 
         product = get_object_or_404(models.Product, slug=kwargs["product_slug"])
-        match product.nom_service_public_numerique:
+        match product.slug:
             case "france-transfert":
                 adaptor = FranceTransfertAdaptor()
             case "france-transfert-tests":
@@ -92,7 +92,7 @@ class IndicatorSubmissionView(CreateAPIView):
                     detail="File submission not authorized for this product.",
                 )
 
-        response = adaptor.process_file(file=file)
+        response = adaptor.send_to_datagouv(file=file)
         return Response(
             data={"file": file.name, "success": response.json()["success"]},
             status=response.status_code,
