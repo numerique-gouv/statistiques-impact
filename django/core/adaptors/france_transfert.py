@@ -2,6 +2,7 @@ from core.adaptors.base_adaptor import BaseAdaptor
 from core.utils.datagouv_client import DataGouvClient
 from core.utils import date_utils
 from pandas import to_numeric
+from rest_framework import status, exceptions
 
 
 class FranceTransfertAdaptor(BaseAdaptor):
@@ -14,13 +15,31 @@ class FranceTransfertAdaptor(BaseAdaptor):
         return super().__init__()
 
     def get_last_month_data(self):
-        """Get last month data and return indicators."""
-        month = str(date_utils.get_last_month_limits()[0])[0:-3]
+        """Load last month's csv and return dataframes."""
+        month = str(utils.get_last_month_limits()[0])[0:-3]
 
         client = DataGouvClient()
-        df_stats, df_satisfaction = client.aggregate_monthly_stats(
-            self.product.dataset_id, month
-        )
+        dataset = client.get_dataset(self.product.dataset_id)
+        monthly_resources = [
+            resource for resource in dataset.resources if month in resource.title
+        ]
+
+        if len(monthly_resources) > 2:
+            df_stats, df_satisfaction = client.merge_monthly_stats(
+                self.product.dataset_id, month
+            )
+        else:
+            df_stats, df_satisfaction = [pandas.DataFrame()] * 2
+
+            for resource in monthly_resources:
+                resource.download(f"tmp/{resource.id}")
+                if resource.title == f"{month}-stats.csv":
+                    df_stats = utils.read_csv(f"tmp/{resource.id}")
+                elif resource.title == f"{month}-satisfaction.csv":
+                    df_satisfaction = utils.read_csv(f"tmp/{resource.id}")
+                else:
+                    print(f"Unexpected resource ({resource.title}).")
+
         return self.calculate_usage_stats(df_stats) + self.calculate_satisfaction_stats(
             df_satisfaction
         )
@@ -111,6 +130,9 @@ class FranceTransfertAdaptor(BaseAdaptor):
 
     def calculate_satisfaction_stats(self, dataframe):
         """Calculate indicators value from satisfaction dataframe."""
+        if len(dataframe) == 0:
+            return []
+
         return [
             {
                 "name": "avis émis",
@@ -128,7 +150,7 @@ class FranceTransfertAdaptor(BaseAdaptor):
             },
         ]
 
-    def process_file(self, file):
+    def send_to_datagouv(self, file):
         """Upon reception, send stat and satisfaction files to data.gouv.fr."""
         # A temporary hack for test products to send data to demo.data.gouv.fr
         env = (
@@ -138,4 +160,15 @@ class FranceTransfertAdaptor(BaseAdaptor):
         )
 
         client = DataGouvClient()
-        return client.upload_file(file, self.product, env)
+        if not self.product.dataset_id:
+            raise exceptions.APIException(
+                detail="Please provide a data.gouv.fr dataset",
+                code=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if env == "demo":
+            client.env = "demo"
+            client.api_url = "https://demo.data.gouv.fr/api/1"
+        return client.upload_new_file(
+            self.product.dataset_id, file.file.getvalue(), file.name
+        )
