@@ -3,7 +3,7 @@ from django.conf import settings
 from datagouv import Client, Dataset, Resource
 import pandas
 import os
-from core import utils
+from core.utils import utils
 
 
 class DataGouvClient:
@@ -58,7 +58,7 @@ class DataGouvClient:
         """Merge all daily files into 2 monthly files : stats and satisfaction.
         Used daily files are deleted from dataset."""
 
-        indicator_type_list = {
+        type_list = {
             "stats": {
                 "dataframe": pandas.DataFrame(),
                 "expected_line_count": 0,
@@ -68,64 +68,73 @@ class DataGouvClient:
                 "expected_line_count": 0,
             },
         }
-        merged_resources = []
-        titles = [resource.title for resource in dataset.resources]
+        monthly_resources = [
+            resource for resource in dataset.resources if month in resource.title
+        ]
+        titles = [resource.title for resource in monthly_resources]
 
-        for resource in dataset.resources:
-            if month in resource.title:
-                resource.download(f"tmp/{resource.title}")
+        print(f"{len(monthly_resources)} resources found for month {month}.")
+        if titles == [
+            f"{month}-satisfaction.csv",
+            f"{month}-stats.csv",
+        ]:
+            print("Nothing to merge")
+            exit()
+        for resource in monthly_resources:
+            resource.download(f"tmp/{resource.title}")
+            df = utils.read_csv(f"tmp/{resource.title}")
+            resource_type = resource.title.split("-")[-1][0:-4]
 
-                df = utils.read_csv(f"tmp/{resource.title}")
+            try:
+                type_list[resource_type]["expected_line_count"] += len(df)
+                type_list[resource_type]["dataframe"] = pandas.concat(
+                    [type_list[resource_type]["dataframe"], df]
+                )
+            except KeyError:
+                print(
+                    f'Unexpected format for {resource.title}. Suffix must be "stats" or "satisfaction".'
+                )
+                exit()
 
-                match resource.title.split("-")[-1]:  # check suffix for resource type
-                    case "stats.csv":
-                        stats = indicator_type_list["stats"]
-                        stats["expected_line_count"] += len(df)
-                        stats["dataframe"] = pandas.concat([stats["dataframe"], df])
-                    case "satisfaction.csv":
-                        satisfaction = indicator_type_list["satisfaction"]
-                        satisfaction["expected_line_count"] += len(df)
-                        satisfaction["dataframe"] = pandas.concat(
-                            [satisfaction["dataframe"], df]
-                        )
-                    case _:
-                        print(
-                            f'Unexpected suffix for {resource.title}. Suffix must be "stats" or "satisfaction".'
-                        )
+            # data is merged and file ready to be deleted
+            os.remove(f"tmp/{resource.title}")
 
-                # data is merged and file ready to be deleted
-                os.remove(f"tmp/{resource.title}")  # locally
-                merged_resources.append(resource.id)  # and on dataset
-
-        for indicator_type, data in indicator_type_list.items():
-            name = indicator_type
+        for itype, data in type_list.items():
             dataframe = data["dataframe"]
             expected_line_count = data["expected_line_count"]
-            filename = f"{month}-{name}.csv"
+            filename = f"{month}-{itype}.csv"
+            titles = [resource.title for resource in monthly_resources]
 
+            print(
+                f"For {itype}: expected {expected_line_count} lines, counted {len(dataframe)} lines."
+            )
             if expected_line_count == len(dataframe) and len(dataframe) > 0:
-                if filename not in titles:
-                    # create monthly files
-                    self.upload_new_file(
-                        dataset.id, dataframe.to_csv(index=False), filename
-                    )
-                else:
-                    # update existing file
-                    resource_id = dataset.resources[titles.index(filename)].id
+                if filename in titles:
+                    print(f"Updating file {filename}")
+                    resource_id = monthly_resources[titles.index(filename)].id
                     self.update_resource(
                         dataset.id, resource_id, dataframe.to_csv(index=False), filename
                     )
 
                     # remove this file from deletable resources
-                    merged_resources.remove(resource_id)
+                    monthly_resources = [
+                        resource
+                        for resource in monthly_resources
+                        if resource.id != resource_id
+                    ]
+                else:
+                    # create monthly files
+                    self.upload_new_file(
+                        dataset.id, dataframe.to_csv(index=False), filename
+                    )
+                    print(f"Uploading new file {filename}")
 
         # Delete daily files
-        for resource_id in merged_resources:
-            self.delete_resource(dataset, resource_id)
+        print(f"Deleting {len(monthly_resources)} files.")
+        for resource in monthly_resources:
+            resource.delete()
 
-        return indicator_type_list["stats"]["dataframe"], indicator_type_list[
-            "satisfaction"
-        ]["dataframe"]
+        return type_list["stats"]["dataframe"], type_list["satisfaction"]["dataframe"]
 
     def delete_resource(self, dataset, resource_id):
         """delete resource on a given dataset."""
