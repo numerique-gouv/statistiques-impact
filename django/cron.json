@@ -1,3 +1,6 @@
 {
-    "jobs": [{ "command": "0 0 2 * * python manage.py fetch_new_data", "size": "S" }]
+    "jobs": [
+        { "command": "0 0 2 * * python manage.py fetch_new_data", "size": "S" },
+        { "command": "0 0 * * * python manage.py merge_daily_FT_data", "size": "S" }
+    ]
 }
