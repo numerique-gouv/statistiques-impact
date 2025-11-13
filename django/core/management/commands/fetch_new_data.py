@@ -1,7 +1,7 @@
 """Management command to fetch data from."""
 
 from django.core.management.base import BaseCommand
-from core.utils import date_utils
+from core.utils import utils
 from core.adaptors import all_adaptors
 
 
@@ -12,7 +12,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """Call all adaptors to create indicators."""
-        date_fin = date_utils.get_last_month_limits()[1]
+        date_fin = utils.get_last_month_limits()[1]
 
         for adaptor in all_adaptors:
             adaptor = adaptor()

@@ -1,4 +1,5 @@
 from datetime import date, timedelta
+import pandas
 
 
 def str_to_datetime(input_date: str) -> date:
@@ -20,3 +21,10 @@ def get_last_month_limits():
     date_end = date.today().replace(day=1) - timedelta(days=1)
     date_start = date_end.replace(day=1)
     return date_start, date_end
+
+
+def read_csv(filepath):
+    try:
+        return pandas.read_csv(filepath, delimiter=",")
+    except UnicodeDecodeError:
+        return pandas.read_csv(filepath, delimiter=",", compression="gzip")

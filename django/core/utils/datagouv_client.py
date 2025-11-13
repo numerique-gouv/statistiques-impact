@@ -3,6 +3,7 @@ from django.conf import settings
 from datagouv import Client, Dataset, Resource
 import pandas
 import os
+from core import utils
 
 
 class DataGouvClient:
@@ -32,7 +33,9 @@ class DataGouvClient:
     def upload_new_file(self, dataset_id, data, filename):
         """Upload a file to a dataset."""
 
-        # Upload directly to API because package upload method expects a path
+        self.get_dataset(dataset_id)  # trick to update env to demo if necessary
+
+        # Can't use wrapper because it expects a path
         response = requests.post(
             url=f"{self.api_url}/datasets/{dataset_id}/upload/",
             files={"file": (filename, data, "text/csv")},
@@ -54,7 +57,7 @@ class DataGouvClient:
     def merge_monthly_stats(self, dataset, month):
         """Merge all daily files into 2 monthly files : stats and satisfaction.
         Used daily files are deleted from dataset."""
-        
+
         indicator_type_list = {
             "stats": {
                 "dataframe": pandas.DataFrame(),
@@ -72,12 +75,7 @@ class DataGouvClient:
             if month in resource.title:
                 resource.download(f"tmp/{resource.title}")
 
-                try:
-                    df = pandas.read_csv(f"tmp/{resource.title}", delimiter=",")
-                except UnicodeDecodeError:
-                    df = pandas.read_csv(
-                        f"tmp/{resource.title}", delimiter=",", compression="gzip"
-                    )
+                df = utils.read_csv(f"tmp/{resource.title}")
 
                 match resource.title.split("-")[-1]:  # check suffix for resource type
                     case "stats.csv":

@@ -1,7 +1,7 @@
 from core.adaptors.base_adaptor import BaseAdaptor
 from core.utils.datagouv_client import DataGouvClient
-from core.utils import date_utils
-from pandas import to_numeric
+from core.utils import utils
+import pandas
 from rest_framework import status, exceptions
 
 
@@ -48,7 +48,7 @@ class FranceTransfertAdaptor(BaseAdaptor):
         """Calculate indicators value from stats dataframe."""
         if str(dataframe.dtypes["TAILLE"]) != "float64":
             dataframe["TAILLE2"] = dataframe["TAILLE"]
-            dataframe["TAILLE2"] = to_numeric(
+            dataframe["TAILLE2"] = pandas.to_numeric(
                 dataframe["TAILLE"].str.replace(r" [GMK]?B", "", regex=True)
             )
             dataframe.loc[dataframe["TAILLE"].str.contains("K"), "TAILLE2"] = (
@@ -150,25 +150,15 @@ class FranceTransfertAdaptor(BaseAdaptor):
             },
         ]
 
-    def send_to_datagouv(self, file):
-        """Upon reception, send stat and satisfaction files to data.gouv.fr."""
-        # A temporary hack for test products to send data to demo.data.gouv.fr
-        env = (
-            "demo"
-            if self.product.nom_service_public_numerique == "france-transfert-tests"
-            else "prod"
-        )
-
-        client = DataGouvClient()
+    def upload_new_file(self, file):
+        """Upon reception, send files to data.gouv.fr."""
         if not self.product.dataset_id:
             raise exceptions.APIException(
                 detail="Please provide a data.gouv.fr dataset",
                 code=status.HTTP_400_BAD_REQUEST,
             )
 
-        if env == "demo":
-            client.env = "demo"
-            client.api_url = "https://demo.data.gouv.fr/api/1"
+        client = DataGouvClient()
         return client.upload_new_file(
             self.product.dataset_id, file.file.getvalue(), file.name
         )

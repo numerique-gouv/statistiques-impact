@@ -92,7 +92,7 @@ class IndicatorSubmissionView(CreateAPIView):
                     detail="File submission not authorized for this product.",
                 )
 
-        response = adaptor.send_to_datagouv(file=file)
+        response = adaptor.upload_new_file(file=file)
         return Response(
             data={"file": file.name, "success": response.json()["success"]},
             status=response.status_code,
