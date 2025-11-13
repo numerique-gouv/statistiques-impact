@@ -2,7 +2,7 @@
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from core.utils import date_utils
+from core.utils import utils
 from core.utils.datagouv_client import DataGouvClient
 from core.adaptors import FranceTransfertAdaptor
 
@@ -25,6 +25,6 @@ class Command(BaseCommand):
             client.env = "demo"
             client.api_url = "https://demo.data.gouv.fr/api/1"
 
-        month = str(date_utils.get_last_month_limits()[0])[0:-3]
+        month = str(utils.get_last_month_limits()[0])[0:-3]
         dataset = client.get_dataset(dataset_id)
         client.merge_monthly_stats(dataset, month)

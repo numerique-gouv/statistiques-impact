@@ -1,6 +1,6 @@
 import requests
 from core.adaptors.base_adaptor import BaseAdaptor
-from core.utils import date_utils
+from core.utils import utils
 from django.conf import settings
 
 
@@ -44,7 +44,7 @@ class PostHogAdaptor(BaseAdaptor):
             raise ValueError(f"No data available for insight {insight_id}")
 
         # Find last month in "days" list and return corresponding data
-        last_month = str(date_utils.get_last_month_limits()[0])
+        last_month = str(utils.get_last_month_limits()[0])
         try:
             index = results["days"].index(last_month)
         except ValueError:
