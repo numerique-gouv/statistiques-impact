@@ -134,8 +134,6 @@ class DataGouvClient:
         for resource in monthly_resources:
             resource.delete()
 
-        return type_list["stats"]["dataframe"], type_list["satisfaction"]["dataframe"]
-
     def delete_resource(self, dataset, resource_id):
         """delete resource on a given dataset."""
         resource = Resource(id=resource_id, _client=dataset._client)
