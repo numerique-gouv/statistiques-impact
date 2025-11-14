@@ -42,20 +42,20 @@ def test_france_transfert_indicators():
     ft_client = adaptors.FranceTransfertAdaptor()
     result = ft_client.get_last_month_data()
     assert result == [
-        {"name": "utilisateurs actifs (téléchargement)", "value": 1},
-        {"name": "utilisateurs actifs (envoi)", "value": 2},
-        {"name": "utilisateurs actifs", "value": 3},
+        {"name": "utilisateurs actifs (téléchargement)", "value": 4},
+        {"name": "utilisateurs actifs (envoi)", "value": 1},
+        {"name": "utilisateurs actifs", "value": 5},
         {"name": "téléchargements", "value": 4},
-        {"name": "plis émis", "value": 30},
-        {"name": "Go émis", "value": 10.38},
-        {"name": "Go téléchargés", "value": 0.36},
-        {"name": "Taille pli moyen (Mo)", "value": 345.89},
+        {"name": "plis émis", "value": 3},
+        {"name": "Go émis", "value": 4.91},
+        {"name": "Go téléchargés", "value": 0.64},
+        {"name": "Taille pli moyen (Mo)", "value": 1636.67},
         {
             "name": "top 5 domaines expéditeurs",
-            "value": "actongroup.com, mail.numerique.gouv.fr",
+            "value": "actongroup.com, diplomatie.gouv.fr, gmail.com, justice.fr",
         },
-        {"name": "avis émis", "value": 1},
-        {"name": "pourcentage satisfaction", "value": 100},
+        {"name": "avis émis", "value": 148},
+        {"name": "pourcentage satisfaction", "value": 86},
     ]
 
 

@@ -25,20 +25,18 @@ class FranceTransfertAdaptor(BaseAdaptor):
         ]
 
         if len(monthly_resources) > 2:
-            df_stats, df_satisfaction = client.merge_monthly_stats(
-                self.product.dataset_id, month
-            )
-        else:
-            df_stats, df_satisfaction = [pandas.DataFrame()] * 2
+            client.merge_monthly_stats(self.product.dataset_id, month)
 
-            for resource in monthly_resources:
-                resource.download(f"tmp/{resource.id}")
-                if resource.title == f"{month}-stats.csv":
-                    df_stats = utils.read_csv(f"tmp/{resource.id}")
-                elif resource.title == f"{month}-satisfaction.csv":
-                    df_satisfaction = utils.read_csv(f"tmp/{resource.id}")
-                else:
-                    print(f"Unexpected resource ({resource.title}).")
+        df_stats, df_satisfaction = [pandas.DataFrame()] * 2
+
+        for resource in monthly_resources:
+            resource.download(f"tmp/{resource.id}")
+            if resource.title == f"{month}-stats.csv":
+                df_stats = utils.read_csv(f"tmp/{resource.id}")
+            elif resource.title == f"{month}-satisfaction.csv":
+                df_satisfaction = utils.read_csv(f"tmp/{resource.id}")
+            else:
+                print(f"Unexpected resource ({resource.title}).")
 
         return self.calculate_usage_stats(df_stats) + self.calculate_satisfaction_stats(
             df_satisfaction
