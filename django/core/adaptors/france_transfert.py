@@ -25,7 +25,8 @@ class FranceTransfertAdaptor(BaseAdaptor):
         ]
 
         if len(monthly_resources) > 2:
-            client.merge_monthly_stats(self.product.dataset_id, month)
+            print("Merging files")
+            client.merge_monthly_stats(dataset, month)
 
         df_stats, df_satisfaction = [pandas.DataFrame()] * 2
 
