@@ -30,6 +30,37 @@ def test_proconnect_active_users():
     assert adaptor.get_last_month_data()[0]["value"] == 200000
 
 
+@responses.activate
+def test_suite_active_users():
+    adaptor = adaptors.LaSuiteAdaptor()
+
+    # Mock successful response
+    responses.get(
+        re.compile(r"https://stats.moncomptepro.beta.gouv.fr/*"),
+        json=[
+            {"Fournisseur Service": "Tchap", "Valeurs distinctes de Sub Fi": 27654},
+            {
+                "Fournisseur Service": "DINUM - RESANA",
+                "Valeurs distinctes de Sub Fi": 23323,
+            },
+            {"Fournisseur Service": "Grist", "Valeurs distinctes de Sub Fi": 16094},
+            {"Fournisseur Service": "Docs", "Valeurs distinctes de Sub Fi": 11515},
+            {"Fournisseur Service": "Visio", "Valeurs distinctes de Sub Fi": 8184},
+            {"Fournisseur Service": "Fichiers", "Valeurs distinctes de Sub Fi": 1771},
+            {
+                "Fournisseur Service": "Messagerie de la Suite Numérique",
+                "Valeurs distinctes de Sub Fi": 1155,
+            },
+        ],
+        status=status.HTTP_200_OK,
+        content_type="application/json",
+    )
+    MAU = adaptor.get_last_month_data()
+    assert len(MAU) == 7
+    assert MAU[0]["product"] == "Tchap"
+    assert MAU[0]["value"] == 27654
+
+
 # FRANCE TRANSFERT
 @freeze_time("2025-10-02")
 def test_france_transfert_indicators():
