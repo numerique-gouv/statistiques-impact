@@ -37,12 +37,6 @@ const indicatorsToUpdate: Record<string, adaptatorType> = {
     [PRODUCTS.DOCUMENTATION.name]: documentationAdaptator,
     // [PRODUCTS.API_PARTICULIER.name]: apiParticulierAdaptator,
     // [PRODUCTS.API_ENTREPRISE.name]: apiEntrepriseAdaptator,
-    [PRODUCTS.RESANA.name]: resanaAdaptator,
-    [PRODUCTS.DOCS.name]: docsAdaptator,
-    [PRODUCTS.FRANCE_TRANSFERT.name]: franceTransfertAdaptator,
-    [PRODUCTS.VISIO.name]: visioAdaptator,
-    [PRODUCTS.PLANKA.name]: plankaAdaptator,
-    [PRODUCTS.GRIST.name]: gristAdaptator,
     [PRODUCTS.REGIE.name]: regieAdaptator,
 };
 
