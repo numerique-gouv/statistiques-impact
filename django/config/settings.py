@@ -179,4 +179,4 @@ DATAGOUV_DEMO_API_KEY = os.getenv("DATAGOUV_DEMO_API_KEY", None)
 
 # POSTHOG SETTINGS
 POSTHOG_API_URL = os.getenv("POSTHOG_API_URL", "https://eu.posthog.com")
-POSTHOG_API_KEY = os.getenv("POSTHOG_PERSONAL_API_KEY", None)
+POSTHOG_API_KEY = os.getenv("POSTHOG_API_KEY", None)
