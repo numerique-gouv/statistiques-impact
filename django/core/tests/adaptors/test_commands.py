@@ -10,6 +10,7 @@ from rest_framework import status
 from django.core.management import call_command
 from freezegun import freeze_time
 
+
 pytestmark = pytest.mark.django_db
 
 
@@ -37,10 +38,16 @@ def test_commands_fetch_new_data_ok(
         "Fichiers",
     ]
     for product in products:
-        factories.ProductFactory(nom_service_public_numerique=product)
-    factories.ProductFactory(
-        nom_service_public_numerique="france-transfert",
-        dataset_id="68b86764fd43cc1591faa6a5",
+        factories.AdaptorFactory(
+            product=factories.ProductFactory(nom_service_public_numerique=product)
+        )
+
+    factories.AdaptorFactory(
+        product=factories.ProductFactory(
+            nom_service_public_numerique="france-transfert",
+            dataset_id="68b86764fd43cc1591faa6a5",
+        ),
+        method="FranceTransfertAdaptor",
     )
 
     # Responses mocked in fixtures

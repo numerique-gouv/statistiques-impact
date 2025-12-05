@@ -1,9 +1,5 @@
 from datetime import date, timedelta
 import pandas
-from django.core import exceptions
-from datetime import date as dtdate
-from core import models
-from django.template.defaultfilters import slugify
 
 
 def str_to_datetime(input_date: str) -> date:
@@ -32,34 +28,3 @@ def read_csv(filepath):
         return pandas.read_csv(filepath, delimiter=",")
     except UnicodeDecodeError:
         return pandas.read_csv(filepath, delimiter=",", compression="gzip")
-
-
-def create_indicator(product, name, date, value, frequency, automatic_call=True):
-    """Create indicator"""
-    if type(date) is str:
-        date = dtdate.fromisoformat(date)
-
-    print(product)
-    if type(product) is str:
-        product = models.Product.objects.get(slug=slugify(product))
-
-    try:
-        new_entry = models.Indicator.objects.create(
-            productid=product,
-            indicateur=name,
-            valeur=value,
-            unite_mesure="unite",
-            frequence_monitoring=frequency,
-            date=date,
-            date_debut=date.replace(day=1)
-            if frequency == "mensuelle"
-            else date
-            if frequency == "quotidienne"
-            else "",
-            est_automatise=automatic_call,
-            est_periode=True,
-        )
-    except exceptions.ValidationError as e:
-        return e
-    else:
-        return new_entry
