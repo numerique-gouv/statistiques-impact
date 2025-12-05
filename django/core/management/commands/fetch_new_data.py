@@ -1,8 +1,8 @@
 """Management command to fetch data from."""
 
 from django.core.management.base import BaseCommand
-from core.utils.utils import get_last_month_limits, create_indicator
-from core.adaptors import all_adaptors
+from core.utils.utils import get_last_month_limits
+from core import models
 
 
 class Command(BaseCommand):
@@ -12,32 +12,16 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """Call all adaptors to create indicators."""
-        date_fin = get_last_month_limits()[1]
-        self.stdout.write("Fetching last month's indicators")
+        date_debut, date_fin = get_last_month_limits()
+        self.stdout.write(
+            f"Fetching indicators for last month ({date_debut} to {date_fin})"
+        )
 
-        for adaptor in all_adaptors:
-            adaptor = adaptor()
-            self.stdout.write(f"{str(adaptor)}")
+        for adaptor in models.Adaptor.objects.all():
+            self.stdout.write(f"{str(adaptor.product)} - {str(adaptor.indicator)}")
             try:
-                for indicator in adaptor.get_last_month_data():
-                    self.stdout.write(f"\t{indicator['name']}")
-                    if "frequency" not in indicator:
-                        indicator["frequency"] = "mensuelle"
-
-                    if "product" in indicator:
-                        product = indicator["product"]
-                    else:
-                        product = adaptor.product
-
-                    create_indicator(
-                        product=product,
-                        name=indicator["name"],
-                        date=date_fin,
-                        value=indicator["value"],
-                        frequency=indicator["frequency"],
-                    )
-            except ValueError:
+                adaptor.save_last_month_indicator()
+            except Exception:
                 self.stdout.write(
-                    f"ValueError occured when trying to create indicator {indicator['name']}"
+                    f"Adaptor failed for {adaptor.indicator} on product {adaptor.product}"
                 )
-                pass

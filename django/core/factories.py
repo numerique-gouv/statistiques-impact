@@ -36,3 +36,13 @@ class IndicatorFactory(factory.django.DjangoModelFactory):
     est_periode = True
     est_automatise = random.choice([True, False])
     date_debut = ""
+
+
+class AdaptorFactory(factory.django.DjangoModelFactory):
+    """Factory for the Adaptor model."""
+
+    class Meta:
+        model = models.Adaptor
+
+    product = factory.SubFactory(ProductFactory)
+    indicator = factory.Faker("text", max_nb_chars=30)
