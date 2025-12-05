@@ -5,11 +5,9 @@ from rest_framework import status
 from rest_framework.test import APIClient
 import responses
 from core import models, factories
-import json
 from freezegun import freeze_time
 from core import adaptors
 import re
-from core.tests import fixtures
 
 pytestmark = pytest.mark.django_db
 
@@ -31,30 +29,10 @@ def test_proconnect_active_users():
 
 
 @responses.activate
-def test_suite_active_users():
+def test_suite_active_users(proconnect_lasuite_MAU):
     adaptor = adaptors.LaSuiteAdaptor()
 
-    # Mock successful response
-    responses.get(
-        re.compile(r"https://stats.moncomptepro.beta.gouv.fr/*"),
-        json=[
-            {"Fournisseur Service": "Tchap", "Valeurs distinctes de Sub Fi": 27654},
-            {
-                "Fournisseur Service": "DINUM - RESANA",
-                "Valeurs distinctes de Sub Fi": 23323,
-            },
-            {"Fournisseur Service": "Grist", "Valeurs distinctes de Sub Fi": 16094},
-            {"Fournisseur Service": "Docs", "Valeurs distinctes de Sub Fi": 11515},
-            {"Fournisseur Service": "Visio", "Valeurs distinctes de Sub Fi": 8184},
-            {"Fournisseur Service": "Fichiers", "Valeurs distinctes de Sub Fi": 1771},
-            {
-                "Fournisseur Service": "Messagerie de la Suite Numérique",
-                "Valeurs distinctes de Sub Fi": 1155,
-            },
-        ],
-        status=status.HTTP_200_OK,
-        content_type="application/json",
-    )
+    # Response mocked in fixture
     MAU = adaptor.get_last_month_data()
     assert len(MAU) == 7
     assert MAU[0]["product"] == "Tchap"
@@ -91,7 +69,7 @@ def test_france_transfert_indicators():
 
 
 @responses.activate
-def test_api_submissions__files_sent_to_datagouv():
+def test_api_submissions__files_sent_to_datagouv(datagouv_file_sent):
     """When a file is submitted, it's succesfully sent to data.gouv.fr."""
     product = factories.ProductFactory(
         nom_service_public_numerique="france-transfert-tests",
@@ -102,41 +80,6 @@ def test_api_submissions__files_sent_to_datagouv():
     filename = filepath.split("/")[-1]
 
     # Mock successfull response from data.gouv.fr
-    responses.post(
-        f"https://demo.data.gouv.fr/api/1/datasets/{product.dataset_id}/upload/",
-        json.dumps(
-            {
-                "checksum": {
-                    "type": "sha1",
-                    "value": "47cc980e80adf717d00d8a64c25fcd1395962b56",
-                },
-                "created_at": "2025-09-04T16:29:00.353226+00:00",
-                "description": None,
-                "extras": {},
-                "filesize": 1545,
-                "filetype": "file",
-                "format": "csv",
-                "harvest": None,
-                "id": "d0280651-e268-44de-a7a7-ed515e2bb565",
-                "internal": {
-                    "created_at_internal": "2025-09-04T16:29:00.353226+00:00",
-                    "last_modified_internal": "2025-09-04T18:29:00.299496+00:00",
-                },
-                "last_modified": "2025-09-04T18:29:00.299496+00:00",
-                "latest": "https://demo.data.gouv.fr/api/1/datasets/r/d0280651-e268-44de-a7a7-ed515e2bb565",
-                "metrics": {},
-                "mime": "text/csv",
-                "preview_url": None,
-                "schema": None,
-                "success": True,
-                "title": f"{filename}",
-                "type": "main",
-                "url": f"https://demo-static.data.gouv.fr/resources/test-envoi-fichiers-france-transfert/20250904-162900/{filename}",
-            }
-        ),
-        status=status.HTTP_201_CREATED,
-        content_type="application/json",
-    )
     response = APIClient().post(
         f"/api/products/{product.slug}/submission/",
         data={
@@ -164,6 +107,7 @@ def test_api_submissions__no_dataset_id_fails():
     filepath = "core/tests/api/examples/ip-127-0-0-1_FranceTransfert_2025-05-11_download_stats.csv"
     filename = filepath.split("/")[-1]
 
+    # no response expected
     response = APIClient().post(
         f"/api/products/{product}/submission/",
         data={
@@ -184,18 +128,11 @@ def test_api_submissions__no_dataset_id_fails():
 # MESSAGERIE
 @freeze_time("2025-07-02")
 @responses.activate
-def test_messagerie_active_users():
+def test_messagerie_active_users(datagouv_messagerie_data):
     factories.ProductFactory(nom_service_public_numerique="messagerie")
     adaptor = adaptors.MessagerieAdaptor()
 
-    # Mock data.gouv.fr API response
-    responses.get(
-        re.compile(r"https://www.data.gouv.fr/*"),
-        body=fixtures.datagouv_messagerie_data,
-        status=status.HTTP_200_OK,
-        content_type="application/json",
-    )
-
+    # Responses mocked in fixtures
     assert adaptor.get_last_month_active_users() == 580
 
 
