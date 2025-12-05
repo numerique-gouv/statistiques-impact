@@ -142,3 +142,38 @@ class ProductAPIKey(AbstractAPIKey):
         db_table = "api_keys"
         verbose_name = _("API key")
         verbose_name_plural = _("API keys")
+
+
+class Adaptor(models.Model):
+    product = models.ForeignKey(
+        "Product",
+        on_delete=models.PROTECT,
+        db_column="product",
+        related_name="adaptor",
+    )
+    indicator = models.CharField()
+
+    source_url = models.CharField(blank=True, null=True)
+    method = models.CharField(
+        verbose_name=_("data fetching method"),
+        help_text=_("name of the method used to fetch data"),
+        blank=False, null=False
+    )
+
+    status = models.CharField()
+    created_at = models.DateTimeField(
+        verbose_name=_("created at"),
+        help_text=_("date and time at which a record was created"),
+        auto_now_add=True,
+        editable=False,
+    )
+    last_successful_run = models.DateTimeField(
+        verbose_name=_("last successful run"),
+        editable=False,
+    )
+
+    class Meta:
+        db_table = "adaptor"
+        verbose_name = _("Adaptor")
+        verbose_name_plural = _("Adaptors")
+        unique_together = (("product", "indicator"),)
