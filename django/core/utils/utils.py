@@ -38,6 +38,7 @@ def create_indicator(product, name, date, value, frequency, automatic_call=True)
     if type(date) is str:
         date = dtdate.fromisoformat(date)
 
+    print(product)
     if type(product) is str:
         product = models.Product.objects.get(nom_service_public_numerique=product)
 

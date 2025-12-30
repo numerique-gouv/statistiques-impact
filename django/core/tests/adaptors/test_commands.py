@@ -58,6 +58,7 @@ def test_commands_fetch_new_data_ok(
     assert indicators.filter(productid__slug="docs").count() == 1
     assert indicators.filter(productid__slug="fichiers").count() == 1
     assert not models.Indicator.objects.exclude(date="2025-09-30").exists()
+    assert 1 == 2
 
 
 @freeze_time("2025-10-02")
