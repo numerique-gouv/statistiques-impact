@@ -53,7 +53,13 @@ class LaSuiteAdaptor(ProConnectAdaptor):
             this_indicator = {
                 key: value for key, value in self.indicators_types[0].items()
             }
-            if product_name in ["Resana", "France Transfert", "Visio", "Messagerie"]:
+            if product_name in [
+                "Resana",
+                "France transfert",
+                "Visio",
+                "Messagerie",
+                "Tchap",
+            ]:
                 this_indicator["name"] = f"{this_indicator['name']} via ProConnect"
 
             this_indicator["product"] = product_name
