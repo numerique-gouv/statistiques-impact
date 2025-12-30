@@ -38,7 +38,12 @@ class PostHogAdaptor(BaseAdaptor):
         response = requests.get(url, headers=headers)
         response.raise_for_status()
 
-        results = response.json()["result"][0]
+        try:
+            results = response.json()["result"][0]
+        except TypeError:
+            raise ValueError(
+                f"Failed to get value from Posthog insight {url}. Please manually refresh insight."
+            )
 
         if not results["data"]:
             raise ValueError(f"No data available for insight {insight_id}")
