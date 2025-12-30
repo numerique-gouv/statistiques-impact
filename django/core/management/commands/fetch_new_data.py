@@ -19,7 +19,6 @@ class Command(BaseCommand):
             adaptor = adaptor()
             self.stdout.write(f"{str(adaptor)}")
             try:
-                # to catch ValueError possibly raised in adaptors
                 for indicator in adaptor.get_last_month_data():
                     self.stdout.write(f"\t{indicator['name']}")
                     if "frequency" not in indicator:
@@ -38,5 +37,7 @@ class Command(BaseCommand):
                         frequency=indicator["frequency"],
                     )
             except ValueError:
-                self.stdout.write("ValueError occurred.")
+                self.stdout.write(
+                    f"ValueError occured when trying to create indicator {indicator['name']}"
+                )
                 pass

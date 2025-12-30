@@ -3,6 +3,7 @@ import pandas
 from django.core import exceptions
 from datetime import date as dtdate
 from core import models
+from django.template.defaultfilters import slugify
 
 
 def str_to_datetime(input_date: str) -> date:
@@ -38,8 +39,9 @@ def create_indicator(product, name, date, value, frequency, automatic_call=True)
     if type(date) is str:
         date = dtdate.fromisoformat(date)
 
+    print(product)
     if type(product) is str:
-        product = models.Product.objects.get(nom_service_public_numerique=product)
+        product = models.Product.objects.get(slug=slugify(product))
 
     try:
         new_entry = models.Indicator.objects.create(

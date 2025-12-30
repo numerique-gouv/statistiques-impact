@@ -39,6 +39,8 @@ class FranceTransfertAdaptor(BaseAdaptor):
             else:
                 print(f"Unexpected resource ({resource.title}).")
 
+        print(self.calculate_usage_stats(df_stats))
+        print(self.calculate_satisfaction_stats(df_satisfaction))
         return self.calculate_usage_stats(df_stats) + self.calculate_satisfaction_stats(
             df_satisfaction
         )
