@@ -33,7 +33,7 @@ class LaSuiteAdaptor(ProConnectAdaptor):
     indicators = []
 
     def __init__(self):
-        pass
+        self.name = "LaSuite"
 
     def get_last_month_data(self):
         """Get latest values for all indicators."""
@@ -53,7 +53,7 @@ class LaSuiteAdaptor(ProConnectAdaptor):
             this_indicator = {
                 key: value for key, value in self.indicators_types[0].items()
             }
-            if product_name in ["Resana", "France Transfert", "Visio"]:
+            if product_name in ["Resana", "France Transfert", "Visio", "Messagerie"]:
                 this_indicator["name"] = f"{this_indicator['name']} via ProConnect"
 
             this_indicator["product"] = product_name

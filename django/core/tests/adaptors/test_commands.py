@@ -47,8 +47,9 @@ def test_commands_fetch_new_data_ok(
     call_command("fetch_new_data")
 
     indicators = models.Indicator.objects.filter(date="2025-09-30")
+    assert indicators.count() == 20
     assert indicators.filter(productid__slug="proconnect").count() == 1
-    # assert indicators.filter(productid__slug="messagerie").count() == 2
+    assert indicators.filter(productid__slug="messagerie").count() == 1
     assert indicators.filter(productid__slug="france-transfert").count() == 10
     assert indicators.filter(productid__slug="tchap").count() == 2
     assert indicators.filter(productid__slug="visio").count() == 2

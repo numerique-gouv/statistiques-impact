@@ -22,3 +22,11 @@ class BaseAdaptor:
         for indicator in self.indicators:
             indicator["value"] = getattr(self, indicator["method"])()
         return self.indicators
+
+    def __str__(self):
+        product = (
+            self.product.nom_service_public_numerique
+            if hasattr(self, "product")
+            else self.name
+        )
+        return f"{product} adaptor"
