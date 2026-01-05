@@ -39,59 +39,50 @@ class FranceTransfertAdaptor(BaseAdaptor):
             else:
                 print(f"Unexpected resource ({resource.title}).")
 
-        print(self.calculate_usage_stats(df_stats))
-        print(self.calculate_satisfaction_stats(df_satisfaction))
         return self.calculate_usage_stats(df_stats) + self.calculate_satisfaction_stats(
             df_satisfaction
         )
 
-    def calculate_usage_stats(self, dataframe):
+    def calculate_usage_stats(self, df):
         """Calculate indicators value from stats dataframe."""
-        if str(dataframe.dtypes["TAILLE"]) != "float64":
-            dataframe["TAILLE2"] = dataframe["TAILLE"]
-            dataframe["TAILLE2"] = pandas.to_numeric(
-                dataframe["TAILLE"].str.replace(r" [GMK]?B", "", regex=True)
+        if str(df.dtypes["TAILLE"]) != "float64":
+            df["TAILLE2"] = pandas.to_numeric(
+                df["TAILLE"].str.replace(r" [GMK]?B", "", regex=True)
             )
-            dataframe.loc[dataframe["TAILLE"].str.contains("K"), "TAILLE2"] = (
-                dataframe.loc[dataframe["TAILLE"].str.contains("K"), "TAILLE2"] * 1000
+
+            df.loc[df["TAILLE"].str.contains("K", na=False), "TAILLE2"] = (
+                df.loc[df["TAILLE"].str.contains("K", na=False), "TAILLE2"] * 1000
             )
-            dataframe.loc[dataframe["TAILLE"].str.contains("M"), "TAILLE2"] = (
-                dataframe.loc[dataframe["TAILLE"].str.contains("M"), "TAILLE2"]
-                * (1000 * 1000)
-            )
-            dataframe.loc[dataframe["TAILLE"].str.contains("G"), "TAILLE2"] = (
-                dataframe.loc[dataframe["TAILLE"].str.contains("G"), "TAILLE2"]
-                * (1000 * 1000 * 1000)
-            )
-            dataframe["TAILLE"] = dataframe["TAILLE2"]
+            df.loc[df["TAILLE"].str.contains("M", na=False), "TAILLE2"] = df.loc[
+                df["TAILLE"].str.contains("M", na=False), "TAILLE2"
+            ] * (1000 * 1000)
+            df.loc[df["TAILLE"].str.contains("G", na=False), "TAILLE2"] = df.loc[
+                df["TAILLE"].str.contains("G", na=False), "TAILLE2"
+            ] * (1000 * 1000 * 1000)
+            df.TAILLE2.fillna(df.TAILLE, inplace=True)  # fixes NaN from last command
+            df["TAILLE"] = df["TAILLE2"]
+            del df["TAILLE2"]
 
         go_emis = float(
-            dataframe[dataframe["TYPE_ACTION"] == "upload"]["TAILLE"].sum()
-            / (1000 * 1000 * 1000)
+            df[df["TYPE_ACTION"] == "upload"]["TAILLE"].sum() / (1000 * 1000 * 1000)
         )
-        plis_emis = dataframe[dataframe["TYPE_ACTION"] == "upload"]["ID_PLIS"].nunique()
+        plis_emis = df[df["TYPE_ACTION"] == "upload"]["ID_PLIS"].nunique()
         return [
             {
                 "name": "utilisateurs actifs (téléchargement)",
-                "value": dataframe[dataframe["TYPE_ACTION"] == "download"][
-                    "HASH_EXPE"
-                ].nunique(),
+                "value": df[df["TYPE_ACTION"] == "download"]["HASH_EXPE"].nunique(),
             },
             {
                 "name": "utilisateurs actifs (envoi)",
-                "value": dataframe[dataframe["TYPE_ACTION"] == "upload"][
-                    "HASH_EXPE"
-                ].nunique(),
+                "value": df[df["TYPE_ACTION"] == "upload"]["HASH_EXPE"].nunique(),
             },
             {
                 "name": "utilisateurs actifs",
-                "value": dataframe["HASH_EXPE"].nunique(),
+                "value": df["HASH_EXPE"].nunique(),
             },
             {
                 "name": "téléchargements",
-                "value": int(
-                    dataframe[dataframe["TYPE_ACTION"] == "download"]["ID_PLIS"].count()
-                ),
+                "value": int(df[df["TYPE_ACTION"] == "download"]["ID_PLIS"].count()),
                 # pas "unique" ici. On ne veut pas savoir combien de plis différents
                 # ont été téléchargés mais combien de téléchargements ont eu lieu
             },
@@ -107,9 +98,7 @@ class FranceTransfertAdaptor(BaseAdaptor):
                 "name": "Go téléchargés",
                 "value": float(
                     round(
-                        dataframe[dataframe["TYPE_ACTION"] == "download"][
-                            "TAILLE"
-                        ].sum()
+                        df[df["TYPE_ACTION"] == "download"]["TAILLE"].sum()
                         / (1024 * 1024 * 1024),
                         2,
                     )
@@ -124,7 +113,7 @@ class FranceTransfertAdaptor(BaseAdaptor):
             {
                 "name": "top 5 domaines expéditeurs",
                 "value": ", ".join(
-                    dataframe["DOMAINE_EXPEDITEUR"].value_counts().index.tolist()[:5]
+                    df["DOMAINE_EXPEDITEUR"].value_counts().index.tolist()[:5]
                 ),
             },
         ]
