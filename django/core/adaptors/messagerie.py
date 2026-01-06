@@ -27,6 +27,6 @@ class MessagerieAdaptor(BaseAdaptor):
 
         entry = as_csv[as_csv["yyyy-mm-dd"] == str(date.today().replace(day=1))]
         if len(entry) == 1:
-            return int(entry["sur les 30 derniers jours"])
+            return int(entry["sur les 30 derniers jours"].iloc[0])
         else:
             return None

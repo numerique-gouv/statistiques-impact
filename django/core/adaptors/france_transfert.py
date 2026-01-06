@@ -59,7 +59,7 @@ class FranceTransfertAdaptor(BaseAdaptor):
             df.loc[df["TAILLE"].str.contains("G", na=False), "TAILLE2"] = df.loc[
                 df["TAILLE"].str.contains("G", na=False), "TAILLE2"
             ] * (1000 * 1000 * 1000)
-            df.TAILLE2.fillna(df.TAILLE, inplace=True)  # fixes NaN from last command
+            df.TAILLE2 = df.TAILLE2.fillna(df.TAILLE)  # fixes NaN from last command
             df["TAILLE"] = df["TAILLE2"]
             del df["TAILLE2"]
 
