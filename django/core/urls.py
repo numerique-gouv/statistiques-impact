@@ -21,9 +21,9 @@ urlpatterns = [
         name="legal-notice",
     ),
     re_path(
-        r"produits/?$",
-        views.products,
-        name="products",
+        r"last_indicators/?$",
+        views.last_indicators,
+        name="last_indicators",
     ),
     path(
         "api/",
