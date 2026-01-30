@@ -1,0 +1,72 @@
+{% extends "core/base.html" %}
+{% load i18n static %}
+
+{% block title %}
+<title>Produit</title>
+{% endblock title %}
+
+{% block content %}
+<div>
+    <h1>
+        {{product}}
+    </h1>
+
+    <p>
+        Tous les indicateurs sur notre API :
+        <a href="/api/products/{{product.slug}}/">/api/products/{{product.slug}}/</a>
+    </p>
+
+    <p>
+        {% if product.dataset_id %}
+        Dataset data.gouv.fr :
+        <a href="https://www.data.gouv.fr/datasets/{{product.dataset_id}}">{{ product.dataset_id }}</a>
+        {% else %}
+        Ce produit ne fait pas encore l'objet d'une publication sur data.gouv.fr.
+        {% endif %}
+    </p>
+
+    {% if product.last_indicators %}
+    <div class="fr-table">
+        <div class="fr-table__wrapper">
+            <div class="fr-table__container">
+                <div class="fr-table__content">
+                    <table>
+                        <caption>Indicateurs du {{ product.last_indicators.all.0.date }}</caption>
+                        <thead>
+                            <th scope="col">Valeur</th>
+                            <th scope="col">Indicateur</th>
+                            <th scope="col">Période</th>
+                            <th scope="col">Ajout<br>automatisé</th>
+                        </thead>
+                        <tbody>
+                            {% for indicator in product.last_indicators.all %}
+                            <tr>
+                                <td>
+                                    {{ indicator.valeur|floatformat:"0" }}
+                                    {% if indicator.unite_mesure != "unité" %}
+                                    {{ indicator.unite_mesure }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {{ indicator.indicateur }}
+                                </td>
+                                <td>
+                                    {% if indicator.date_debut %}
+                                    {{indicator.date_debut}} -
+                                    {% endif %}
+                                    {{ indicator.date }}
+                                </td>
+                                <td>
+                                    {{ indicator.est_automatise }}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock content %}
