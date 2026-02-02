@@ -26,6 +26,11 @@ urlpatterns = [
         name="last_indicators",
     ),
     path(
+        "produits/<product_slug>/",
+        views.product,
+        name="produit",
+    ),
+    path(
         "api/",
         include(api_urls),
     ),
