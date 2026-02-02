@@ -45,7 +45,7 @@ class FranceTransfertAdaptor(BaseAdaptor):
 
     def calculate_usage_stats(self, df):
         """Calculate indicators value from stats dataframe."""
-        if str(df.dtypes["TAILLE"]) != "float64":
+        if str(df.dtypes["TAILLE"]) != "int64":
             df["TAILLE2"] = pandas.to_numeric(
                 df["TAILLE"].str.replace(r" [GMK]?B", "", regex=True)
             )
