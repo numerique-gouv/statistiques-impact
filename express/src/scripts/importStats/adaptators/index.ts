@@ -34,10 +34,8 @@ const indicatorsToUpdate: Record<string, adaptatorType> = {
     [PRODUCTS.ANNUAIRE_DES_ENTREPRISES.name]: annuaireDesEntreprisesAdaptator,
     [PRODUCTS.WEBINAIRE.name]: webinaireAdaptator,
     [PRODUCTS.AGENT_CONNECT.name]: agentConnectAdaptator,
-    [PRODUCTS.DOCUMENTATION.name]: documentationAdaptator,
     // [PRODUCTS.API_PARTICULIER.name]: apiParticulierAdaptator,
     // [PRODUCTS.API_ENTREPRISE.name]: apiEntrepriseAdaptator,
-    [PRODUCTS.REGIE.name]: regieAdaptator,
 };
 
 export { indicatorsToUpdate };
