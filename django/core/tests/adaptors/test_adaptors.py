@@ -7,6 +7,7 @@ import responses
 from core import models, factories
 from freezegun import freeze_time
 from core import adaptors
+from core.adaptors import *
 import re
 
 pytestmark = pytest.mark.django_db
@@ -43,13 +44,18 @@ def test_suite_active_users(proconnect_lasuite_MAU):
 @freeze_time("2025-10-02")
 def test_france_transfert_indicators():
     """Monthly retrieval should fetch csv files from data.gouv.fr and compute expected indicators."""
-    factories.ProductFactory(
-        nom_service_public_numerique="france-transfert",
-        dataset_id="68b86764fd43cc1591faa6a5",
-    )  # démo dataset = 68b86764fd43cc1591faa6a5
+    adaptor = factories.AdaptorFactory(
+        product=factories.ProductFactory(
+            nom_service_public_numerique="france-transfert",
+            dataset_id="68b86764fd43cc1591faa6a5",  # démo dataset = 68b86764fd43cc1591faa6a5
+        ),
+        method="FranceTransfertAdaptor",
+    )
 
-    ft_client = adaptors.FranceTransfertAdaptor()
-    result = ft_client.get_last_month_data()
+    import pdb
+
+    pdb.set_trace()
+    result = adaptor.get_last_month_data()
     assert result == [
         {"name": "utilisateurs actifs (téléchargement)", "value": 4},
         {"name": "utilisateurs actifs (envoi)", "value": 1},

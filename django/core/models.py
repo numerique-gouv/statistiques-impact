@@ -157,7 +157,8 @@ class Adaptor(models.Model):
     method = models.CharField(
         verbose_name=_("data fetching method"),
         help_text=_("name of the method used to fetch data"),
-        blank=False, null=False
+        blank=False,
+        null=False,
     )
 
     status = models.CharField()
@@ -168,8 +169,7 @@ class Adaptor(models.Model):
         editable=False,
     )
     last_successful_run = models.DateTimeField(
-        verbose_name=_("last successful run"),
-        editable=False,
+        verbose_name=_("last successful run"), editable=False, blank=True, null=True
     )
 
     class Meta:
@@ -177,3 +177,8 @@ class Adaptor(models.Model):
         verbose_name = _("Adaptor")
         verbose_name_plural = _("Adaptors")
         unique_together = (("product", "indicator"),)
+
+    def get_last_month_data(self):
+        """Call adaptor method to get last month's data."""
+        adaptor = getattr(self.method, "get_last_month_data")
+        return getattr(adaptor.method, "get_last_month_data")
