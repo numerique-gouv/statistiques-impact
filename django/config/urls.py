@@ -11,5 +11,4 @@ from revproxy.views import ProxyView
 
 urlpatterns = [
     path("", include(core_urls)),
-    re_path(r"(?P<path>.*)", ProxyView.as_view(upstream=settings.UPSTREAM_EXPRESS)),
 ]
