@@ -18,7 +18,7 @@ class ProConnectAdaptor(BaseAdaptor):
         """Fetch data from url."""
         url = "https://stats.moncomptepro.beta.gouv.fr/public/question/cd934f6d-fb60-413b-a955-581859451141.json"
         response = requests.get(url)
-        return int(response.json()[0]["Valeurs distinctes de Sub Fi"])
+        return int(response.json()[0]["Somme de Distinct values of Sub Fi"])
 
 
 class LaSuiteAdaptor(ProConnectAdaptor):
@@ -43,9 +43,7 @@ class LaSuiteAdaptor(ProConnectAdaptor):
             this_indicator = {}
             product_name, value = product.popitem()
 
-            if product_name == "DINUM - RESANA":
-                product_name = "Resana"
-            elif product_name == "Messagerie de la Suite Numérique":
+            if product_name == "Messagerie de la Suite Numérique":
                 product_name = "Messagerie"
             else:
                 pass
@@ -70,9 +68,10 @@ class LaSuiteAdaptor(ProConnectAdaptor):
 
     def get_last_month_active_users(self):
         """Fetch data from url."""
-        url = "https://stats.moncomptepro.beta.gouv.fr/public/question/0e3cee98-df38-4d57-8c37-d38c5a2d3231.json"
+        url = "https://stats.moncomptepro.beta.gouv.fr/public/question/777dec23-cd88-47df-a576-57f4b954d59d.json"
         response = requests.get(url)
+        response.raise_for_status()
         return [
-            {entry["Fournisseur Service"]: entry["Valeurs distinctes de Sub Fi"]}
+            {entry["Fournisseur Service"]: entry["Somme de Distinct values of Sub Fi"]}
             for entry in response.json()
         ]

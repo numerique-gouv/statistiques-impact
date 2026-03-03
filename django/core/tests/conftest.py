@@ -12,7 +12,9 @@ def fixture_proconnect_monthly_users():
         re.compile(
             r"https://stats.moncomptepro.beta.gouv.fr/public/question/cd934f6d-*"
         ),
-        json=[{"Time: Mois": "2025-09-01", "Valeurs distinctes de Sub Fi": "200000"}],
+        json=[
+            {"Time: Mois": "2025-09-01", "Somme de Distinct values of Sub Fi": "200000"}
+        ],
         status=status.HTTP_200_OK,
         content_type="application/json",
     )
@@ -22,21 +24,36 @@ def fixture_proconnect_monthly_users():
 def fixture_proconnect_lasuite_MAU():
     responses.get(
         re.compile(
-            r"https://stats.moncomptepro.beta.gouv.fr/public/question/0e3cee98-*"
+            r"https://stats.moncomptepro.beta.gouv.fr/public/question/777dec23-cd88-47df-a576-57f4b954d59d.json"
         ),
         json=[
-            {"Fournisseur Service": "Tchap", "Valeurs distinctes de Sub Fi": 27654},
             {
-                "Fournisseur Service": "DINUM - RESANA",
-                "Valeurs distinctes de Sub Fi": 23323,
+                "Fournisseur Service": "Tchap",
+                "Somme de Distinct values of Sub Fi": 27654,
             },
-            {"Fournisseur Service": "Grist", "Valeurs distinctes de Sub Fi": 16094},
-            {"Fournisseur Service": "Docs", "Valeurs distinctes de Sub Fi": 11515},
-            {"Fournisseur Service": "Visio", "Valeurs distinctes de Sub Fi": 8184},
-            {"Fournisseur Service": "Fichiers", "Valeurs distinctes de Sub Fi": 1771},
+            {
+                "Fournisseur Service": "Resana",
+                "Somme de Distinct values of Sub Fi": 23323,
+            },
+            {
+                "Fournisseur Service": "Grist",
+                "Somme de Distinct values of Sub Fi": 16094,
+            },
+            {
+                "Fournisseur Service": "Docs",
+                "Somme de Distinct values of Sub Fi": 11515,
+            },
+            {
+                "Fournisseur Service": "Visio",
+                "Somme de Distinct values of Sub Fi": 8184,
+            },
+            {
+                "Fournisseur Service": "Fichiers",
+                "Somme de Distinct values of Sub Fi": 1771,
+            },
             {
                 "Fournisseur Service": "Messagerie de la Suite Numérique",
-                "Valeurs distinctes de Sub Fi": 1155,
+                "Somme de Distinct values of Sub Fi": 1155,
             },
         ],
         status=status.HTTP_200_OK,

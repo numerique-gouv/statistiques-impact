@@ -21,7 +21,7 @@ def test_proconnect_active_users():
     # Mock successful response
     responses.get(
         re.compile(r".*/*.json"),
-        b'[{"Time: Mois": "2024-02-01", "Valeurs distinctes de Sub Fi": "200000"}]',
+        b'[{"Time: Mois": "2024-02-01", "Somme de Distinct values of Sub Fi": "200000"}]',
         status=status.HTTP_200_OK,
         content_type="application/json",
     )
