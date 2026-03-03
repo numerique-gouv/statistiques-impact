@@ -34,7 +34,6 @@ class Migration(migrations.Migration):
                 "verbose_name": "product",
                 "verbose_name_plural": "products",
                 "db_table": "product",
-                "managed": False,
             },
         ),
         migrations.CreateModel(
@@ -136,7 +135,6 @@ class Migration(migrations.Migration):
                 "unique_together": {
                     ("productid", "indicateur", "frequence_monitoring", "date")
                 },
-                "managed": False,
             },
         ),
     ]
