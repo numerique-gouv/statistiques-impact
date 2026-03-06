@@ -189,7 +189,7 @@ class Adaptor(models.Model):
 
     def get_client(self):
         """Get client or return error."""
-        return getattr(sys.modules["core.adaptors"], self.client)(adaptor=self)
+        return getattr(sys.modules["core.clients"], self.client)(adaptor=self)
 
     def get_data(self):
         """Call client to get last available data."""
