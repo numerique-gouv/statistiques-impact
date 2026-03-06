@@ -6,7 +6,6 @@ from rest_framework.test import APIClient
 import responses
 from core import models, factories
 from freezegun import freeze_time
-from core import clients
 import re
 
 pytestmark = pytest.mark.django_db
@@ -15,28 +14,46 @@ pytestmark = pytest.mark.django_db
 # PROCONNECT
 @responses.activate
 def test_proconnect_active_users():
-    factories.ProductFactory(nom_service_public_numerique="proconnect")
-    adaptor = clients.MetabaseClient()
+    adaptor = factories.AdaptorFactory.create(
+        product=factories.ProductFactory(nom_service_public_numerique="proconnect"),
+        indicator="monthly active users",
+        client="MetabaseClient",
+        source_url="https://stats.moncomptepro.beta.gouv.fr/public/question/single-product-question.json",
+    )
 
     # Mock successful response
     responses.get(
         re.compile(r".*/*.json"),
-        b'[{"Time: Mois": "2024-02-01", "Valeurs distinctes de Sub Fi": "200000"}]',
+        json=[{"Time: Mois": "2026-02-01", "Valeurs distinctes de Sub Fi": 343349}],
         status=status.HTTP_200_OK,
         content_type="application/json",
     )
-    assert adaptor.get_last_month_data()[0]["value"] == 200000
+    assert adaptor.get_data() == 343349
 
 
 @responses.activate
-def test_suite_active_users(proconnect_lasuite_MAU):
-    adaptor = clients.MetabaseMultipleProductsClient()
+def test_suite_active_users(metabase_lasuite_MAU):
+    """Test a question with multiple products is handled as expected."""
+    adaptor = factories.AdaptorFactory.create(
+        product=factories.ProductFactory(nom_service_public_numerique="proconnect"),
+        indicator="monthly active users",
+        client="MetabaseMultipleProductsClient",
+        source_url="https://stats.moncomptepro.beta.gouv.fr/public/question/multiple-products-question.json",
+    )
 
     # Response mocked in fixture
-    MAU = adaptor.get_last_month_data()
-    assert len(MAU) == 7
-    assert MAU[0]["product"] == "Tchap"
-    assert MAU[0]["value"] == 27654
+    value = adaptor.get_data()
+    assert len(value) == 8
+    assert value == [
+        {"product": "Tchap", "value": 27654},
+        {"product": "Resana", "value": 23323},
+        {"product": "Grist", "value": 16094},
+        {"product": "Docs", "value": 11515},
+        {"product": "Visio", "value": 8184},
+        {"product": "Fichiers", "value": 1771},
+        {"product": "Messagerie de la Suite Numérique", "value": 1155},
+        {"product": "Hors suj", "value": 13},
+    ]
 
 
 # FRANCE TRANSFERT
@@ -48,11 +65,10 @@ def test_france_transfert_indicators():
             nom_service_public_numerique="france-transfert",
             dataset_id="68b86764fd43cc1591faa6a5",  # démo dataset = 68b86764fd43cc1591faa6a5
         ),
-        method="FranceTransfertAdaptor",
+        client="FranceTransfertClient",
     )
 
-    result = adaptor.get_last_month_data()
-    assert result == [
+    assert adaptor.get_data() == [
         {"name": "utilisateurs actifs (téléchargement)", "value": 4},
         {"name": "utilisateurs actifs (envoi)", "value": 1},
         {"name": "utilisateurs actifs", "value": 5},
@@ -131,48 +147,50 @@ def test_api_submissions__no_dataset_id_fails():
 @freeze_time("2025-07-02")
 @responses.activate
 def test_messagerie_active_users(datagouv_messagerie_data):
-    factories.ProductFactory(nom_service_public_numerique="messagerie")
-    adaptor = clients.MessagerieAdaptor()
+    """Checks that DataGouvClient retrieves data.gouv data as expected."""
+    adaptor = factories.AdaptorFactory.create(
+        product=factories.ProductFactory(
+            nom_service_public_numerique="messagerie",
+            dataset_id="68650cd6130c82da6ba44a92",
+        ),
+        indicator="monthly active users",
+        client="MessagerieClient",
+    )
 
     # Responses mocked in fixtures
-    assert adaptor.get_last_month_active_users() == 580
+    assert adaptor.get_data() == 580
 
 
 ## TCHAP
 @responses.activate
 def test_tchap_indicators():
-    """Tchap adaptor should retrieve expected data."""
-    factories.ProductFactory(nom_service_public_numerique="tchap")
-    adaptor = clients.TchapClient()
+    """Tchap client should retrieve expected data."""
+    adaptor = factories.AdaptorFactory.create(
+        product=factories.ProductFactory(
+            nom_service_public_numerique="tchap",
+        ),
+        source_url="https://metabase.tchap.net/public/question/last_MAU.json",
+        indicator="monthly active users",
+        client="TchapClient",
+    )
 
     # Mock data.gouv.fr API response
     responses.get(
-        re.compile(r"https://stats.tchap.incubateur.net/public/question/ae34205d-*"),
+        re.compile(r"https://metabase.tchap.net/public/question/last_MAU.json"),
         json=[{"Visit Date": "sept., 2025", "Nombre de lignes": "367 146"}],
         status=status.HTTP_200_OK,
         content_type="application/json",
     )
-    responses.get(
-        re.compile(r"https://stats.tchap.incubateur.net/public/question/84a9b0bc-*"),
-        json=[
-            {"Hour": "août, 2025", "Somme de Events": "5 404 085"},
-            {"Hour": "sept., 2025", "Somme de Events": "10 877 632"},
-        ],
-        status=status.HTTP_200_OK,
-        content_type="application/json",
-    )
 
-    assert adaptor.get_last_month_data() == [
-        {
-            "frequency": "mensuelle",
-            "name": "utilisateurs actifs",
-            "method": "get_last_month_active_users",
-            "value": 367146,
-        },
-        {
-            "frequency": "mensuelle",
-            "name": "messages échangés",
-            "method": "get_last_month_messages_count",
-            "value": 10877632,
-        },
-    ]
+    assert adaptor.get_data() == 367146
+
+    # Message échangés
+    # responses.get(
+    #     re.compile(r"https://stats.tchap.incubateur.net/public/question/84a9b0bc-*"),
+    #     json=[
+    #         {"Hour": "août, 2025", "Somme de Events": "5 404 085"},
+    #         {"Hour": "sept., 2025", "Somme de Events": "10 877 632"},
+    #     ],
+    #     status=status.HTTP_200_OK,
+    #     content_type="application/json",
+    # )

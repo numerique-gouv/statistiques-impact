@@ -1,42 +1,40 @@
 import requests
 from core.clients.client_base import ClientBase
+from rest_framework import status, exceptions
 
 
 class MetabaseClient(ClientBase):
-    """Adaptor to fetch and send ProConnect's indicators."""
+    """Adaptor to extract data of interest from Metabase responses."""
 
-    slug = "proconnect"
-    indicators = [
-        {
-            "name": "utilisateurs actifs",
-            "frequency": "mensuelle",
-            "method": "get_last_month_active_users",
-        }
-    ]
+    def get_data(self):
+        """Extract data from response content."""
+        response = self.get_response()
+        content = response.json()
+        if len(content) == 1:
+            return int(content[0]["Valeurs distinctes de Sub Fi"])
+        else:
+            return [
+                {
+                    "product": entry["Fournisseur Service"],
+                    "value": entry["Somme de Distinct values of Sub Fi"],
+                }
+                for entry in content
+            ]
 
-    def get_last_month_active_users(self):
-        """Fetch data from url."""
-        url = "https://stats.moncomptepro.beta.gouv.fr/public/question/cd934f6d-fb60-413b-a955-581859451141.json"
-        response = requests.get(url)
-        return int(response.json()[0]["Valeurs distinctes de Sub Fi"])
 
-
-class TchapClient(ClientBase):
+class TchapClient(MetabaseClient):
     """Adaptor to fetch and send Tchap's indicators."""
 
-    slug = "tchap"
-    indicators = [
-        {
-            "name": "utilisateurs actifs",
-            "frequency": "mensuelle",
-            "method": "get_last_month_active_users",
-        },
-        {
-            "name": "messages échangés",
-            "frequency": "mensuelle",
-            "method": "get_last_month_messages_count",
-        },
-    ]
+    def get_data(self):
+        response = self.get_response()
+        content = response.json()
+        if len(content) == 1:
+            return int(content[0]["Nombre de lignes"].replace(" ", ""))
+        else:
+            raise exceptions.APIException(
+                detail="Don't know how to handle these data. Please verify you're using the correct client.",
+                code=status.HTTP_400_BAD_REQUEST,
+            )
 
     def get_last_month_active_users(self):
         """Fetch last month active users count from dedicated url."""
@@ -53,17 +51,6 @@ class TchapClient(ClientBase):
 
 class MetabaseMultipleProductsClient(MetabaseClient):
     """Adaptor to fetch LaSuite's basic indicators."""
-
-    indicators_types = [
-        {
-            "name": "utilisateurs actifs",
-            "frequency": "mensuelle",
-        }
-    ]
-    indicators = []
-
-    def __init__(self):
-        self.name = "LaSuite"
 
     def get_last_month_data(self):
         """Get latest values for all indicators."""
