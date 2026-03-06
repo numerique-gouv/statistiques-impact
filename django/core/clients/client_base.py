@@ -1,7 +1,7 @@
 from core import models
 
 
-class BaseAdaptor:
+class ClientBase:
     """Base adaptor to fetch product's data and create indicators."""
 
     slug = "product_slug"

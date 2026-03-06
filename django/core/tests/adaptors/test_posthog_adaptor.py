@@ -3,7 +3,7 @@ Unit tests for the PostHog adaptor
 """
 
 import pytest
-from core.adaptors import posthog
+from core.clients import PostHogClient
 from core import factories
 import responses
 from rest_framework import status
@@ -20,7 +20,7 @@ def test_posthog_monthly_active_users(settings):
     factories.ProductFactory(nom_service_public_numerique="visio")
 
     # Create a test adaptor with project_id
-    class TestVisioAdaptor(posthog.PostHogAdaptor):
+    class TestVisioClient(PostHogClient):
         slug = "visio"
         indicators = [
             {
@@ -50,7 +50,7 @@ def test_posthog_monthly_active_users(settings):
         content_type="application/json",
     )
 
-    adaptor = TestVisioAdaptor()
+    adaptor = TestVisioClient()
     results = adaptor.get_last_month_data()
 
     # Verify the latest data point was returned
@@ -67,7 +67,7 @@ def test_posthog_multiple_indicators(settings):
     factories.ProductFactory(nom_service_public_numerique="test-product")
 
     # Create a custom adaptor with multiple indicators
-    class TestMultipleAdaptor(posthog.PostHogAdaptor):
+    class TestMultipleAdaptor(PostHogClient):
         slug = "test-product"
         indicators = [
             {
@@ -134,7 +134,7 @@ def test_posthog_no_data_error(settings):
     factories.ProductFactory(nom_service_public_numerique="test-product")
 
     # Create a test adaptor
-    class TestEmptyAdaptor(posthog.PostHogAdaptor):
+    class TestEmptyAdaptor(PostHogClient):
         slug = "test-product"
         indicators = [
             {
