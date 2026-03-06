@@ -21,7 +21,7 @@ class Command(BaseCommand):
             self.stdout.write(f"{str(adaptor.product)} - {str(adaptor.indicator)}")
             try:
                 adaptor.save_last_month_indicator()
-            except Exception:
+            except Exception as exc:
                 self.stdout.write(
-                    f"Adaptor failed for {adaptor.indicator} on product {adaptor.product}"
+                    f"Adaptor for {adaptor.indicator} on {adaptor.product} failed: {exc} "
                 )

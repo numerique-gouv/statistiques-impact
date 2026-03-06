@@ -2,6 +2,7 @@ import pytest
 import re
 import responses
 from rest_framework import status
+from core import factories
 
 
 # METABASE
@@ -10,7 +11,7 @@ def fixture_proconnect_monthly_users():
     """Mock Metabase response when fetching ProConnect monthly users."""
     responses.get(
         re.compile(
-            r"https://stats.moncomptepro.beta.gouv.fr/public/question/cd934f6d-*"
+            r"https://stats.moncomptepro.beta.gouv.fr/public/question/single-product-question.json"
         ),
         json=[{"Time: Mois": "2025-09-01", "Valeurs distinctes de Sub Fi": "200000"}],
         status=status.HTTP_200_OK,
@@ -18,25 +19,56 @@ def fixture_proconnect_monthly_users():
     )
 
 
-@pytest.fixture(name="proconnect_lasuite_MAU")
-def fixture_proconnect_lasuite_MAU():
+@pytest.fixture(name="metabase_lasuite_MAU")
+def fixture_metabase_lasuite_MAU():
+    products = [
+        "Tchap",
+        "Resana",
+        "Grist",
+        "Docs",
+        "Visio",
+        "Fichiers",
+        "Messagerie de la Suite Numérique",
+    ]
+    for product in products:
+        factories.ProductFactory(nom_service_public_numerique=product)
+
     responses.get(
         re.compile(
-            r"https://stats.moncomptepro.beta.gouv.fr/public/question/0e3cee98-*"
+            r"https://stats.moncomptepro.beta.gouv.fr/public/question/multiple-products-question.json"
         ),
         json=[
-            {"Fournisseur Service": "Tchap", "Valeurs distinctes de Sub Fi": 27654},
             {
-                "Fournisseur Service": "DINUM - RESANA",
-                "Valeurs distinctes de Sub Fi": 23323,
+                "Fournisseur Service": "Tchap",
+                "Somme de Distinct values of Sub Fi": 27654,
             },
-            {"Fournisseur Service": "Grist", "Valeurs distinctes de Sub Fi": 16094},
-            {"Fournisseur Service": "Docs", "Valeurs distinctes de Sub Fi": 11515},
-            {"Fournisseur Service": "Visio", "Valeurs distinctes de Sub Fi": 8184},
-            {"Fournisseur Service": "Fichiers", "Valeurs distinctes de Sub Fi": 1771},
+            {
+                "Fournisseur Service": "Resana",
+                "Somme de Distinct values of Sub Fi": 23323,
+            },
+            {
+                "Fournisseur Service": "Grist",
+                "Somme de Distinct values of Sub Fi": 16094,
+            },
+            {
+                "Fournisseur Service": "Docs",
+                "Somme de Distinct values of Sub Fi": 11515,
+            },
+            {
+                "Fournisseur Service": "Visio",
+                "Somme de Distinct values of Sub Fi": 8184,
+            },
+            {
+                "Fournisseur Service": "Fichiers",
+                "Somme de Distinct values of Sub Fi": 1771,
+            },
             {
                 "Fournisseur Service": "Messagerie de la Suite Numérique",
-                "Valeurs distinctes de Sub Fi": 1155,
+                "Somme de Distinct values of Sub Fi": 1155,
+            },
+            {
+                "Fournisseur Service": "Hors suj",
+                "Somme de Distinct values of Sub Fi": 13,
             },
         ],
         status=status.HTTP_200_OK,

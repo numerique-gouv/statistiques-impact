@@ -1,13 +1,14 @@
 from .metabase import MetabaseClient, TchapClient, MetabaseMultipleProductsClient
-from .datagouv import FranceTransfertAdaptor, MessagerieAdaptor
+from .datagouv import DataGouvClient, MessagerieClient, FranceTransfertClient
 from .posthog import PostHogClient, VisioClient
 
 
 all_adaptors = [
     MetabaseClient,
     MetabaseMultipleProductsClient,
-    FranceTransfertAdaptor,
-    MessagerieAdaptor,
+    DataGouvClient,
+    MessagerieClient,
+    FranceTransfertClient,
     TchapClient,
     VisioClient,
     PostHogClient,
