@@ -23,8 +23,12 @@ def get_last_month_limits():
     return date_start, date_end
 
 
-def read_csv(filepath):
+def read_csv(filepath, **kwargs):
+    """
+    Try to read file as csv, with or without compression. Also, as we are in a French setting,
+    default delimiters are comas so we add this option here instead of everywhere else.
+    """
     try:
-        return pandas.read_csv(filepath, delimiter=",")
+        return pandas.read_csv(filepath, delimiter=",", **kwargs)
     except UnicodeDecodeError:
-        return pandas.read_csv(filepath, delimiter=",", compression="gzip")
+        return pandas.read_csv(filepath, delimiter=",", compression="gzip", **kwargs)

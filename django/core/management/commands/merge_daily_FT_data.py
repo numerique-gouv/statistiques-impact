@@ -3,7 +3,7 @@
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from core.utils.datagouv_client import DataGouvClient
-from core.clients import FranceTransfertAdaptor
+from core.clients import FranceTransfertClient
 from datetime import date
 
 
@@ -29,7 +29,7 @@ class Command(BaseCommand):
         """Call all adaptors to create indicators."""
         # self.stdout.write(self.style.SUCCESS("..."))
         month = options["month"]
-        adaptor = FranceTransfertAdaptor()
+        adaptor = FranceTransfertClient()
         dataset_id = adaptor.product.dataset_id
         client = DataGouvClient()
 

@@ -1,63 +1,123 @@
 from core.clients.client_base import ClientBase
-from core.utils.datagouv_client import DataGouvClient
 from core.utils import utils
 import pandas
 from rest_framework import status, exceptions
 import requests
-import io
-from pandas import read_csv
 from datetime import date
+from django.conf import settings
+from datagouv import Client, Dataset, Resource
+import os
+
+# Demo datasets to check France transfert interop
+# runs as expected
+FT_DEMO_DATASETS = ["68b86764fd43cc1591faa6a5"]
 
 
-class MessagerieAdaptor(ClientBase):
-    """Adaptor to fetch and send ProConnect's indicators."""
+class DataGouvClient(ClientBase):
+    """A client for all interactions with datasets at data.gouv.fr."""
 
-    slug = "messagerie"
-    indicators = [
-        {
-            "name": "utilisateurs actifs 30 derniers jours",
-            "frequency": "mensuelle",
-            "method": "get_last_month_active_users",
-        }
-    ]
+    def __init__(self, adaptor, env="www"):
+        """Fix to include tests for france-transfert."""
+        self.env = "demo" if adaptor.product.dataset_id in FT_DEMO_DATASETS else "www"
+        self.dataset_id = adaptor.product.dataset_id
+        self.api_url = (
+            "https://demo.data.gouv.fr/api/1"
+            if adaptor.product.dataset_id in FT_DEMO_DATASETS
+            else settings.DATAGOUV_API_URL
+        )
+        self.api_key = (
+            settings.DATAGOUV_DEMO_API_KEY
+            if adaptor.product.dataset_id in FT_DEMO_DATASETS
+            else settings.DATAGOUV_API_KEY
+        )
+        super().__init__(adaptor)
 
-    def get_last_month_active_users(self):
-        """Get a specific date's active users from messagerie's dataset on data.gouv.fr."""
-        url = "https://www.data.gouv.fr/api/1/datasets/r/f5d3d162-d485-4bed-94bc-96679d299747"
-        response = requests.get(url)
-        as_csv = read_csv(
-            io.StringIO(response.content.decode("utf-8")), skipinitialspace=True
+    def get_headers(self):
+        """Simple headers to provide auth, but key depends on env."""
+        return {"x-api-key": self.api_key}
+
+    def get_dataset(self):
+        dataset_id = self.adaptor.product.dataset_id
+
+        if not dataset_id:
+            raise exceptions.APIException(
+                detail=f"Don't know which data.gouv dataset to work with. Please provide a dataset_id for {self.product}.",
+                code=status.HTTP_400_BAD_REQUEST,
+            )
+
+        return Dataset(
+            dataset_id,
+            _client=Client(environment=self.env, api_key=self.api_key),
         )
 
-        entry = as_csv[as_csv["yyyy-mm-dd"] == str(date.today().replace(day=1))]
-        if len(entry) == 1:
-            return int(entry["sur les 30 derniers jours"].iloc[0])
-        else:
-            return None
+    def upload_new_file(self, file):
+        """Upload a file to a dataset."""
+        if not self.product.dataset_id:
+            raise exceptions.APIException(
+                detail="Please provide a data.gouv.fr dataset",
+                code=status.HTTP_400_BAD_REQUEST,
+            )
+
+        self.get_dataset()
+
+        # Can't use wrapper because it expects a path
+        response = requests.post(
+            url=f"{self.api_url}/datasets/{self.product.dataset_id}/upload/",
+            files={"file": (file.name, file.file.getvalue(), "text/csv")},
+            headers=self.get_headers(),
+        )
+        response.raise_for_status()
+        return response
+
+    def update_resource(self, dataset_id, resource_id, data, filename):
+        """Replace a resource by a new file."""
+        response = requests.post(
+            f"{self.api_url}/datasets/{dataset_id}/resources/{resource_id}/upload",
+            headers=self.get_headers(),
+            files={"file": (filename, data, "text/csv")},
+        )
+        response.raise_for_status()
+        return response
+
+    def delete_resource(self, dataset, resource_id):
+        """delete resource on a given dataset."""
+        resource = Resource(id=resource_id, _client=dataset._client)
+        print(f"Resource {resource_id} deleted.")
+        resource.delete()
 
 
-class FranceTransfertAdaptor(ClientBase):
-    slug = "france-transfert"
+class MessagerieClient(DataGouvClient):
+    """Adaptor to fetch and send 's indicators."""
 
-    def __init__(self, is_test=False):
-        """Fix to include tests for france-transfert."""
-        if is_test:
-            self.slug = "france-transfert-tests"
-        return super().__init__()
+    def get_data(self):
+        """Get a specific date's active users from messagerie's dataset on data.gouv.fr."""
 
-    def get_last_month_data(self):
-        """Load last month's csv and return dataframes."""
+        dataset = self.get_dataset()
+        resource = dataset.resources[0]
+        resource.download(f"tmp/{resource.id}.csv")
+        as_csv = utils.read_csv(f"tmp/{resource.id}.csv", skipinitialspace=True)
+        os.remove(f"tmp/{resource.id}.csv")
+
+        entry = as_csv[as_csv["yyyy-mm-dd"] == str(date.today().replace(day=1))][
+            "sur les 30 derniers jours"
+        ]
+        return int(entry.iloc[0]) if len(entry) == 1 else None
+
+
+class FranceTransfertClient(DataGouvClient):
+    """A client for the special needs of FranceTransfert."""
+
+    def get_data(self):
+        """Surchage function to run France-Transfert-specific treatment on data."""
         month = str(utils.get_last_month_limits()[0])[0:-3]
-
-        client = DataGouvClient()
-        dataset = client.get_dataset(self.product.dataset_id)
+        dataset = self.get_dataset()
         monthly_resources = [
             resource for resource in dataset.resources if month in resource.title
         ]
 
         if len(monthly_resources) > 2:
             print("Merging files")
-            client.merge_monthly_stats(dataset, month)
+            self.merge_monthly_stats(dataset, month)
 
         df_stats, df_satisfaction = [pandas.DataFrame()] * 2
 
@@ -171,15 +231,82 @@ class FranceTransfertAdaptor(ClientBase):
             },
         ]
 
-    def upload_new_file(self, file):
-        """Upon reception, send files to data.gouv.fr."""
-        if not self.product.dataset_id:
-            raise exceptions.APIException(
-                detail="Please provide a data.gouv.fr dataset",
-                code=status.HTTP_400_BAD_REQUEST,
-            )
+    def merge_monthly_stats(self, dataset, month):
+        """Merge all daily files into 2 monthly files : stats and satisfaction.
+        Used daily files are deleted from dataset."""
 
-        client = DataGouvClient()
-        return client.upload_new_file(
-            self.product.dataset_id, file.file.getvalue(), file.name
-        )
+        type_list = {
+            "stats": {
+                "dataframe": pandas.DataFrame(),
+                "expected_line_count": 0,
+            },
+            "satisfaction": {
+                "dataframe": pandas.DataFrame(),
+                "expected_line_count": 0,
+            },
+        }
+        monthly_resources = [
+            resource for resource in dataset.resources if month in resource.title
+        ]
+        titles = [resource.title for resource in monthly_resources]
+
+        print(f"{len(monthly_resources)} resources found for month {month}.")
+        if titles == [
+            f"{month}-satisfaction.csv",
+            f"{month}-stats.csv",
+        ]:
+            print("Nothing to merge")
+            exit()
+        for resource in monthly_resources:
+            resource.download(f"tmp/{resource.title}")
+            df = utils.read_csv(f"tmp/{resource.title}")
+            resource_type = resource.title.split("-")[-1][0:-4]
+
+            try:
+                type_list[resource_type]["expected_line_count"] += len(df)
+                type_list[resource_type]["dataframe"] = pandas.concat(
+                    [type_list[resource_type]["dataframe"], df]
+                )
+            except KeyError:
+                print(
+                    f'Unexpected format for {resource.title}. Suffix must be "stats" or "satisfaction".'
+                )
+                exit()
+
+            # data is merged and file ready to be deleted
+            os.remove(f"tmp/{resource.title}")
+
+        for itype, data in type_list.items():
+            dataframe = data["dataframe"]
+            expected_line_count = data["expected_line_count"]
+            filename = f"{month}-{itype}.csv"
+            titles = [resource.title for resource in monthly_resources]
+
+            print(
+                f"For {itype}: expected {expected_line_count} lines, counted {len(dataframe)} lines."
+            )
+            if expected_line_count == len(dataframe) and len(dataframe) > 0:
+                if filename in titles:
+                    print(f"Updating file {filename}")
+                    resource_id = monthly_resources[titles.index(filename)].id
+                    self.update_resource(
+                        dataset.id, resource_id, dataframe.to_csv(index=False), filename
+                    )
+
+                    # remove this file from deletable resources
+                    monthly_resources = [
+                        resource
+                        for resource in monthly_resources
+                        if resource.id != resource_id
+                    ]
+                else:
+                    # create monthly files
+                    self.upload_new_file(
+                        dataset.id, dataframe.to_csv(index=False), filename
+                    )
+                    print(f"Uploading new file {filename}")
+
+        # Delete daily files
+        print(f"Deleting {len(monthly_resources)} files.")
+        for resource in monthly_resources:
+            resource.delete()
