@@ -6,7 +6,7 @@ from core.api import serializers, permissions
 from django.core.exceptions import ValidationError
 from rest_framework.parsers import FileUploadParser
 from django.shortcuts import get_object_or_404
-from core.adaptors.france_transfert import FranceTransfertAdaptor
+from core.clients.datagouv import DataGouvClient
 
 
 class ProductViewSet(
@@ -81,18 +81,18 @@ class IndicatorSubmissionView(CreateAPIView):
         file = request.FILES["file"]
 
         product = get_object_or_404(models.Product, slug=kwargs["product_slug"])
-        match product.slug:
-            case "france-transfert":
-                adaptor = FranceTransfertAdaptor()
-            case "france-transfert-tests":
-                adaptor = FranceTransfertAdaptor(is_test=True)
-            case _:
-                raise exceptions.MethodNotAllowed(
-                    method="Submission",
-                    detail="File submission not authorized for this product.",
-                )
 
-        response = adaptor.upload_new_file(file=file)
+        if product.slug not in ["france-transfert", "france-transfert-tests"]:
+            raise exceptions.MethodNotAllowed(
+                method="Submission",
+                detail="File submission not authorized for this product.",
+            )
+
+        if product.slug == "france-transfert-tests":
+            env = "demo"
+
+        client = DataGouvClient(adaptor=models.Adaptor(product=product), env=env)
+        response = client.upload_new_file(file=file)
         return Response(
             data={"file": file.name, "success": response.json()["success"]},
             status=response.status_code,

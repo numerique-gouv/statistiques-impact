@@ -1,4 +1,5 @@
 import uuid
+import sys
 
 
 from django.db import models
@@ -6,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.template.defaultfilters import slugify
 from rest_framework_api_key.models import AbstractAPIKey
+from core.utils.utils import get_last_month_limits
 
 
 class User(AbstractBaseUser):
@@ -148,3 +150,88 @@ class ProductAPIKey(AbstractAPIKey):
         db_table = "api_keys"
         verbose_name = _("API key")
         verbose_name_plural = _("API keys")
+
+
+class Adaptor(models.Model):
+    """Adaptor model"""
+
+    product = models.ForeignKey(
+        "Product",
+        on_delete=models.PROTECT,
+        db_column="product",
+        related_name="adaptor",
+        null=True,
+    )
+    indicator = models.CharField(blank=True, null=True)
+
+    source_url = models.CharField(blank=True, null=True)
+    client = models.CharField(
+        verbose_name=_("client to treat data"),
+        help_text=_("name of the client used to fetch and treat"),
+        blank=False,
+        null=False,
+    )
+    frequence_monitoring = models.CharField(blank=True, null=True)
+
+    status = models.CharField()
+    created_at = models.DateTimeField(
+        verbose_name=_("created at"),
+        help_text=_("date and time at which a record was created"),
+        auto_now_add=True,
+        editable=False,
+    )
+
+    class Meta:
+        db_table = "adaptor"
+        verbose_name = _("Adaptor")
+        verbose_name_plural = _("Adaptors")
+        unique_together = (("product", "indicator"),)
+
+    def get_client(self):
+        """Get client or return error."""
+        return getattr(sys.modules["core.clients"], self.client)(adaptor=self)
+
+    def get_data(self):
+        """Call client to get last available data."""
+        client = self.get_client()
+        return client.get_data()
+
+    def save_last_month_indicator(self):
+        """Call client to get last available data and save it."""
+        date_fin = get_last_month_limits()[1]
+        client = self.get_client()
+        data = client.get_data()
+
+        if not self.product and type(data) is list:
+            # product has not been specified
+            for entry in data:
+                try:
+                    product = Product.objects.get(
+                        nom_service_public_numerique=entry["product"]
+                    )
+                except Product.DoesNotExist:
+                    print(f"Product {entry['product']} not found.")
+                else:
+                    Indicator.objects.create(
+                        productid=product,
+                        indicateur=self.indicator,
+                        date=date_fin,
+                        valeur=entry["value"],
+                        frequence_monitoring=self.frequence_monitoring,
+                    )
+            return
+
+        try:
+            Indicator.objects.create(
+                productid=self.product,
+                indicateur=self.indicator,
+                date=date_fin,
+                valeur=data,
+                frequence_monitoring=self.frequence_monitoring,
+            )
+        except ValueError:
+            self.stdout.write(
+                f"ValueError occured when trying to create indicator {self.indicator}"
+            )
+            pass
+        return

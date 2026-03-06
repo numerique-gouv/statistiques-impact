@@ -10,105 +10,97 @@ from rest_framework import status
 from django.core.management import call_command
 from freezegun import freeze_time
 
+
 pytestmark = pytest.mark.django_db
 
 
 # FETCH_NEW_DATA
 @freeze_time("2025-10-02")
 @responses.activate
-def test_commands_fetch_new_data_ok(
+def test_fetch_new_data_single_adaptor_ok(
     settings,
     proconnect_MAU,
-    proconnect_lasuite_MAU,
-    datagouv_messagerie_data,
-    tchap_MAU,
-    tchap_monthly_messages,
-    posthog_visio_MAU,
 ):
     settings.DEBUG = True
-    products = [
-        "ProConnect",
-        "Messagerie",
-        "Tchap",
-        "Visio",
-        "Resana",
-        "Grist",
-        "Docs",
-        "Fichiers",
-    ]
-    for product in products:
-        factories.ProductFactory(nom_service_public_numerique=product)
-    factories.ProductFactory(
-        nom_service_public_numerique="france-transfert",
-        dataset_id="68b86764fd43cc1591faa6a5",
+
+    factories.AdaptorFactory.create(
+        product=factories.ProductFactory(nom_service_public_numerique="proconnect"),
+        indicator="monthly active users",
+        client="MetabaseClient",
+        source_url="https://stats.moncomptepro.beta.gouv.fr/public/question/single-product-question.json",
+        frequence_monitoring="monthly",
+    )
+
+    # Response in fixtures
+    call_command("fetch_new_data")
+
+    assert models.Indicator.objects.count() == 1
+    indicator = models.Indicator.objects.get()
+    assert str(indicator.date) == "2025-09-30"
+    assert str(indicator.productid) == "proconnect"
+
+
+@freeze_time("2025-10-02")
+@responses.activate
+def test_fetch_new_data_many_products_adaptor_ok(metabase_lasuite_MAU):
+    """Test adaptors can add indicators on multiple products."""
+
+    models.Product.objects.get(slug="visio").delete()
+    factories.AdaptorFactory.create(
+        product=None,
+        indicator="monthly active users via ProConnect",
+        client="MetabaseClient",
+        source_url="https://stats.moncomptepro.beta.gouv.fr/public/question/multiple-products-question.json",
+        frequence_monitoring="monthly",
     )
 
     # Responses mocked in fixtures
     call_command("fetch_new_data")
 
-    indicators = models.Indicator.objects.filter(date="2025-09-30")
-    assert indicators.count() == 21
-    assert indicators.filter(productid__slug="proconnect").count() == 1
-    assert indicators.filter(productid__slug="messagerie").count() == 1
-    assert indicators.filter(productid__slug="france-transfert").count() == 10
-    assert indicators.filter(productid__slug="tchap").count() == 3
-    assert indicators.filter(productid__slug="visio").count() == 2
-    assert indicators.filter(productid__slug="resana").count() == 1
-    assert indicators.filter(productid__slug="grist").count() == 1
-    assert indicators.filter(productid__slug="docs").count() == 1
-    assert indicators.filter(productid__slug="fichiers").count() == 1
+    assert models.Indicator.objects.count() == 6
     assert not models.Indicator.objects.exclude(date="2025-09-30").exists()
 
 
 @freeze_time("2025-10-02")
 @responses.activate
-def test_commands_fetch_new_data_continues_when_adaptor_exception(
+def test_fetch_new_data_continues_when_adaptor_fails(
     settings,
-    proconnect_MAU,
-    proconnect_lasuite_MAU,
-    datagouv_messagerie_data,
-    tchap_MAU,
-    tchap_monthly_messages,
+    metabase_lasuite_MAU,
 ):
     """Data retrieval should not stop if an adaptor raises an exception."""
     settings.DEBUG = True
-    products = [
-        "ProConnect",
-        "Messagerie",
-        "Tchap",
-        "Visio",
-        "Resana",
-        "Grist",
-        "Docs",
-        "Fichiers",
-    ]
-    for product in products:
-        factories.ProductFactory(nom_service_public_numerique=product)
-    factories.ProductFactory(
-        nom_service_public_numerique="france-transfert",
-        dataset_id="68b86764fd43cc1591faa6a5",
-    )
 
-    # Successful responses mocked in fixtures
+    # Failing adaptor and response
+    factories.AdaptorFactory.create(
+        product=factories.ProductFactory(nom_service_public_numerique="ProConnect"),
+        indicator="monthly active users",
+        client="MetabaseClient",
+        source_url="https://stats.moncomptepro.beta.gouv.fr/public/question/single-product-question.json",
+        frequence_monitoring="monthly",
+    )
     responses.get(
-        re.compile(r"https://eu.posthog.com*"),
-        json={"result": [{"data": [], "days": []}]},
-        status=status.HTTP_200_OK,
+        re.compile(
+            r"https://stats.moncomptepro.beta.gouv.fr/public/question/single-product-question.json"
+        ),
+        json={},
+        status=status.HTTP_504_GATEWAY_TIMEOUT,
         content_type="application/json",
     )
+
+    # Functional adaptor. Product and responses in fixture
+    factories.AdaptorFactory.create(
+        product=None,
+        indicator="monthly active users via ProConnect",
+        client="MetabaseClient",
+        source_url="https://stats.moncomptepro.beta.gouv.fr/public/question/multiple-products-question.json",
+        frequence_monitoring="monthly",
+    )
+
     call_command("fetch_new_data")
 
     indicators = models.Indicator.objects.all()
-    # failing adaptor created no indicator
-    assert not (
-        indicators.filter(
-            productid__slug="visio", indicateur="utilisateurs actifs"
-        ).exists()
+    visio_indicator = indicators.filter(
+        productid__slug="proconnect", indicateur="monthly active users"
     )
-
-    # other adaptors worked fine
-    assert indicators.filter(productid__slug="proconnect").exists()
-    assert indicators.filter(productid__slug="messagerie").exists()
-    assert indicators.filter(productid__slug="france-transfert").exists()
-    assert indicators.filter(productid__slug="tchap").exists()
-    assert indicators.filter(productid__slug="resana").exists()
+    assert not visio_indicator.exists()  # failing adaptor created no indicator
+    assert indicators.count() == 7  # other adaptors worked fine
