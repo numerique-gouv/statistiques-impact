@@ -1,5 +1,6 @@
 import uuid
 
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.base_user import AbstractBaseUser
@@ -96,12 +97,12 @@ class Indicator(models.Model):
     )
     indicateur = models.CharField(max_length=100)
     valeur = models.FloatField()
-    unite_mesure = models.CharField()
-    frequence_monitoring = models.CharField()
+    unite_mesure = models.CharField(default="unités")
+    frequence_monitoring = models.CharField(default="monthly")
     date = models.CharField()
     date_debut = models.CharField(blank=True, null=True)
-    est_periode = models.BooleanField()
-    est_automatise = models.BooleanField()
+    est_periode = models.BooleanField(default=True)
+    est_automatise = models.BooleanField(default=False)
     created_at = models.DateTimeField(
         verbose_name=_("created at"),
         help_text=_("date and time at which a record was created"),
@@ -126,6 +127,11 @@ class Indicator(models.Model):
         """Call `full_clean` before saving."""
         self.full_clean()
         return super().save(*args, **kwargs)
+
+    def validate(self, data):
+        if data.est_periode and not data.date_debut:
+            if data.frequence_monitoring == "monthly":
+                data.date_debut = data.date.replace(day=1)
 
 
 class ProductAPIKey(AbstractAPIKey):
