@@ -1,4 +1,4 @@
-"""Test every adaptors."""
+"""Test every clients."""
 
 import pytest
 from rest_framework import status
@@ -6,8 +6,7 @@ from rest_framework.test import APIClient
 import responses
 from core import models, factories
 from freezegun import freeze_time
-from core import adaptors
-from core.adaptors import *
+from core import clients
 import re
 
 pytestmark = pytest.mark.django_db
@@ -17,7 +16,7 @@ pytestmark = pytest.mark.django_db
 @responses.activate
 def test_proconnect_active_users():
     factories.ProductFactory(nom_service_public_numerique="proconnect")
-    adaptor = adaptors.ProConnectAdaptor()
+    adaptor = clients.MetabaseClient()
 
     # Mock successful response
     responses.get(
@@ -31,7 +30,7 @@ def test_proconnect_active_users():
 
 @responses.activate
 def test_suite_active_users(proconnect_lasuite_MAU):
-    adaptor = adaptors.LaSuiteAdaptor()
+    adaptor = clients.MetabaseMultipleProductsClient()
 
     # Response mocked in fixture
     MAU = adaptor.get_last_month_data()
@@ -133,7 +132,7 @@ def test_api_submissions__no_dataset_id_fails():
 @responses.activate
 def test_messagerie_active_users(datagouv_messagerie_data):
     factories.ProductFactory(nom_service_public_numerique="messagerie")
-    adaptor = adaptors.MessagerieAdaptor()
+    adaptor = clients.MessagerieAdaptor()
 
     # Responses mocked in fixtures
     assert adaptor.get_last_month_active_users() == 580
@@ -144,7 +143,7 @@ def test_messagerie_active_users(datagouv_messagerie_data):
 def test_tchap_indicators():
     """Tchap adaptor should retrieve expected data."""
     factories.ProductFactory(nom_service_public_numerique="tchap")
-    adaptor = adaptors.TchapAdaptor()
+    adaptor = clients.TchapClient()
 
     # Mock data.gouv.fr API response
     responses.get(

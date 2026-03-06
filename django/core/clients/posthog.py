@@ -1,10 +1,10 @@
 import requests
-from core.adaptors.base_adaptor import BaseAdaptor
+from core.clients.client_base import ClientBase
 from core.utils import utils
 from django.conf import settings
 
 
-class PostHogAdaptor(BaseAdaptor):
+class PostHogClient(ClientBase):
     """Adaptor to fetch and send PostHog insights indicators."""
 
     POSTHOG_API_URL = settings.POSTHOG_API_URL
@@ -56,3 +56,17 @@ class PostHogAdaptor(BaseAdaptor):
             raise ValueError("Last month data not found in insight.")
         else:
             return results["data"][index]
+
+
+class VisioClient(PostHogClient):
+    """Adaptor to fetch and send Visio statistics."""
+
+    slug = "visio"
+    indicators = [
+        {
+            "name": "utilisateurs actifs",
+            "frequency": "mensuelle",
+            "project_id": "32648",
+            "insight_id": "1550533",
+        }
+    ]

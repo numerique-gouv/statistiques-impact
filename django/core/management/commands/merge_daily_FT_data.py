@@ -3,7 +3,7 @@
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from core.utils.datagouv_client import DataGouvClient
-from core.adaptors import FranceTransfertAdaptor
+from core.clients import FranceTransfertAdaptor
 from datetime import date
 
 
