@@ -5,29 +5,58 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('core', '0011_alter_indicator_est_automatise_and_more'),
+        ("core", "0011_alter_indicator_est_automatise_and_more"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Adaptor',
+            name="Adaptor",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('indicator', models.CharField(blank=True, null=True)),
-                ('source_url', models.CharField(blank=True, null=True)),
-                ('client', models.CharField(help_text='name of the client used to fetch and treat', verbose_name='client to treat data')),
-                ('frequence_monitoring', models.CharField(blank=True, null=True)),
-                ('status', models.CharField()),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='date and time at which a record was created', verbose_name='created at')),
-                ('product', models.ForeignKey(db_column='product', null=True, on_delete=django.db.models.deletion.PROTECT, related_name='adaptor', to='core.product')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("indicator", models.CharField(blank=True, null=True)),
+                ("source_url", models.CharField(blank=True, null=True)),
+                (
+                    "client",
+                    models.CharField(
+                        help_text="name of the client used to fetch and treat",
+                        verbose_name="client to treat data",
+                    ),
+                ),
+                ("frequence_monitoring", models.CharField(blank=True, null=True)),
+                ("status", models.CharField()),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="date and time at which a record was created",
+                        verbose_name="created at",
+                    ),
+                ),
+                (
+                    "product",
+                    models.ForeignKey(
+                        db_column="product",
+                        null=True,
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="adaptor",
+                        to="core.product",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Adaptor',
-                'verbose_name_plural': 'Adaptors',
-                'db_table': 'adaptor',
-                'unique_together': {('product', 'indicator')},
+                "verbose_name": "Adaptor",
+                "verbose_name_plural": "Adaptors",
+                "db_table": "adaptor",
+                "unique_together": {("product", "indicator")},
             },
         ),
     ]
