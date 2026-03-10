@@ -14,7 +14,12 @@ class PostHogClient(ClientBase):
             headers={"Authorization": f"Bearer {self.POSTHOG_API_KEY}"}
         )
         content = response.json()
-        return self._get_last_month_insight(result=content["result"])
+        return [
+            {
+                "product": self.adaptor.product,
+                "indicators": [self._get_last_month_insight(result=content["result"])],
+            }
+        ]
 
     def _get_last_month_insight(self, result):
         """Extract value from response's content results."""
@@ -29,7 +34,10 @@ class PostHogClient(ClientBase):
         if not result["data"]:
             raise KeyError("This insight has no data.")
 
-        return result["data"][-2]  # [-1] is the last month = current unfinished month
+        return {
+            "name": self.adaptor.indicator,
+            "value": result["data"][-2],
+        }  # [-1] is the last month = current unfinished month
 
     def check_expected_data(self, result):
         # Find last month in "days" list and return corresponding data
@@ -40,17 +48,3 @@ class PostHogClient(ClientBase):
             raise ValueError("Last month data not found in insight.")
         else:
             return result["data"][index]
-
-
-class VisioClient(PostHogClient):
-    """Adaptor to fetch and send Visio statistics."""
-
-    slug = "visio"
-    indicators = [
-        {
-            "name": "utilisateurs actifs",
-            "frequency": "mensuelle",
-            "project_id": "32648",
-            "insight_id": "1550533",
-        }
-    ]

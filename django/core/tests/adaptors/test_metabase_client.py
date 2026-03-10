@@ -26,7 +26,12 @@ def test_metabase_single_indicator():
         status=status.HTTP_200_OK,
         content_type="application/json",
     )
-    assert adaptor.get_data() == 343349
+    assert adaptor.get_data() == [
+        {
+            "product": "proconnect",
+            "indicators": [{"name": "monthly active users", "value": 343349}],
+        }
+    ]
 
 
 @responses.activate
@@ -40,17 +45,39 @@ def test_metabase_multiple_products(metabase_lasuite_MAU):
     )
 
     # Response mocked in fixture
-    value = adaptor.get_data()
-    assert len(value) == 8
-    assert value == [
-        {"product": "Tchap", "value": 27654},
-        {"product": "Resana", "value": 23323},
-        {"product": "Grist", "value": 16094},
-        {"product": "Docs", "value": 11515},
-        {"product": "Visio", "value": 8184},
-        {"product": "Fichiers", "value": 1771},
-        {"product": "Messagerie de la Suite Numérique", "value": 1155},
-        {"product": "Hors suj", "value": 13},
+    assert adaptor.get_data() == [
+        {
+            "product": "Tchap",
+            "indicators": [{"name": "monthly active users", "value": 27654}],
+        },
+        {
+            "product": "Resana",
+            "indicators": [{"name": "monthly active users", "value": 23323}],
+        },
+        {
+            "product": "Grist",
+            "indicators": [{"name": "monthly active users", "value": 16094}],
+        },
+        {
+            "product": "Docs",
+            "indicators": [{"name": "monthly active users", "value": 11515}],
+        },
+        {
+            "product": "Visio",
+            "indicators": [{"name": "monthly active users", "value": 8184}],
+        },
+        {
+            "product": "Fichiers",
+            "indicators": [{"name": "monthly active users", "value": 1771}],
+        },
+        {
+            "product": "Messagerie de la Suite Numérique",
+            "indicators": [{"name": "monthly active users", "value": 1155}],
+        },
+        {
+            "product": "Hors suj",
+            "indicators": [{"name": "monthly active users", "value": 13}],
+        },
     ]
 
 
@@ -75,7 +102,9 @@ def test_tchap_indicators():
         content_type="application/json",
     )
 
-    assert adaptor.get_data() == 367146
+    assert adaptor.get_data() == [
+        {"product": "tchap", "indicators": [{"monthly active users": 367146}]}
+    ]
 
     # Message échangés
     # responses.get(

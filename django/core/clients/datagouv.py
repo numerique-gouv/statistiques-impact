@@ -101,7 +101,21 @@ class MessagerieClient(DataGouvClient):
         entry = as_csv[as_csv["yyyy-mm-dd"] == str(date.today().replace(day=1))][
             "sur les 30 derniers jours"
         ]
-        return int(entry.iloc[0]) if len(entry) == 1 else None
+
+        if len(entry) > 1:
+            raise exceptions.APIException(
+                detail=f"Multiple value for last month's {self.adaptor.indicator} in data. Please check your dataset.",
+                code=status.HTTP_400_BAD_REQUEST,
+            )
+
+        return [
+            {
+                "product": str(self.adaptor.product),
+                "indicators": [
+                    {"name": self.adaptor.indicator, "value": int(entry.iloc[0])}
+                ],
+            }
+        ]
 
 
 class FranceTransfertClient(DataGouvClient):
@@ -130,12 +144,25 @@ class FranceTransfertClient(DataGouvClient):
             else:
                 print(f"Unexpected resource ({resource.title}).")
 
-        return self.calculate_usage_stats(df_stats) + self.calculate_satisfaction_stats(
-            df_satisfaction
-        )
+        return [
+            {
+                "product": str(self.adaptor.product),
+                "indicators": [
+                    indicator
+                    for indicators_list in [
+                        self.calculate_usage_stats(df_stats),
+                        self.calculate_satisfaction_stats(df_satisfaction),
+                    ]
+                    for indicator in indicators_list
+                ],
+            }
+        ]
 
     def calculate_usage_stats(self, df):
         """Calculate indicators value from stats dataframe."""
+
+        df = df[(df.ID_PLIS != "ID_PLIS")]  # remove possibly remaining headers
+
         if str(df.dtypes["TAILLE"]) != "int64":
             df["TAILLE2"] = pandas.to_numeric(
                 df["TAILLE"].str.replace(r" [GMK]?B", "", regex=True)

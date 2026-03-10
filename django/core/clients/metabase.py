@@ -10,13 +10,29 @@ class MetabaseClient(ClientBase):
         """Extract data from response content."""
         response = self.get_response()
         content = response.json()
+
         if len(content) == 1:
-            return int(content[0]["Valeurs distinctes de Sub Fi"])
+            return [
+                {
+                    "product": str(self.adaptor.product),
+                    "indicators": [
+                        {
+                            "name": self.adaptor.indicator,
+                            "value": int(content[0]["Valeurs distinctes de Sub Fi"]),
+                        }
+                    ],
+                }
+            ]
         else:
             return [
                 {
                     "product": entry["Fournisseur Service"],
-                    "value": entry["Somme de Distinct values of Sub Fi"],
+                    "indicators": [
+                        {
+                            "name": self.adaptor.indicator,
+                            "value": entry["Somme de Distinct values of Sub Fi"],
+                        }
+                    ],
                 }
                 for entry in content
             ]
@@ -28,13 +44,25 @@ class TchapClient(MetabaseClient):
     def get_data(self):
         response = self.get_response()
         content = response.json()
-        if len(content) == 1:
-            return int(content[0]["Nombre de lignes"].replace(" ", ""))
-        else:
+
+        if len(content) > 1:
             raise exceptions.APIException(
                 detail="Don't know how to handle these data. Please verify you're using the correct client.",
                 code=status.HTTP_400_BAD_REQUEST,
             )
+
+        return [
+            {
+                "product": str(self.adaptor.product),
+                "indicators": [
+                    {
+                        self.adaptor.indicator: int(
+                            content[0]["Nombre de lignes"].replace(" ", "")
+                        )
+                    }
+                ],
+            }
+        ]
 
     def get_last_month_active_users(self):
         """Fetch last month active users count from dedicated url."""
@@ -54,7 +82,7 @@ class MetabaseMultipleProductsClient(MetabaseClient):
 
     def get_last_month_data(self):
         """Get latest values for all indicators."""
-        values = self.get_last_month_active_users()
+        values = self.get_value()
 
         for product in values:
             this_indicator = {}
@@ -85,7 +113,7 @@ class MetabaseMultipleProductsClient(MetabaseClient):
 
         return self.indicators
 
-    def get_last_month_active_users(self):
+    def get_value(self):
         """Fetch data from url."""
         url = "https://stats.moncomptepro.beta.gouv.fr/public/question/0e3cee98-df38-4d57-8c37-d38c5a2d3231.json"
         response = requests.get(url)

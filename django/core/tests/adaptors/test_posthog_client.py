@@ -24,18 +24,6 @@ def test_posthog_monthly_active_users(settings):
         client="PostHogClient",
     )
 
-    # # Create a test adaptor with project_id
-    # class TestVisioClient(PostHogClient):
-    #     slug = "visio"
-    #     indicators = [
-    #         {
-    #             "name": "utilisateurs actifs mensuels",
-    #             "frequency": "mensuelle",
-    #             "project_id": "44954",
-    #             "insight_id": "65340",
-    #         }
-    #     ]
-
     # Mock PostHog API response
     mock_response = {
         "id": 65340,
@@ -56,7 +44,12 @@ def test_posthog_monthly_active_users(settings):
     )
 
     # Verify the latest data point was returned
-    assert adaptor.get_data() == 8458
+    assert adaptor.get_data() == [
+        {
+            "product": adaptor.product,
+            "indicators": [{"name": "monthly active users", "value": 8458}],
+        }
+    ]
 
 
 @responses.activate

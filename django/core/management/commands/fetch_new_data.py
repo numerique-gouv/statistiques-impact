@@ -23,5 +23,5 @@ class Command(BaseCommand):
                 adaptor.save_last_month_indicator()
             except Exception as exc:
                 self.stdout.write(
-                    f"Adaptor for {adaptor.indicator} on {adaptor.product} failed: {exc} "
+                    f'Failed to fetch new data for indicator "{adaptor.indicator}" on {adaptor.product}: {exc} '
                 )
