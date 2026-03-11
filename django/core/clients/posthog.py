@@ -40,17 +40,3 @@ class PostHogClient(ClientBase):
             raise ValueError("Last month data not found in insight.")
         else:
             return result["data"][index]
-
-
-class VisioClient(PostHogClient):
-    """Adaptor to fetch and send Visio statistics."""
-
-    slug = "visio"
-    indicators = [
-        {
-            "name": "utilisateurs actifs",
-            "frequency": "mensuelle",
-            "project_id": "32648",
-            "insight_id": "1550533",
-        }
-    ]
