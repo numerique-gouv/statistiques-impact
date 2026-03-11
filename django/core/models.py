@@ -222,3 +222,5 @@ class Adaptor(models.Model):
                     print(
                         f"ValueError occured when trying to create indicator {entry['indicator']}"
                     )
+
+        return data

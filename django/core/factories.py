@@ -12,6 +12,13 @@ from core import models
 fake = Faker()
 
 
+class UserFactory(factory.django.DjangoModelFactory):
+    """Factory for the User model."""
+
+    class Meta:
+        model = models.User
+
+
 class ProductFactory(factory.django.DjangoModelFactory):
     """Factory for the Product model."""
 
