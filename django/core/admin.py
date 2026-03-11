@@ -1,6 +1,7 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from core import models
 from rest_framework_api_key.admin import APIKeyModelAdmin
+from django.utils.translation import gettext_lazy as _
 
 
 @admin.register(models.Product)
@@ -70,3 +71,26 @@ class AdaptorAdmin(admin.ModelAdmin):
         "status",
     ]
     readonly_fields = ["status", "created_at"]
+    actions = ["fetch_newest_data"]
+
+    @admin.action()
+    def fetch_newest_data(self, request, queryset):
+        """Call onto adaptor's client to fetch newest data."""
+
+        for adaptor in queryset:
+            try:
+                results = adaptor.save_last_month_indicator()
+            except Exception as exc:
+                messages.error(
+                    request,
+                    _("Failed to fetch new data for %(adaptor)s: %(exc)s")
+                    % {"adaptor": adaptor, "exc": exc},
+                )
+            else:
+                messages.success(
+                    request,
+                    _(
+                        "Successfully fetched %(results)s new indicator(s) from %(adaptor)s."
+                    )
+                    % {"adaptor": adaptor, "number": len(results)},
+                )
