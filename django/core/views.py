@@ -7,7 +7,7 @@ def last_indicators(request: HttpRequest) -> HttpResponse:
     last_indicators = sorted(
         [
             {
-                "product": str(product),
+                "product": product,
                 "last_indicators": product.last_indicators,
             }
             for product in Product.objects.all()
