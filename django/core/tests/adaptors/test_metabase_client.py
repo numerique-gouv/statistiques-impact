@@ -26,7 +26,13 @@ def test_metabase_single_indicator():
         status=status.HTTP_200_OK,
         content_type="application/json",
     )
-    assert adaptor.get_data() == 343349
+    assert adaptor.get_data() == [
+        {
+            "product": "proconnect",
+            "indicator": "monthly active users",
+            "value": 343349,
+        }
+    ]
 
 
 @responses.activate
@@ -40,17 +46,47 @@ def test_metabase_multiple_products(metabase_lasuite_MAU):
     )
 
     # Response mocked in fixture
-    value = adaptor.get_data()
-    assert len(value) == 8
-    assert value == [
-        {"product": "Tchap", "value": 27654},
-        {"product": "Resana", "value": 23323},
-        {"product": "Grist", "value": 16094},
-        {"product": "Docs", "value": 11515},
-        {"product": "Visio", "value": 8184},
-        {"product": "Fichiers", "value": 1771},
-        {"product": "Messagerie de la Suite Numérique", "value": 1155},
-        {"product": "Hors suj", "value": 13},
+    assert adaptor.get_data() == [
+        {
+            "product": "Tchap",
+            "indicator": "monthly active users",
+            "value": 27654,
+        },
+        {
+            "product": "Resana",
+            "indicator": "monthly active users",
+            "value": 23323,
+        },
+        {
+            "product": "Grist",
+            "indicator": "monthly active users",
+            "value": 16094,
+        },
+        {
+            "product": "Docs",
+            "indicator": "monthly active users",
+            "value": 11515,
+        },
+        {
+            "product": "Visio",
+            "indicator": "monthly active users",
+            "value": 8184,
+        },
+        {
+            "product": "Fichiers",
+            "indicator": "monthly active users",
+            "value": 1771,
+        },
+        {
+            "product": "Messagerie de la Suite Numérique",
+            "indicator": "monthly active users",
+            "value": 1155,
+        },
+        {
+            "product": "Hors suj",
+            "indicator": "monthly active users",
+            "value": 13,
+        },
     ]
 
 
@@ -75,15 +111,6 @@ def test_tchap_indicators():
         content_type="application/json",
     )
 
-    assert adaptor.get_data() == 367146
-
-    # Message échangés
-    # responses.get(
-    #     re.compile(r"https://stats.tchap.incubateur.net/public/question/84a9b0bc-*"),
-    #     json=[
-    #         {"Hour": "août, 2025", "Somme de Events": "5 404 085"},
-    #         {"Hour": "sept., 2025", "Somme de Events": "10 877 632"},
-    #     ],
-    #     status=status.HTTP_200_OK,
-    #     content_type="application/json",
-    # )
+    assert adaptor.get_data() == [
+        {"product": "tchap", "indicator": "monthly active users", "value": 367146}
+    ]

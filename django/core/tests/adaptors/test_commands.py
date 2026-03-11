@@ -49,7 +49,7 @@ def test_fetch_new_data_many_products_adaptor_ok(metabase_lasuite_MAU):
     factories.AdaptorFactory.create(
         product=None,
         indicator="monthly active users via ProConnect",
-        client="MetabaseClient",
+        client="MetabaseMultipleProductsClient",
         source_url="https://stats.moncomptepro.beta.gouv.fr/public/question/multiple-products-question.json",
         frequence_monitoring="monthly",
     )

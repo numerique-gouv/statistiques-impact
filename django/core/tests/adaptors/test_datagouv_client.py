@@ -52,7 +52,13 @@ def test_messagerie_active_users(datagouv_messagerie_data):
     )
 
     # Responses mocked in fixtures
-    assert adaptor.get_data() == 580
+    assert adaptor.get_data() == [
+        {
+            "product": adaptor.product.nom_service_public_numerique,
+            "indicator": adaptor.indicator,
+            "value": 580,
+        }
+    ]
 
 
 # FRANCE TRANSFERT
@@ -61,27 +67,32 @@ def test_france_transfert_indicators():
     """Monthly retrieval should fetch csv files from data.gouv.fr and compute expected indicators."""
     adaptor = factories.AdaptorFactory(
         product=factories.ProductFactory(
-            nom_service_public_numerique="france-transfert",
+            nom_service_public_numerique="france transfert",
             dataset_id="68b86764fd43cc1591faa6a5",  # démo dataset = 68b86764fd43cc1591faa6a5
         ),
         client="FranceTransfertClient",
     )
 
     assert adaptor.get_data() == [
-        {"name": "utilisateurs actifs (téléchargement)", "value": 4},
-        {"name": "utilisateurs actifs (envoi)", "value": 1},
-        {"name": "utilisateurs actifs", "value": 5},
-        {"name": "téléchargements", "value": 4},
-        {"name": "plis émis", "value": 3},
-        {"name": "Go émis", "value": 4.91},
-        {"name": "Go téléchargés", "value": 0.64},
-        {"name": "Taille pli moyen (Mo)", "value": 1636.67},
         {
-            "name": "top 5 domaines expéditeurs",
-            "value": "actongroup.com, diplomatie.gouv.fr, gmail.com, justice.fr",
-        },
-        {"name": "avis émis", "value": 148},
-        {"name": "pourcentage satisfaction", "value": 86},
+            "product": "france transfert",
+            "indicators": [
+                {"name": "utilisateurs actifs (téléchargement)", "value": 4},
+                {"name": "utilisateurs actifs (envoi)", "value": 1},
+                {"name": "utilisateurs actifs", "value": 5},
+                {"name": "téléchargements", "value": 4},
+                {"name": "plis émis", "value": 3},
+                {"name": "Go émis", "value": 4.91},
+                {"name": "Go téléchargés", "value": 0.64},
+                {"name": "Taille pli moyen (Mo)", "value": 1636.67},
+                {
+                    "name": "top 5 domaines expéditeurs",
+                    "value": "actongroup.com, diplomatie.gouv.fr, gmail.com, justice.fr",
+                },
+                {"name": "avis émis", "value": 148},
+                {"name": "pourcentage satisfaction", "value": 86},
+            ],
+        }
     ]
 
 

@@ -202,36 +202,23 @@ class Adaptor(models.Model):
         client = self.get_client()
         data = client.get_data()
 
-        if not self.product and type(data) is list:
-            # product has not been specified
-            for entry in data:
+        for entry in data:
+            try:
+                product = Product.objects.get(
+                    nom_service_public_numerique=entry["product"]
+                )
+            except Product.DoesNotExist:
+                print(f"Product {entry['product']} not found.")
+            else:
                 try:
-                    product = Product.objects.get(
-                        nom_service_public_numerique=entry["product"]
-                    )
-                except Product.DoesNotExist:
-                    print(f"Product {entry['product']} not found.")
-                else:
                     Indicator.objects.create(
                         productid=product,
-                        indicateur=self.indicator,
+                        indicateur=entry["indicator"],
                         date=date_fin,
                         valeur=entry["value"],
                         frequence_monitoring=self.frequence_monitoring,
                     )
-            return
-
-        try:
-            Indicator.objects.create(
-                productid=self.product,
-                indicateur=self.indicator,
-                date=date_fin,
-                valeur=data,
-                frequence_monitoring=self.frequence_monitoring,
-            )
-        except ValueError:
-            self.stdout.write(
-                f"ValueError occured when trying to create indicator {self.indicator}"
-            )
-            pass
-        return
+                except ValueError:
+                    print(
+                        f"ValueError occured when trying to create indicator {entry['indicator']}"
+                    )

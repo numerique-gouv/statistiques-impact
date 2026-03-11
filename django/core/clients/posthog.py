@@ -14,7 +14,13 @@ class PostHogClient(ClientBase):
             headers={"Authorization": f"Bearer {self.POSTHOG_API_KEY}"}
         )
         content = response.json()
-        return self._get_last_month_insight(result=content["result"])
+        return [
+            {
+                "product": str(self.adaptor.product),
+                "indicator": self.adaptor.indicator,
+                "value": self._get_last_month_insight(result=content["result"]),
+            }
+        ]
 
     def _get_last_month_insight(self, result):
         """Extract value from response's content results."""
