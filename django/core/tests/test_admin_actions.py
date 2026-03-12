@@ -15,7 +15,7 @@ pytestmark = pytest.mark.django_db
 
 
 @responses.activate
-def test_fetch_new_data_adds_indicators(client, metabase_lasuite_MAU):
+def test_admin_fetch_adds_indicators(client, metabase_lasuite_MAU):
     """Test admin action to check health of some domains"""
     adaptor = factories.AdaptorFactory.create(
         product=factories.ProductFactory(nom_service_public_numerique="proconnect"),
