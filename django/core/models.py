@@ -160,6 +160,7 @@ class Adaptor(models.Model):
         on_delete=models.PROTECT,
         db_column="product",
         related_name="adaptor",
+        blank=True,
         null=True,
     )
     indicator = models.CharField(blank=True, null=True)
