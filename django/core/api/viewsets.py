@@ -88,6 +88,7 @@ class IndicatorSubmissionView(CreateAPIView):
                 detail="File submission not authorized for this product.",
             )
 
+        env = "www"
         if product.slug == "france-transfert-tests":
             env = "demo"
 
