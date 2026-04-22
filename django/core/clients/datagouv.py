@@ -8,28 +8,23 @@ from django.conf import settings
 from datagouv import Client, Dataset, Resource
 import os
 
-# Demo datasets to check France transfert interop
-# runs as expected
-FT_DEMO_DATASETS = ["68b86764fd43cc1591faa6a5"]
-
 
 class DataGouvClient(ClientBase):
     """A client for all interactions with datasets at data.gouv.fr."""
 
     def __init__(self, adaptor, env="www"):
         """Fix to include tests for france-transfert."""
-        self.env = "demo" if adaptor.product.dataset_id in FT_DEMO_DATASETS else "www"
+        self.env = "www"
         self.dataset_id = adaptor.product.dataset_id
-        self.api_url = (
-            "https://demo.data.gouv.fr/api/1"
-            if adaptor.product.dataset_id in FT_DEMO_DATASETS
-            else settings.DATAGOUV_API_URL
-        )
-        self.api_key = (
-            settings.DATAGOUV_DEMO_API_KEY
-            if adaptor.product.dataset_id in FT_DEMO_DATASETS
-            else settings.DATAGOUV_API_KEY
-        )
+        self.api_url = settings.DATAGOUV_API_URL
+        self.api_key = settings.DATAGOUV_API_KEY
+
+        # poor alternative for a dedicated preprod env
+        if "test" in adaptor.product.nom_service_public_numerique:
+            self.env = "demo"
+            self.api_url = "https://demo.data.gouv.fr/api/1"
+            self.api_key = settings.DATAGOUV_DEMO_API_KEY
+
         super().__init__(adaptor)
 
     def get_headers(self):
@@ -39,9 +34,9 @@ class DataGouvClient(ClientBase):
     def get_dataset(self):
         dataset_id = self.adaptor.product.dataset_id
 
-        if not dataset_id:
+        if not self.product.dataset_id:
             raise exceptions.APIException(
-                detail=f"Don't know which data.gouv dataset to work with. Please provide a dataset_id for {self.product}.",
+                detail="Please provide a data.gouv.fr dataset",
                 code=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -50,20 +45,14 @@ class DataGouvClient(ClientBase):
             _client=Client(environment=self.env, api_key=self.api_key),
         )
 
-    def upload_new_file(self, file):
+    def upload_new_file(self, file, filename):
         """Upload a file to a dataset."""
-        if not self.product.dataset_id:
-            raise exceptions.APIException(
-                detail="Please provide a data.gouv.fr dataset",
-                code=status.HTTP_400_BAD_REQUEST,
-            )
-
         self.get_dataset()
 
         # Can't use wrapper because it expects a path
         response = requests.post(
             url=f"{self.api_url}/datasets/{self.product.dataset_id}/upload/",
-            files={"file": (file.name, file.file.getvalue(), "text/csv")},
+            files={"file": (filename, file, "text/csv")},
             headers=self.get_headers(),
         )
         response.raise_for_status()
@@ -260,6 +249,7 @@ class FranceTransfertClient(DataGouvClient):
     def merge_monthly_stats(self, dataset, month):
         """Merge all daily files into 2 monthly files : stats and satisfaction.
         Used daily files are deleted from dataset."""
+        print(f"Starting merge job for month {month} on dataset {dataset.id}.")
 
         type_list = {
             "stats": {
@@ -327,9 +317,7 @@ class FranceTransfertClient(DataGouvClient):
                     ]
                 else:
                     # create monthly files
-                    self.upload_new_file(
-                        dataset.id, dataframe.to_csv(index=False), filename
-                    )
+                    self.upload_new_file(dataframe.to_csv(index=False), filename)
                     print(f"Uploading new file {filename}")
 
         # Delete daily files

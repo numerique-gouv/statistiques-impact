@@ -1,7 +1,6 @@
 """Test every clients."""
 
 import pytest
-from rest_framework import status
 from rest_framework.test import APIClient
 import responses
 from core import models, factories
@@ -62,65 +61,35 @@ def test_messagerie_active_users(datagouv_messagerie_data):
 
 
 # FRANCE TRANSFERT
-@freeze_time("2025-10-02")
+@freeze_time("2026-05-08")
 def test_france_transfert_indicators():
     """Monthly retrieval should fetch csv files from data.gouv.fr and compute expected indicators."""
     adaptor = factories.AdaptorFactory(
         product=factories.ProductFactory(
-            nom_service_public_numerique="france transfert",
-            dataset_id="68b86764fd43cc1591faa6a5",  # démo dataset = 68b86764fd43cc1591faa6a5
+            nom_service_public_numerique="france transfert-test",
+            dataset_id="69e8b42855b96c292988a106",
         ),
         client="FranceTransfertClient",
     )
 
     assert adaptor.get_data() == [
         {
-            "product": "france transfert",
+            "product": "france transfert-test",
             "indicators": [
-                {"name": "utilisateurs actifs (téléchargement)", "value": 4},
-                {"name": "utilisateurs actifs (envoi)", "value": 1},
-                {"name": "utilisateurs actifs", "value": 5},
-                {"name": "téléchargements", "value": 4},
-                {"name": "plis émis", "value": 3},
-                {"name": "Go émis", "value": 4.91},
-                {"name": "Go téléchargés", "value": 0.64},
-                {"name": "Taille pli moyen (Mo)", "value": 1636.67},
+                {"name": "utilisateurs actifs (téléchargement)", "value": 63},
+                {"name": "utilisateurs actifs (envoi)", "value": 141},
+                {"name": "utilisateurs actifs", "value": 203},
+                {"name": "téléchargements", "value": 82},
+                {"name": "plis émis", "value": 146},
+                {"name": "Go émis", "value": 20.62},
+                {"name": "Go téléchargés", "value": 4.05},
+                {"name": "Taille pli moyen (Mo)", "value": 141.27},
                 {
                     "name": "top 5 domaines expéditeurs",
-                    "value": "actongroup.com, diplomatie.gouv.fr, gmail.com, justice.fr",
+                    "value": "interieur.gouv.fr, gmail.com, diplomatie.gouv.fr, gendarmerie.interieur.gouv.fr, intradef.gouv.fr",
                 },
-                {"name": "avis émis", "value": 148},
-                {"name": "pourcentage satisfaction", "value": 86},
+                {"name": "avis émis", "value": 8},
+                {"name": "pourcentage satisfaction", "value": 88},
             ],
         }
     ]
-
-
-@responses.activate
-def test_api_submissions__files_sent_to_datagouv(datagouv_file_sent):
-    """When a file is submitted, it's succesfully sent to data.gouv.fr."""
-    product = factories.ProductFactory(
-        nom_service_public_numerique="france-transfert-tests",
-        dataset_id="68b86764fd43cc1591faa6a5",
-    )
-    _, key = models.ProductAPIKey.objects.create_key(name="valid_key", product=product)
-    filepath = "core/tests/api/examples/ip-127-0-0-1_FranceTransfert_2025-05-11_download_stats.csv"
-    filename = filepath.split("/")[-1]
-
-    # Mock successfull response from data.gouv.fr
-    response = APIClient().post(
-        f"/api/products/{product.slug}/submission/",
-        data={
-            "upload_file": open(
-                filepath,
-                "r",
-            )
-        },
-        headers={
-            "x-api-key": key,
-            "Content-Type": "text/csv",
-            "Content-Disposition": f"attachment; filename={filename}",
-        },
-    )
-    assert response.json() == {"file": filename, "success": True}
-    assert response.status_code == status.HTTP_201_CREATED

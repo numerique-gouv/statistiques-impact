@@ -1,10 +1,8 @@
 """Command to merge France Transfert csv"""
 
-from django.conf import settings
 from django.core.management.base import BaseCommand
-from core.utils.datagouv_client import DataGouvClient
-from core.clients import FranceTransfertClient
 from datetime import date
+from core.models import Adaptor
 
 
 class Command(BaseCommand):
@@ -29,17 +27,8 @@ class Command(BaseCommand):
         """Call all adaptors to create indicators."""
         # self.stdout.write(self.style.SUCCESS("..."))
         month = options["month"]
-        adaptor = FranceTransfertClient()
-        dataset_id = adaptor.product.dataset_id
-        client = DataGouvClient()
+        adaptor = Adaptor.objects.get(client="FranceTransfertClient")
+        client = adaptor.get_client()
 
-        if dataset_id == "68b86764fd43cc1591faa6a5":
-            client.api_key = settings.DATAGOUV_DEMO_API_KEY
-            client.env = "demo"
-            client.api_url = "https://demo.data.gouv.fr/api/1"
-
-        self.stdout.write(
-            f'Starting merge job for month {month} on dataset "{dataset_id}".'
-        )
-        dataset = client.get_dataset(dataset_id)
+        dataset = client.get_dataset()
         client.merge_monthly_stats(dataset, month)
