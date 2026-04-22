@@ -74,14 +74,12 @@ def test_api_submissions__unauthorized_cannot_submit():
     assert not models.Indicator.objects.exists()
 
 
-def test_api_submissions__cannot_submit_on_any_product():
+def test_api_submissions__cannot_submit_on_random_product():
     """Cannot submit files on a product not expecting file processing."""
     adaptor = factories.AdaptorFactory(
         product=factories.ProductFactory(
-            nom_service_public_numerique="france transfert-test",
-            dataset_id="69e8b42855b96c292988a106",
+            nom_service_public_numerique="unauthorized-product",
         ),
-        client="FranceTransfertClient",
     )
     _, key = models.ProductAPIKey.objects.create_key(
         name="valid_key", product=adaptor.product

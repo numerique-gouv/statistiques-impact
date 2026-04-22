@@ -12,7 +12,7 @@ pytestmark = pytest.mark.django_db
 def test_api_submissions__no_dataset_id_fails():
     """API returns a clear error if product has no dataset_id."""
     product = factories.ProductFactory(
-        nom_service_public_numerique="france-transfert-tests"
+        nom_service_public_numerique="france-transfert-test"
     )
     _, key = models.ProductAPIKey.objects.create_key(name="valid_key", product=product)
     filepath = "core/tests/api/examples/ip-127-0-0-1_FranceTransfert_2025-05-11_download_stats.csv"
