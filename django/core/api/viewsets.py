@@ -88,12 +88,10 @@ class IndicatorSubmissionView(CreateAPIView):
                 detail="File submission not authorized for this product.",
             )
 
-        env = "www"
-        if product.slug == "france-transfert-tests":
-            env = "demo"
+        env = "demo" if product.slug == "france-transfert-tests" else "www"
 
         client = DataGouvClient(adaptor=models.Adaptor(product=product), env=env)
-        response = client.upload_new_file(file=file)
+        response = client.upload_new_file(file=file.file.getvalue(), filename=file.name)
         return Response(
             data={"file": file.name, "success": response.json()["success"]},
             status=response.status_code,
