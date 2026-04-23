@@ -12,7 +12,7 @@ pytestmark = pytest.mark.django_db
 def test_api_submissions__no_dataset_id_fails():
     """API returns a clear error if product has no dataset_id."""
     product = factories.ProductFactory(
-        nom_service_public_numerique="france-transfert-test"
+        nom_service_public_numerique="france-transfert-tests"
     )
     _, key = models.ProductAPIKey.objects.create_key(name="valid_key", product=product)
     filepath = "core/tests/api/examples/ip-127-0-0-1_FranceTransfert_2025-05-11_download_stats.csv"
@@ -66,7 +66,7 @@ def test_france_transfert_indicators():
     """Monthly retrieval should fetch csv files from data.gouv.fr and compute expected indicators."""
     adaptor = factories.AdaptorFactory(
         product=factories.ProductFactory(
-            nom_service_public_numerique="france transfert-test",
+            nom_service_public_numerique="france transfert-tests",
             dataset_id="69e8b42855b96c292988a106",
         ),
         client="FranceTransfertClient",
@@ -74,7 +74,7 @@ def test_france_transfert_indicators():
 
     assert adaptor.get_data() == [
         {
-            "product": "france transfert-test",
+            "product": "france transfert-tests",
             "indicators": [
                 {"name": "utilisateurs actifs (téléchargement)", "value": 63},
                 {"name": "utilisateurs actifs (envoi)", "value": 141},

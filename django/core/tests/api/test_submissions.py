@@ -15,7 +15,7 @@ def test_api_submissions__anonymous_cannot_submit():
     """Anonymous should not be able to send files."""
     adaptor = factories.AdaptorFactory(
         product=factories.ProductFactory(
-            nom_service_public_numerique="france transfert-test",
+            nom_service_public_numerique="france transfert-tests",
             dataset_id="69e8b42855b96c292988a106",
         ),
         client="FranceTransfertClient",
@@ -43,7 +43,7 @@ def test_api_submissions__unauthorized_cannot_submit():
     """Anonymous should not be able to send files."""
     adaptor = factories.AdaptorFactory(
         product=factories.ProductFactory(
-            nom_service_public_numerique="france transfert-test",
+            nom_service_public_numerique="france transfert-tests",
             dataset_id="69e8b42855b96c292988a106",
         ),
         client="FranceTransfertClient",
@@ -109,7 +109,7 @@ def test_api_submissions__cannot_submit_on_random_product():
 def test_api_submissions__ok():
     adaptor = factories.AdaptorFactory(
         product=factories.ProductFactory(
-            nom_service_public_numerique="france transfert-test",
+            nom_service_public_numerique="france transfert-tests",
             dataset_id="69e8b42855b96c292988a106",
         ),
         client="FranceTransfertClient",
@@ -142,7 +142,7 @@ def test_api_submissions__files_sent_to_datagouv(datagouv_file_sent):
     """When a file is submitted, it's succesfully sent to data.gouv.fr."""
     adaptor = factories.AdaptorFactory(
         product=factories.ProductFactory(
-            nom_service_public_numerique="france transfert-test",
+            nom_service_public_numerique="france transfert-tests",
             dataset_id="69e8b42855b96c292988a106",
         ),
         client="FranceTransfertClient",

@@ -82,13 +82,13 @@ class IndicatorSubmissionView(CreateAPIView):
 
         product = get_object_or_404(models.Product, slug=kwargs["product_slug"])
 
-        if product.slug not in ["france-transfert", "france-transfert-test"]:
+        if product.slug not in ["france-transfert", "france-transfert-tests"]:
             raise exceptions.MethodNotAllowed(
                 method="Submission",
                 detail="File submission not authorized for this product.",
             )
 
-        env = "demo" if product.slug == "france-transfert-test" else "www"
+        env = "demo" if product.slug == "france-transfert-tests" else "www"
 
         client = DataGouvClient(adaptor=models.Adaptor(product=product), env=env)
         response = client.upload_new_file(file=file.file.getvalue(), filename=file.name)
