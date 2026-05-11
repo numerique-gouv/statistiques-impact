@@ -1,5 +1,6 @@
 from core.models import Product, Indicator
 from rest_framework import serializers
+from django.template.defaultfilters import slugify
 
 
 class IndicatorSerializer(serializers.ModelSerializer):
@@ -8,9 +9,11 @@ class IndicatorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Indicator
         fields = "__all__"
-        read_only_fields = [
-            "productid",
-        ]
+        read_only_fields = ["productid", "slug"]
+
+    def validate_slug(self, value):
+        """Force slug field."""
+        return slugify(self.indicateur)
 
     def validate(self, attrs):
         product = Product.objects.filter(

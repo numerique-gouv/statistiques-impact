@@ -16,7 +16,7 @@ def test_metabase_single_indicator():
         product=factories.ProductFactory(nom_service_public_numerique="proconnect"),
         indicator="monthly active users",
         client="MetabaseClient",
-        source_url="https://stats.moncomptepro.beta.gouv.fr/public/question/single-product-question.json",
+        source_url="https://metabase.gouv.fr/public/question/single-product-question.json",
     )
 
     # Mock successful response
@@ -42,7 +42,7 @@ def test_metabase_multiple_products(metabase_lasuite_MAU):
         product=factories.ProductFactory(nom_service_public_numerique="proconnect"),
         indicator="monthly active users",
         client="MetabaseMultipleProductsClient",
-        source_url="https://stats.moncomptepro.beta.gouv.fr/public/question/multiple-products-question.json",
+        source_url="https://metabase.gouv.fr/public/question/multiple-products-question.json",
     )
 
     # Response mocked in fixture

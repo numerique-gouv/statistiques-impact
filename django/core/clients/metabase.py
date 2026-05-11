@@ -102,7 +102,7 @@ class MetabaseMultipleProductsClient(MetabaseClient):
 
     def get_value(self):
         """Fetch data from url."""
-        url = "https://stats.moncomptepro.beta.gouv.fr/public/question/0e3cee98-df38-4d57-8c37-d38c5a2d3231.json"
+        url = "https://metabase.gouv.fr/public/question/0e3cee98-df38-4d57-8c37-d38c5a2d3231.json"
         response = requests.get(url)
         return [
             {entry["Fournisseur Service"]: entry["Valeurs distinctes de Sub Fi"]}

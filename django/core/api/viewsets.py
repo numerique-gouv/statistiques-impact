@@ -49,7 +49,7 @@ class IndicatorViewSet(
     serializer_class = serializers.IndicatorSerializer
     queryset = models.Indicator.objects.all()
     permission_classes = [permissions.HasValidAPIKeyOrReadOnly]
-    lookup_field = "id"
+    lookup_field = "slug"
 
     def get_queryset(self, *args, **kwargs):
         queryset = super().get_queryset()
