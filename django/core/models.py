@@ -91,6 +91,7 @@ class Indicator(models.Model):
         default=uuid.uuid4,
         editable=False,
     )
+    slug = models.SlugField(null=False, blank=False)
     productid = models.ForeignKey(
         "Product",
         on_delete=models.PROTECT,
@@ -122,11 +123,21 @@ class Indicator(models.Model):
         db_table = "indicator"
         verbose_name = _("indicator")
         verbose_name_plural = _("indicators")
-        unique_together = (("productid", "indicateur", "frequence_monitoring", "date"),)
+        constraints = [
+            models.UniqueConstraint(
+                fields=["productid", "indicateur", "frequence_monitoring", "date"],
+                name="unique_username",
+            ),
+            models.UniqueConstraint(
+                fields=["productid", "slug"], name="unique_slug_per_indicator"
+            ),
+        ]
         ordering = ("-date",)
 
     def save(self, *args, **kwargs):
-        """Call `full_clean` before saving."""
+        """Call `full_clean` and fill slug if necessary before saving."""
+        if not self.slug or self.slug == "":
+            self.slug = slugify(self.indicateur)
         self.full_clean()
         return super().save(*args, **kwargs)
 
@@ -134,6 +145,9 @@ class Indicator(models.Model):
         if data.est_periode and not data.date_debut:
             if data.frequence_monitoring == "monthly":
                 data.date_debut = data.date.replace(day=1)
+
+    def __str__(self):
+        return f"{self.indicateur} on {self.productid}"
 
 
 class ProductAPIKey(AbstractAPIKey):

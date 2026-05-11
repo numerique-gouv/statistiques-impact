@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from core import models, factories
+from django.conf import settings
 from django.test import override_settings
 
 pytestmark = pytest.mark.django_db
@@ -29,7 +30,8 @@ def test_api_indicators_list__anonymous_ok():
             {
                 "id": str(indicator.id),
                 "indicateur": indicator.indicateur,
-                "valeur": indicator.valeur,
+                "slug": indicator.slug,
+                "valeur": float(indicator.valeur),
                 "unite_mesure": indicator.unite_mesure,
                 "frequence_monitoring": indicator.frequence_monitoring,
                 "date": str(indicator.date),
@@ -64,7 +66,8 @@ def test_api_indicators_list__filter_ok():
         {
             "id": str(indicator.id),
             "indicateur": indicator.indicateur,
-            "valeur": indicator.valeur,
+            "slug": indicator.slug,
+            "valeur": float(indicator.valeur),
             "unite_mesure": indicator.unite_mesure,
             "frequence_monitoring": indicator.frequence_monitoring,
             "date": str(indicator.date),
@@ -159,7 +162,7 @@ def test_api_indicators_create__admin_can_create():
                 "est_periode": "true",
                 "est_automatise": "false",
             },
-            headers={"x-api-key": "admin_key"},
+            headers={"x-api-key": settings.ADMIN_API_KEY},
         )
         assert response.status_code == status.HTTP_201_CREATED
     assert models.Indicator.objects.count() == 2
@@ -191,7 +194,7 @@ def test_api_indicators_create__cannot_create_duplicate():
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert response.json() == [
-        "{'__all__': ['Un objet Indicator avec ces champs Productid, Indicateur, Frequence monitoring et Date existe déjà.']}"
+        "{'__all__': ['Un objet Indicator avec ces champs Productid, Indicateur, Frequence monitoring et Date existe déjà.', 'Un objet Indicator avec ces champs Productid et Slug existe déjà.']}"
     ]
     assert len(models.Indicator.objects.all()) == 1
 
@@ -202,13 +205,14 @@ def test_api_indicators_retrieve__anonymous_ok():
     indicator = factories.IndicatorFactory()
 
     response = APIClient().get(
-        f"/api/products/{indicator.productid.slug}/indicators/{indicator.id}/",
+        f"/api/products/{indicator.productid.slug}/indicators/{indicator.slug}/",
     )
     assert response.status_code == status.HTTP_200_OK
     assert response.json() == {
         "id": str(indicator.id),
         "indicateur": indicator.indicateur,
-        "valeur": indicator.valeur,
+        "slug": indicator.slug,
+        "valeur": float(indicator.valeur),
         "unite_mesure": indicator.unite_mesure,
         "frequence_monitoring": indicator.frequence_monitoring,
         "date": str(indicator.date),
@@ -227,7 +231,7 @@ def test_api_indicators_delete__anonymous_cannot_delete():
     indicator = factories.IndicatorFactory()
 
     response = APIClient().delete(
-        f"/api/products/{indicator.productid.slug}/indicators/{indicator.id}/",
+        f"/api/products/{indicator.productid.slug}/indicators/{indicator.slug}/",
     )
     assert response.status_code == status.HTTP_403_FORBIDDEN
     assert models.Indicator.objects.exists()
@@ -241,7 +245,7 @@ def test_api_indicators_delete__invalid_api_key_cannot_delete():
     )
 
     response = APIClient().delete(
-        f"/api/products/{indicator.productid.slug}/indicators/{indicator.id}/",
+        f"/api/products/{indicator.productid.slug}/indicators/{indicator.slug}/",
         headers={"x-api-key": key + "ko"},
     )
     assert response.status_code == status.HTTP_403_FORBIDDEN
@@ -256,7 +260,7 @@ def test_api_indicators_delete__valid_api_key_can_delete():
     )
 
     response = APIClient().delete(
-        f"/api/products/{indicator.productid.slug}/indicators/{indicator.id}/",
+        f"/api/products/{indicator.productid.slug}/indicators/{indicator.slug}/",
         headers={"x-api-key": key},
     )
     assert response.status_code == status.HTTP_204_NO_CONTENT

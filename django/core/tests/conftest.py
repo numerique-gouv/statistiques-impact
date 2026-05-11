@@ -11,7 +11,7 @@ def fixture_proconnect_monthly_users():
     """Mock Metabase response when fetching ProConnect monthly users."""
     responses.get(
         re.compile(
-            r"https://stats.moncomptepro.beta.gouv.fr/public/question/single-product-question.json"
+            r"https://metabase.gouv.fr/public/question/single-product-question.json"
         ),
         json=[{"Time: Mois": "2025-09-01", "Valeurs distinctes de Sub Fi": "200000"}],
         status=status.HTTP_200_OK,
@@ -35,7 +35,7 @@ def fixture_metabase_lasuite_MAU():
 
     responses.get(
         re.compile(
-            r"https://stats.moncomptepro.beta.gouv.fr/public/question/multiple-products-question.json"
+            r"https://metabase.gouv.fr/public/question/multiple-products-question.json"
         ),
         json=[
             {

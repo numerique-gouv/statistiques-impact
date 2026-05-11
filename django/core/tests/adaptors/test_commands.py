@@ -27,7 +27,7 @@ def test_fetch_new_data_single_adaptor_ok(
         product=factories.ProductFactory(nom_service_public_numerique="proconnect"),
         indicator="monthly active users",
         client="MetabaseClient",
-        source_url="https://stats.moncomptepro.beta.gouv.fr/public/question/single-product-question.json",
+        source_url="https://metabase.gouv.fr/public/question/single-product-question.json",
         frequence_monitoring="monthly",
     )
 
@@ -50,7 +50,7 @@ def test_fetch_new_data_many_products_adaptor_ok(metabase_lasuite_MAU):
         product=None,
         indicator="monthly active users via ProConnect",
         client="MetabaseMultipleProductsClient",
-        source_url="https://stats.moncomptepro.beta.gouv.fr/public/question/multiple-products-question.json",
+        source_url="https://metabase.gouv.fr/public/question/multiple-products-question.json",
         frequence_monitoring="monthly",
     )
 
@@ -70,30 +70,30 @@ def test_fetch_new_data_continues_when_adaptor_fails(
     """Data retrieval should not stop if an adaptor raises an exception."""
     settings.DEBUG = True
 
-    # Failing adaptor and response
-    factories.AdaptorFactory.create(
-        product=factories.ProductFactory(nom_service_public_numerique="ProConnect"),
-        indicator="monthly active users",
-        client="MetabaseClient",
-        source_url="https://stats.moncomptepro.beta.gouv.fr/public/question/single-product-question.json",
-        frequence_monitoring="monthly",
-    )
-    responses.get(
-        re.compile(
-            r"https://stats.moncomptepro.beta.gouv.fr/public/question/single-product-question.json"
-        ),
-        json={},
-        status=status.HTTP_504_GATEWAY_TIMEOUT,
-        content_type="application/json",
-    )
-
     # Functional adaptor. Product and responses in fixture
     factories.AdaptorFactory.create(
         product=None,
         indicator="monthly active users via ProConnect",
         client="MetabaseClient",
-        source_url="https://stats.moncomptepro.beta.gouv.fr/public/question/multiple-products-question.json",
+        source_url="https://metabase.gouv.fr/public/question/multiple-products-question.json",
         frequence_monitoring="monthly",
+    )
+
+    # Failing adaptor and response
+    factories.AdaptorFactory.create(
+        product=factories.ProductFactory(nom_service_public_numerique="ProConnect"),
+        indicator="monthly active users",
+        client="MetabaseClient",
+        source_url="https://source-url.gouv.fr",
+        frequence_monitoring="monthly",
+    )
+    responses.get(
+        re.compile(
+            r"https://source-url.gouv.fr",
+        ),
+        json={},
+        status=status.HTTP_504_GATEWAY_TIMEOUT,
+        content_type="application/json",
     )
 
     call_command("fetch_new_data")

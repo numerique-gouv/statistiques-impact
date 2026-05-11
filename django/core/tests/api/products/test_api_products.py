@@ -67,7 +67,8 @@ def test_api_products_retrieve__last_indicators_ok():
             {
                 "id": str(indicator.id),
                 "indicateur": indicator.indicateur,
-                "valeur": indicator.valeur,
+                "slug": indicator.slug,
+                "valeur": float(indicator.valeur),
                 "unite_mesure": indicator.unite_mesure,
                 "frequence_monitoring": indicator.frequence_monitoring,
                 "date": str(indicator.date),
