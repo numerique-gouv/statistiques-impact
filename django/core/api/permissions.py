@@ -28,5 +28,7 @@ class HasValidAPIKeyOrReadOnly(permissions.BasePermission):
 
             if api_key.product == product:
                 return True
+            else:
+                raise exceptions.PermissionDenied(_("Wrong API Key"))
 
         return False
