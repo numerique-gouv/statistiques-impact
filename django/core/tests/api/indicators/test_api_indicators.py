@@ -88,6 +88,9 @@ def test_api_indicators_create__anonymous_cannot_create():
         body="{'nom_service_public_numerique': 'product'}",
     )
     assert response.status_code == status.HTTP_403_FORBIDDEN
+    assert response.json() == {
+        "detail": "Informations d'authentification non fournies."
+    }
     assert not models.Indicator.objects.exists()
 
 
@@ -113,6 +116,38 @@ def test_api_indicators_create__invalid_api_key_cannot_create():
         headers={"x-api-key": key + "ko"},
     )
     assert response.status_code == status.HTTP_403_FORBIDDEN
+    assert response.json() == {"detail": "Invalid API Key"}
+    assert not models.Indicator.objects.exists()
+
+
+def test_api_indicators_create__other_product_api_key_cannot_create():
+    """Calls bearing another product's api key should not be able to create indicators."""
+    product = factories.ProductFactory()
+    _, valid_key = models.ProductAPIKey.objects.create_key(
+        name="valid_key", product=product
+    )
+
+    # other product and its valid API key
+    _, other_key = models.ProductAPIKey.objects.create_key(
+        name="other_key", product=factories.ProductFactory()
+    )
+
+    response = APIClient().post(
+        f"/api/products/{product.slug}/indicators/",
+        {
+            "indicateur": "participants",
+            "valeur": 3,
+            "unite_mesure": "unite",
+            "frequence_monitoring": "mensuelle",
+            "date": "2025-06-30",
+            "date_debut": "2025-04-01",
+            "est_periode": "true",
+            "est_automatise": "false",
+        },
+        headers={"x-api-key": other_key},
+    )
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    assert response.json() == {"detail": "Wrong API Key"}
     assert not models.Indicator.objects.exists()
 
 
@@ -143,7 +178,7 @@ def test_api_indicators_create__valid_api_key_can_create():
 
 @override_settings(ADMIN_API_KEY="admin_key")
 def test_api_indicators_create__admin_can_create():
-    """Calls bearing the ADMIN API KEY can create indicator on every products."""
+    """Calls bearing the ADMIN API KEY can create indicator on any product."""
     products = factories.ProductFactory.create_batch(2)
 
     for product in products:
@@ -166,7 +201,7 @@ def test_api_indicators_create__admin_can_create():
 
 
 def test_api_indicators_create__cannot_create_duplicate():
-    """Should not be able to create duplicate."""
+    """Should not be able to create duplicate indicators."""
     product = factories.ProductFactory()
     api_key, key = models.ProductAPIKey.objects.create_key(
         name="valid_key", product=product
@@ -198,8 +233,13 @@ def test_api_indicators_create__cannot_create_duplicate():
 
 # RETRIEVE
 def test_api_indicators_retrieve__anonymous_ok():
-    """Anonymous users should be allowed to delete indicators."""
+    """Anonymous users should be allowed to retrieve a specific indicators."""
     indicator = factories.IndicatorFactory()
+
+    # same product, other indicator : should not appear
+    factories.IndicatorFactory(productid=indicator.productid)
+    # other product, same name indicator : should not appear
+    factories.IndicatorFactory.create_batch(2, indicateur=indicator.indicateur)
 
     response = APIClient().get(
         f"/api/products/{indicator.productid.slug}/indicators/{indicator.id}/",
