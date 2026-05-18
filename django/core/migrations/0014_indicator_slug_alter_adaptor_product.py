@@ -2,7 +2,6 @@
 
 import django.db.models.deletion
 from django.db import migrations, models
-from django.template.defaultfilters import slugify
 
 
 def compute_indicators_slugs(apps, schema_editor):

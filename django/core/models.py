@@ -128,9 +128,6 @@ class Indicator(models.Model):
                 fields=["productid", "indicateur", "frequence_monitoring", "date"],
                 name="unique_username",
             ),
-            models.UniqueConstraint(
-                fields=["productid", "slug"], name="unique_slug_per_indicator"
-            ),
         ]
         ordering = ("-date",)
 
@@ -142,7 +139,7 @@ class Indicator(models.Model):
 
     def get_slug(self):
         """Compute slug value from name."""
-        return slugify(self.nom_service_public_numerique)[:50]
+        return slugify(self.indicateur)[:50]
 
     def validate(self, data):
         if data.est_periode and not data.date_debut:
