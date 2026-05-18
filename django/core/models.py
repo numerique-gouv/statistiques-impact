@@ -128,18 +128,18 @@ class Indicator(models.Model):
                 fields=["productid", "indicateur", "frequence_monitoring", "date"],
                 name="unique_username",
             ),
-            models.UniqueConstraint(
-                fields=["productid", "slug"], name="unique_slug_per_indicator"
-            ),
         ]
         ordering = ("-date",)
 
     def save(self, *args, **kwargs):
         """Call `full_clean` and fill slug if necessary before saving."""
-        if not self.slug or self.slug == "":
-            self.slug = slugify(self.indicateur)
+        self.slug = self.get_slug()
         self.full_clean()
         return super().save(*args, **kwargs)
+
+    def get_slug(self):
+        """Compute slug value from name."""
+        return slugify(self.indicateur)[:50]
 
     def validate(self, data):
         if data.est_periode and not data.date_debut:

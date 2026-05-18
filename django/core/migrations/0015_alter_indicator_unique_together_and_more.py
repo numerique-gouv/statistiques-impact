@@ -20,10 +20,4 @@ class Migration(migrations.Migration):
                 name="unique_username",
             ),
         ),
-        migrations.AddConstraint(
-            model_name="indicator",
-            constraint=models.UniqueConstraint(
-                fields=("productid", "slug"), name="unique_slug_per_indicator"
-            ),
-        ),
     ]

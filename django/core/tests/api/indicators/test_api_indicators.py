@@ -229,7 +229,7 @@ def test_api_indicators_create__cannot_create_duplicate():
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert response.json() == [
-        "{'__all__': ['Un objet Indicator avec ces champs Productid, Indicateur, Frequence monitoring et Date existe déjà.', 'Un objet Indicator avec ces champs Productid et Slug existe déjà.']}"
+        "{'__all__': ['Un objet Indicator avec ces champs Productid, Indicateur, Frequence monitoring et Date existe déjà.']}"
     ]
     assert len(models.Indicator.objects.all()) == 1
 
