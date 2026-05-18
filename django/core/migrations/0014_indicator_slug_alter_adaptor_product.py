@@ -9,7 +9,6 @@ def compute_indicators_slugs(apps, schema_editor):
     """Copy all existing records to the new model."""
     Indicator = apps.get_model("core", "Indicator")
     for indicator in Indicator.objects.all():
-        indicator.slug = slugify(indicator.indicateur)
         indicator.save()
 
 

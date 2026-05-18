@@ -136,10 +136,13 @@ class Indicator(models.Model):
 
     def save(self, *args, **kwargs):
         """Call `full_clean` and fill slug if necessary before saving."""
-        if not self.slug or self.slug == "":
-            self.slug = slugify(self.indicateur)
+        self.slug = self.get_slug()
         self.full_clean()
         return super().save(*args, **kwargs)
+
+    def get_slug(self):
+        """Compute slug value from name."""
+        return slugify(self.nom_service_public_numerique)[:50]
 
     def validate(self, data):
         if data.est_periode and not data.date_debut:
