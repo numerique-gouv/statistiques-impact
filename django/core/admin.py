@@ -12,7 +12,7 @@ class ProductAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("nom_service_public_numerique",)}
 
 
-@admin.register(models.Indicator)
+@admin.register(models.Record)
 class IndicatorAdmin(admin.ModelAdmin):
     """Indicator admin interface declaration."""
 

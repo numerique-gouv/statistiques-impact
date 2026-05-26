@@ -60,7 +60,7 @@ class Product(models.Model):
 
     @property
     def last_indicators(self):
-        recent_indicators = Indicator.objects.filter(productid=self).order_by("-date")
+        recent_indicators = Record.objects.filter(productid=self).order_by("-date")
         if not recent_indicators:
             return []
 
@@ -83,7 +83,7 @@ class Product(models.Model):
         return self.nom_service_public_numerique
 
 
-class Indicator(models.Model):
+class Record(models.Model):
     id = models.UUIDField(
         verbose_name=_("id"),
         help_text=_("primary key for the record as UUID"),
@@ -226,7 +226,7 @@ class Adaptor(models.Model):
                 print(f"Product {entry['product']} not found.")
             else:
                 try:
-                    Indicator.objects.create(
+                    Record.objects.create(
                         productid=product,
                         indicateur=entry["indicator"],
                         date=date_fin,
