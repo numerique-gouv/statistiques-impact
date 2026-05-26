@@ -17,13 +17,13 @@ pytestmark = pytest.mark.django_db
 # FETCH_NEW_DATA
 @freeze_time("2025-10-02")
 @responses.activate
-def test_fetch_new_data_single_adaptor_ok(
+def test_fetch_new_data_single_indicator_ok(
     settings,
     proconnect_MAU,
 ):
     settings.DEBUG = True
 
-    factories.AdaptorFactory.create(
+    factories.IndicatorFactory.create(
         product=factories.ProductFactory(nom_service_public_numerique="proconnect"),
         record="monthly active users",
         client="MetabaseClient",
@@ -42,11 +42,11 @@ def test_fetch_new_data_single_adaptor_ok(
 
 @freeze_time("2025-10-02")
 @responses.activate
-def test_fetch_new_data_many_products_adaptor_ok(metabase_lasuite_MAU):
-    """Test adaptors can add records on multiple products."""
+def test_fetch_new_data_many_products_indicator_ok(metabase_lasuite_MAU):
+    """Test indicators can add records on multiple products."""
 
     models.Product.objects.get(slug="visio").delete()
-    factories.AdaptorFactory.create(
+    factories.IndicatorFactory.create(
         product=None,
         record="monthly active users via ProConnect",
         client="MetabaseMultipleProductsClient",
@@ -63,15 +63,15 @@ def test_fetch_new_data_many_products_adaptor_ok(metabase_lasuite_MAU):
 
 @freeze_time("2025-10-02")
 @responses.activate
-def test_fetch_new_data_continues_when_adaptor_fails(
+def test_fetch_new_data_continues_when_indicator_fails(
     settings,
     metabase_lasuite_MAU,
 ):
-    """Data retrieval should not stop if an adaptor raises an exception."""
+    """Data retrieval should not stop if an indicator raises an exception."""
     settings.DEBUG = True
 
-    # Functional adaptor. Product and responses in fixture
-    factories.AdaptorFactory.create(
+    # Functional indicator. Product and responses in fixture
+    factories.IndicatorFactory.create(
         product=None,
         record="monthly active users via ProConnect",
         client="MetabaseClient",
@@ -79,8 +79,8 @@ def test_fetch_new_data_continues_when_adaptor_fails(
         frequence_monitoring="monthly",
     )
 
-    # Failing adaptor and response
-    factories.AdaptorFactory.create(
+    # Failing indicator and response
+    factories.IndicatorFactory.create(
         product=factories.ProductFactory(nom_service_public_numerique="ProConnect"),
         record="monthly active users",
         client="MetabaseClient",
@@ -102,5 +102,5 @@ def test_fetch_new_data_continues_when_adaptor_fails(
     visio_record = records.filter(
         productid__slug="proconnect", indicateur="monthly active users"
     )
-    assert not visio_record.exists()  # failing adaptor created no record
-    assert records.count() == 7  # other adaptors worked fine
+    assert not visio_record.exists()  # failing indicator created no record
+    assert records.count() == 7  # other indicators worked fine

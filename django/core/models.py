@@ -166,14 +166,14 @@ class ProductAPIKey(AbstractAPIKey):
         verbose_name_plural = _("API keys")
 
 
-class Adaptor(models.Model):
-    """Adaptor model"""
+class Indicator(models.Model):
+    """Indicator model"""
 
     product = models.ForeignKey(
         "Product",
         on_delete=models.PROTECT,
         db_column="product",
-        related_name="adaptor",
+        related_name="indicator",
         blank=True,
         null=True,
     )
@@ -197,14 +197,14 @@ class Adaptor(models.Model):
     )
 
     class Meta:
-        db_table = "adaptor"
-        verbose_name = _("Adaptor")
-        verbose_name_plural = _("Adaptors")
+        db_table = "indicator"
+        verbose_name = _("Indicator")
+        verbose_name_plural = _("Indicators")
         unique_together = (("product", "record"),)
 
     def get_client(self):
         """Get client or return error."""
-        return getattr(sys.modules["core.clients"], self.client)(adaptor=self)
+        return getattr(sys.modules["core.clients"], self.client)(indicator=self)
 
     def get_data(self):
         """Call client to get last available data."""

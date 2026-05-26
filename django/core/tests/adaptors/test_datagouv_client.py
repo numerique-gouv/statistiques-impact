@@ -41,7 +41,7 @@ def test_api_submissions__no_dataset_id_fails():
 @responses.activate
 def test_messagerie_active_users(datagouv_messagerie_data):
     """Checks that DataGouvClient retrieves data.gouv data as expected."""
-    adaptor = factories.AdaptorFactory.create(
+    indicator = factories.IndicatorFactory.create(
         product=factories.ProductFactory(
             nom_service_public_numerique="messagerie",
             dataset_id="68650cd6130c82da6ba44a92",
@@ -51,10 +51,10 @@ def test_messagerie_active_users(datagouv_messagerie_data):
     )
 
     # Responses mocked in fixtures
-    assert adaptor.get_data() == [
+    assert indicator.get_data() == [
         {
-            "product": adaptor.product.nom_service_public_numerique,
-            "record": adaptor.record,
+            "product": indicator.product.nom_service_public_numerique,
+            "record": indicator.record,
             "value": 580,
         }
     ]
@@ -64,7 +64,7 @@ def test_messagerie_active_users(datagouv_messagerie_data):
 @freeze_time("2026-05-08")
 def test_france_transfert_records():
     """Monthly retrieval should fetch csv files from data.gouv.fr and compute expected records."""
-    adaptor = factories.AdaptorFactory(
+    indicator = factories.IndicatorFactory(
         product=factories.ProductFactory(
             nom_service_public_numerique="france transfert-tests",
             dataset_id="69e8b42855b96c292988a106",
@@ -72,7 +72,7 @@ def test_france_transfert_records():
         client="FranceTransfertClient",
     )
 
-    assert adaptor.get_data() == [
+    assert indicator.get_data() == [
         {
             "product": "france transfert-tests",
             "records": [

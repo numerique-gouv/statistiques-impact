@@ -90,7 +90,7 @@ class RecordSubmissionView(CreateAPIView):
 
         env = "demo" if product.slug == "france-transfert-tests" else "www"
 
-        client = DataGouvClient(adaptor=models.Adaptor(product=product), env=env)
+        client = DataGouvClient(indicator=models.Indicator(product=product), env=env)
         response = client.upload_new_file(file=file.file.getvalue(), filename=file.name)
         return Response(
             data={"file": file.name, "success": response.json()["success"]},

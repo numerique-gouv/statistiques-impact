@@ -1,5 +1,5 @@
 """
-Unit tests for the PostHog adaptor
+Unit tests for the PostHog indicator
 """
 
 import pytest
@@ -15,7 +15,7 @@ pytestmark = pytest.mark.django_db
 @freeze_time("2025-10-19")
 def test_posthog_monthly_active_users(settings):
     """Test fetching monthly active users from PostHog."""
-    adaptor = factories.AdaptorFactory.create(
+    indicator = factories.IndicatorFactory.create(
         product=factories.ProductFactory(
             nom_service_public_numerique="visio",
         ),
@@ -44,9 +44,9 @@ def test_posthog_monthly_active_users(settings):
     )
 
     # Verify the latest data point was returned
-    assert adaptor.get_data() == [
+    assert indicator.get_data() == [
         {
-            "product": str(adaptor.product),
+            "product": str(indicator.product),
             "record": "monthly active users",
             "value": 8458,
         }
@@ -57,7 +57,7 @@ def test_posthog_monthly_active_users(settings):
 def test_posthog_no_data_error(settings):
     """Test error handling when PostHog returns no data."""
 
-    adaptor = factories.AdaptorFactory.create(
+    indicator = factories.IndicatorFactory.create(
         product=factories.ProductFactory(
             nom_service_public_numerique="visio",
         ),
@@ -77,4 +77,4 @@ def test_posthog_no_data_error(settings):
 
     # Should raise ValueError when no data is available
     with pytest.raises(KeyError, match="This insight has no data."):
-        adaptor.get_data()
+        indicator.get_data()

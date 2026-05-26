@@ -38,11 +38,11 @@ class RecordFactory(factory.django.DjangoModelFactory):
     date_debut = ""
 
 
-class AdaptorFactory(factory.django.DjangoModelFactory):
-    """Factory for the Adaptor model."""
+class IndicatorFactory(factory.django.DjangoModelFactory):
+    """Factory for the Indicator model."""
 
     class Meta:
-        model = models.Adaptor
+        model = models.Indicator
 
     product = factory.SubFactory(ProductFactory)
     record = factory.Faker("text", max_nb_chars=30)

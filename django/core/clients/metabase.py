@@ -4,7 +4,7 @@ from rest_framework import status, exceptions
 
 
 class MetabaseClient(ClientBase):
-    """Adaptor to extract data of interest from Metabase responses."""
+    """Indicator to extract data of interest from Metabase responses."""
 
     def get_data(self):
         """Extract data from response content."""
@@ -14,8 +14,8 @@ class MetabaseClient(ClientBase):
         if len(content) == 1:
             return [
                 {
-                    "product": str(self.adaptor.product),
-                    "record": self.adaptor.record,
+                    "product": str(self.indicator.product),
+                    "record": self.indicator.record,
                     "value": int(content[0]["Valeurs distinctes de Sub Fi"]),
                 }
             ]
@@ -23,7 +23,7 @@ class MetabaseClient(ClientBase):
             return [
                 {
                     "product": entry["Fournisseur Service"],
-                    "record": self.adaptor.record,
+                    "record": self.indicator.record,
                     "value": entry["Somme de Distinct values of Sub Fi"],
                 }
                 for entry in content
@@ -31,7 +31,7 @@ class MetabaseClient(ClientBase):
 
 
 class TchapClient(MetabaseClient):
-    """Adaptor to fetch and send Tchap's records."""
+    """Indicator to fetch and send Tchap's records."""
 
     def get_data(self):
         response = self.get_response()
@@ -45,8 +45,8 @@ class TchapClient(MetabaseClient):
 
         return [
             {
-                "product": str(self.adaptor.product),
-                "record": self.adaptor.record,
+                "product": str(self.indicator.product),
+                "record": self.indicator.record,
                 "value": int(content[0]["Nombre de lignes"].replace(" ", "")),
             }
         ]
@@ -65,7 +65,7 @@ class TchapClient(MetabaseClient):
 
 
 class MetabaseMultipleProductsClient(MetabaseClient):
-    """Adaptor to fetch LaSuite's basic records."""
+    """Indicator to fetch LaSuite's basic records."""
 
     def get_last_month_data(self):
         """Get latest values for all records."""

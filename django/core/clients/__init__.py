@@ -3,7 +3,7 @@ from .datagouv import DataGouvClient, MessagerieClient, FranceTransfertClient
 from .posthog import PostHogClient
 
 
-all_adaptors = [
+all_indicators = [
     MetabaseClient,
     MetabaseMultipleProductsClient,
     DataGouvClient,

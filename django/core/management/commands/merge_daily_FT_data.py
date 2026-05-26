@@ -2,7 +2,7 @@
 
 from django.core.management.base import BaseCommand
 from datetime import date
-from core.models import Adaptor
+from core.models import Indicator
 
 
 class Command(BaseCommand):
@@ -24,11 +24,11 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        """Call all adaptors to create records."""
+        """Call all indicators to create records."""
         # self.stdout.write(self.style.SUCCESS("..."))
         month = options["month"]
-        adaptor = Adaptor.objects.get(client="FranceTransfertClient")
-        client = adaptor.get_client()
+        indicator = Indicator.objects.get(client="FranceTransfertClient")
+        client = indicator.get_client()
 
         dataset = client.get_dataset()
         client.merge_monthly_stats(dataset, month)

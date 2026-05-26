@@ -54,9 +54,9 @@ class ProductAPIKeyAdmin(APIKeyModelAdmin):
     readonly_fields = ["prefix", "created"]
 
 
-@admin.register(models.Adaptor)
-class AdaptorAdmin(admin.ModelAdmin):
-    """Administration view to manage adaptors to automatically fetch products' data."""
+@admin.register(models.Indicator)
+class IndicatorAdmin(admin.ModelAdmin):
+    """Administration view to manage indicators to automatically fetch products' data."""
 
     list_display = (
         "product",

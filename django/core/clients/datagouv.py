@@ -12,27 +12,27 @@ import os
 class DataGouvClient(ClientBase):
     """A client for all interactions with datasets at data.gouv.fr."""
 
-    def __init__(self, adaptor, env="www"):
+    def __init__(self, indicator, env="www"):
         """Fix to include tests for france-transfert."""
         self.env = "www"
-        self.dataset_id = adaptor.product.dataset_id
+        self.dataset_id = indicator.product.dataset_id
         self.api_url = settings.DATAGOUV_API_URL
         self.api_key = settings.DATAGOUV_API_KEY
 
         # poor alternative for a dedicated preprod env
-        if "test" in adaptor.product.nom_service_public_numerique:
+        if "test" in indicator.product.nom_service_public_numerique:
             self.env = "demo"
             self.api_url = "https://demo.data.gouv.fr/api/1"
             self.api_key = settings.DATAGOUV_DEMO_API_KEY
 
-        super().__init__(adaptor)
+        super().__init__(indicator)
 
     def get_headers(self):
         """Simple headers to provide auth, but key depends on env."""
         return {"x-api-key": self.api_key}
 
     def get_dataset(self):
-        dataset_id = self.adaptor.product.dataset_id
+        dataset_id = self.indicator.product.dataset_id
 
         if not self.product.dataset_id:
             raise exceptions.APIException(
@@ -76,7 +76,7 @@ class DataGouvClient(ClientBase):
 
 
 class MessagerieClient(DataGouvClient):
-    """Adaptor to fetch and send 's records."""
+    """Indicator to fetch and send 's records."""
 
     def get_data(self):
         """Get a specific date's active users from messagerie's dataset on data.gouv.fr."""
@@ -93,14 +93,14 @@ class MessagerieClient(DataGouvClient):
 
         if len(entry) > 1:
             raise exceptions.APIException(
-                detail=f"Multiple value for last month's {self.adaptor.record} in data. Please check your dataset.",
+                detail=f"Multiple value for last month's {self.indicator.record} in data. Please check your dataset.",
                 code=status.HTTP_400_BAD_REQUEST,
             )
 
         return [
             {
-                "product": str(self.adaptor.product),
-                "record": self.adaptor.record,
+                "product": str(self.indicator.product),
+                "record": self.indicator.record,
                 "value": int(entry.iloc[0]),
             }
         ]
@@ -134,7 +134,7 @@ class FranceTransfertClient(DataGouvClient):
 
         return [
             {
-                "product": str(self.adaptor.product),
+                "product": str(self.indicator.product),
                 "records": [
                     record
                     for records_list in [

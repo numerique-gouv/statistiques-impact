@@ -11,17 +11,17 @@ class Command(BaseCommand):
     """
 
     def handle(self, *args, **options):
-        """Call all adaptors to create records."""
+        """Call all indicators to create records."""
         date_debut, date_fin = get_last_month_limits()
         self.stdout.write(
             f"Fetching records for last month ({date_debut} to {date_fin})"
         )
 
-        for adaptor in models.Adaptor.objects.all():
-            self.stdout.write(f"{str(adaptor.product)} - {str(adaptor.record)}")
+        for indicator in models.Indicator.objects.all():
+            self.stdout.write(f"{str(indicator.product)} - {str(indicator.record)}")
             try:
-                adaptor.save_last_month_record()
+                indicator.save_last_month_record()
             except Exception as exc:
                 self.stdout.write(
-                    f'Failed to fetch new data for record "{adaptor.record}" on {adaptor.product}: {exc} '
+                    f'Failed to fetch new data for record "{indicator.record}" on {indicator.product}: {exc} '
                 )

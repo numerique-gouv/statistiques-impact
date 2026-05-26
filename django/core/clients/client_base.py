@@ -4,13 +4,13 @@ import requests
 class ClientBase:
     """A basic client to fetch product's data and create records."""
 
-    def __init__(self, adaptor):
-        self.adaptor = adaptor
-        self.product = adaptor.product
+    def __init__(self, indicator):
+        self.indicator = indicator
+        self.product = indicator.product
 
     def get_response(self, headers={}):
         """Returns response from data source server."""
-        response = requests.get(url=self.adaptor.source_url, headers=headers)
+        response = requests.get(url=self.indicator.source_url, headers=headers)
         response.raise_for_status()
         return response
 

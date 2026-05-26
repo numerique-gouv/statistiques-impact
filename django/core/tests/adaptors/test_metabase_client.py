@@ -12,7 +12,7 @@ pytestmark = pytest.mark.django_db
 # METABASE
 @responses.activate
 def test_metabase_single_record():
-    adaptor = factories.AdaptorFactory.create(
+    indicator = factories.IndicatorFactory.create(
         product=factories.ProductFactory(nom_service_public_numerique="proconnect"),
         record="monthly active users",
         client="MetabaseClient",
@@ -26,7 +26,7 @@ def test_metabase_single_record():
         status=status.HTTP_200_OK,
         content_type="application/json",
     )
-    assert adaptor.get_data() == [
+    assert indicator.get_data() == [
         {
             "product": "proconnect",
             "record": "monthly active users",
@@ -38,7 +38,7 @@ def test_metabase_single_record():
 @responses.activate
 def test_metabase_multiple_products(metabase_lasuite_MAU):
     """Test a question with multiple products is handled as expected."""
-    adaptor = factories.AdaptorFactory.create(
+    indicator = factories.IndicatorFactory.create(
         product=factories.ProductFactory(nom_service_public_numerique="proconnect"),
         record="monthly active users",
         client="MetabaseMultipleProductsClient",
@@ -46,7 +46,7 @@ def test_metabase_multiple_products(metabase_lasuite_MAU):
     )
 
     # Response mocked in fixture
-    assert adaptor.get_data() == [
+    assert indicator.get_data() == [
         {
             "product": "Tchap",
             "record": "monthly active users",
@@ -94,7 +94,7 @@ def test_metabase_multiple_products(metabase_lasuite_MAU):
 @responses.activate
 def test_tchap_records():
     """Tchap client should retrieve expected data."""
-    adaptor = factories.AdaptorFactory.create(
+    indicator = factories.IndicatorFactory.create(
         product=factories.ProductFactory(
             nom_service_public_numerique="tchap",
         ),
@@ -111,6 +111,6 @@ def test_tchap_records():
         content_type="application/json",
     )
 
-    assert adaptor.get_data() == [
+    assert indicator.get_data() == [
         {"product": "tchap", "record": "monthly active users", "value": 367146}
     ]
