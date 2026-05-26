@@ -3,7 +3,7 @@ from rest_framework import serializers
 from django.template.defaultfilters import slugify
 
 
-class IndicatorSerializer(serializers.ModelSerializer):
+class RecordSerializer(serializers.ModelSerializer):
     valeur = serializers.IntegerField()
 
     class Meta:
@@ -24,7 +24,7 @@ class IndicatorSerializer(serializers.ModelSerializer):
         return super().validate(attrs)
 
 
-class IndicatorSubmitSerializer(serializers.Serializer):
+class RecordSubmitSerializer(serializers.Serializer):
     file_uploaded = serializers.FileField()
 
     class Meta:
@@ -32,16 +32,16 @@ class IndicatorSubmitSerializer(serializers.Serializer):
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):
-    """Serializer for Product objects. Add most recent indicators."""
+    """Serializer for Product objects. Add most recent records."""
 
-    last_indicators = serializers.SerializerMethodField("get_last_indicators")
+    last_records = serializers.SerializerMethodField("get_last_records")
 
     class Meta:
         model = models.Product
-        fields = ["nom_service_public_numerique", "slug", "last_indicators"]
+        fields = ["nom_service_public_numerique", "slug", "last_records"]
 
-    def get_last_indicators(self, instance):
-        return IndicatorSerializer(instance.last_indicators, many=True).data
+    def get_last_records(self, instance):
+        return RecordSerializer(instance.last_records, many=True).data
 
 
 class ProductListSerializer(serializers.ModelSerializer):

@@ -46,15 +46,15 @@ def test_api_products_retrieve__anonymous_ok():
     assert response.json() == {
         "nom_service_public_numerique": product.nom_service_public_numerique,
         "slug": product.slug,
-        "last_indicators": [],
+        "last_records": [],
     }
 
 
-def test_api_products_retrieve__last_indicators_ok():
-    """Last indicators should be returned when retrieving Product's details."""
+def test_api_products_retrieve__last_records_ok():
+    """Last records should be returned when retrieving Product's details."""
     product = factories.ProductFactory()
-    factories.IndicatorFactory(productid=product, date="2025-06-30")
-    most_recent_indicators = factories.IndicatorFactory.create_batch(
+    factories.RecordFactory(productid=product, date="2025-06-30")
+    most_recent_records = factories.RecordFactory.create_batch(
         2, productid=product, date="2025-07-30"
     )
 
@@ -63,23 +63,23 @@ def test_api_products_retrieve__last_indicators_ok():
     assert response.json() == {
         "nom_service_public_numerique": product.nom_service_public_numerique,
         "slug": product.slug,
-        "last_indicators": [
+        "last_records": [
             {
-                "id": str(indicator.id),
-                "indicateur": indicator.indicateur,
-                "slug": indicator.slug,
-                "valeur": float(indicator.valeur),
-                "unite_mesure": indicator.unite_mesure,
-                "frequence_monitoring": indicator.frequence_monitoring,
-                "date": str(indicator.date),
-                "date_debut": str(indicator.date_debut),
-                "est_periode": indicator.est_periode,
-                "est_automatise": indicator.est_automatise,
-                "productid": str(indicator.productid.id),
-                "created_at": indicator.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
-                "updated_at": indicator.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "id": str(record.id),
+                "indicateur": record.indicateur,
+                "slug": record.slug,
+                "valeur": float(record.valeur),
+                "unite_mesure": record.unite_mesure,
+                "frequence_monitoring": record.frequence_monitoring,
+                "date": str(record.date),
+                "date_debut": str(record.date_debut),
+                "est_periode": record.est_periode,
+                "est_automatise": record.est_automatise,
+                "productid": str(record.productid.id),
+                "created_at": record.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "updated_at": record.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
             }
-            for indicator in most_recent_indicators
+            for record in most_recent_records
         ],
     }
 

@@ -20,7 +20,7 @@ def test_posthog_monthly_active_users(settings):
             nom_service_public_numerique="visio",
         ),
         source_url="https://eu.posthog.com/api/projects/44954/insights/65340",
-        indicator="monthly active users",
+        record="monthly active users",
         client="PostHogClient",
     )
 
@@ -47,7 +47,7 @@ def test_posthog_monthly_active_users(settings):
     assert adaptor.get_data() == [
         {
             "product": str(adaptor.product),
-            "indicator": "monthly active users",
+            "record": "monthly active users",
             "value": 8458,
         }
     ]
@@ -62,7 +62,7 @@ def test_posthog_no_data_error(settings):
             nom_service_public_numerique="visio",
         ),
         source_url="https://eu.posthog.com/api/projects/0/insights/broken-insight",
-        indicator="monthly active users",
+        record="monthly active users",
         client="PostHogClient",
     )
 

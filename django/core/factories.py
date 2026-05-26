@@ -21,11 +21,11 @@ class ProductFactory(factory.django.DjangoModelFactory):
     nom_service_public_numerique = factory.Faker("company", locale="fr_FR")
 
 
-class IndicatorFactory(factory.django.DjangoModelFactory):
-    """Factory for the Indicator model."""
+class RecordFactory(factory.django.DjangoModelFactory):
+    """Factory for the Record model."""
 
     class Meta:
-        model = models.Indicator
+        model = models.Record
 
     productid = factory.SubFactory(ProductFactory)
     indicateur = factory.Faker("text", max_nb_chars=30)
@@ -45,4 +45,4 @@ class AdaptorFactory(factory.django.DjangoModelFactory):
         model = models.Adaptor
 
     product = factory.SubFactory(ProductFactory)
-    indicator = factory.Faker("text", max_nb_chars=30)
+    record = factory.Faker("text", max_nb_chars=30)

@@ -76,7 +76,7 @@ class DataGouvClient(ClientBase):
 
 
 class MessagerieClient(DataGouvClient):
-    """Adaptor to fetch and send 's indicators."""
+    """Adaptor to fetch and send 's records."""
 
     def get_data(self):
         """Get a specific date's active users from messagerie's dataset on data.gouv.fr."""
@@ -93,14 +93,14 @@ class MessagerieClient(DataGouvClient):
 
         if len(entry) > 1:
             raise exceptions.APIException(
-                detail=f"Multiple value for last month's {self.adaptor.indicator} in data. Please check your dataset.",
+                detail=f"Multiple value for last month's {self.adaptor.record} in data. Please check your dataset.",
                 code=status.HTTP_400_BAD_REQUEST,
             )
 
         return [
             {
                 "product": str(self.adaptor.product),
-                "indicator": self.adaptor.indicator,
+                "record": self.adaptor.record,
                 "value": int(entry.iloc[0]),
             }
         ]
@@ -135,19 +135,19 @@ class FranceTransfertClient(DataGouvClient):
         return [
             {
                 "product": str(self.adaptor.product),
-                "indicators": [
-                    indicator
-                    for indicators_list in [
+                "records": [
+                    record
+                    for records_list in [
                         self.calculate_usage_stats(df_stats),
                         self.calculate_satisfaction_stats(df_satisfaction),
                     ]
-                    for indicator in indicators_list
+                    for record in records_list
                 ],
             }
         ]
 
     def calculate_usage_stats(self, df):
-        """Calculate indicators value from stats dataframe."""
+        """Calculate records value from stats dataframe."""
 
         df = df[(df.ID_PLIS != "ID_PLIS")]  # remove possibly remaining headers
 
@@ -225,7 +225,7 @@ class FranceTransfertClient(DataGouvClient):
         ]
 
     def calculate_satisfaction_stats(self, dataframe):
-        """Calculate indicators value from satisfaction dataframe."""
+        """Calculate records value from satisfaction dataframe."""
         if len(dataframe) == 0:
             return []
 

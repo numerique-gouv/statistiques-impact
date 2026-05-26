@@ -25,13 +25,13 @@
         {% endif %}
     </p>
 
-    {% if product.last_indicators %}
+    {% if product.last_records %}
     <div class="fr-table">
         <div class="fr-table__wrapper">
             <div class="fr-table__container">
                 <div class="fr-table__content">
                     <table>
-                        <caption>Indicateurs du {{ product.indicators.all.0.date }}</caption>
+                        <caption>Indicateurs du {{ product.records.all.0.date }}</caption>
                         <thead>
                             <th scope="col">Valeur</th>
                             <th scope="col">Indicateur</th>
@@ -40,25 +40,25 @@
                             <th scope="col">Ajout<br>automatisé</th>
                         </thead>
                         <tbody>
-                            {% for indicator in product.indicators.all %}
+                            {% for record in product.records.all %}
                             <tr>
                                 <td>
-                                    {{ indicator.valeur|floatformat:"0" }}
+                                    {{ record.valeur|floatformat:"0" }}
                                 </td>
                                 <td>
-                                    {{ indicator.indicateur }}
+                                    {{ record.indicateur }}
                                 </td>
                                 <td>
-                                    {{ indicator.frequence_monitoring }}
+                                    {{ record.frequence_monitoring }}
                                 </td>
                                 <td>
-                                    {% if indicator.date_debut %}
-                                    {{indicator.date_debut}} -
+                                    {% if record.date_debut %}
+                                    {{record.date_debut}} -
                                     {% endif %}
-                                    {{ indicator.date }}
+                                    {{ record.date }}
                                 </td>
                                 <td>
-                                    {{ indicator.est_automatise }}
+                                    {{ record.est_automatise }}
                                 </td>
                             </tr>
                             {% endfor %}

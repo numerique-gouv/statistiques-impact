@@ -46,7 +46,7 @@ def test_messagerie_active_users(datagouv_messagerie_data):
             nom_service_public_numerique="messagerie",
             dataset_id="68650cd6130c82da6ba44a92",
         ),
-        indicator="monthly active users",
+        record="monthly active users",
         client="MessagerieClient",
     )
 
@@ -54,7 +54,7 @@ def test_messagerie_active_users(datagouv_messagerie_data):
     assert adaptor.get_data() == [
         {
             "product": adaptor.product.nom_service_public_numerique,
-            "indicator": adaptor.indicator,
+            "record": adaptor.record,
             "value": 580,
         }
     ]
@@ -62,8 +62,8 @@ def test_messagerie_active_users(datagouv_messagerie_data):
 
 # FRANCE TRANSFERT
 @freeze_time("2026-05-08")
-def test_france_transfert_indicators():
-    """Monthly retrieval should fetch csv files from data.gouv.fr and compute expected indicators."""
+def test_france_transfert_records():
+    """Monthly retrieval should fetch csv files from data.gouv.fr and compute expected records."""
     adaptor = factories.AdaptorFactory(
         product=factories.ProductFactory(
             nom_service_public_numerique="france transfert-tests",
@@ -75,7 +75,7 @@ def test_france_transfert_indicators():
     assert adaptor.get_data() == [
         {
             "product": "france transfert-tests",
-            "indicators": [
+            "records": [
                 {"name": "utilisateurs actifs (téléchargement)", "value": 68},
                 {"name": "utilisateurs actifs (envoi)", "value": 148},
                 {"name": "utilisateurs actifs", "value": 211},

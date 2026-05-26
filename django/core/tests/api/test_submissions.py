@@ -36,7 +36,7 @@ def test_api_submissions__anonymous_cannot_submit():
         },
     )
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    assert not models.Indicator.objects.exists()
+    assert not models.Record.objects.exists()
 
 
 def test_api_submissions__unauthorized_cannot_submit():
@@ -71,7 +71,7 @@ def test_api_submissions__unauthorized_cannot_submit():
         },
     )
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    assert not models.Indicator.objects.exists()
+    assert not models.Record.objects.exists()
 
 
 def test_api_submissions__cannot_submit_on_random_product():

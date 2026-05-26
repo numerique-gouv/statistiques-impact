@@ -24,7 +24,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        """Call all adaptors to create indicators."""
+        """Call all adaptors to create records."""
         # self.stdout.write(self.style.SUCCESS("..."))
         month = options["month"]
         adaptor = Adaptor.objects.get(client="FranceTransfertClient")

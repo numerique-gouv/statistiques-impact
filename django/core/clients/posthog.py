@@ -4,7 +4,7 @@ from django.conf import settings
 
 
 class PostHogClient(ClientBase):
-    """Adaptor to fetch and send PostHog insights indicators."""
+    """Adaptor to fetch and send PostHog insights records."""
 
     POSTHOG_API_URL = settings.POSTHOG_API_URL
     POSTHOG_API_KEY = settings.POSTHOG_API_KEY
@@ -17,7 +17,7 @@ class PostHogClient(ClientBase):
         return [
             {
                 "product": str(self.adaptor.product),
-                "indicator": self.adaptor.indicator,
+                "record": self.adaptor.record,
                 "value": self._get_last_month_insight(result=content["result"]),
             }
         ]

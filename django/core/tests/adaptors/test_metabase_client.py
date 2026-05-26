@@ -11,10 +11,10 @@ pytestmark = pytest.mark.django_db
 
 # METABASE
 @responses.activate
-def test_metabase_single_indicator():
+def test_metabase_single_record():
     adaptor = factories.AdaptorFactory.create(
         product=factories.ProductFactory(nom_service_public_numerique="proconnect"),
-        indicator="monthly active users",
+        record="monthly active users",
         client="MetabaseClient",
         source_url="https://metabase.gouv.fr/public/question/single-product-question.json",
     )
@@ -29,7 +29,7 @@ def test_metabase_single_indicator():
     assert adaptor.get_data() == [
         {
             "product": "proconnect",
-            "indicator": "monthly active users",
+            "record": "monthly active users",
             "value": 343349,
         }
     ]
@@ -40,7 +40,7 @@ def test_metabase_multiple_products(metabase_lasuite_MAU):
     """Test a question with multiple products is handled as expected."""
     adaptor = factories.AdaptorFactory.create(
         product=factories.ProductFactory(nom_service_public_numerique="proconnect"),
-        indicator="monthly active users",
+        record="monthly active users",
         client="MetabaseMultipleProductsClient",
         source_url="https://metabase.gouv.fr/public/question/multiple-products-question.json",
     )
@@ -49,42 +49,42 @@ def test_metabase_multiple_products(metabase_lasuite_MAU):
     assert adaptor.get_data() == [
         {
             "product": "Tchap",
-            "indicator": "monthly active users",
+            "record": "monthly active users",
             "value": 27654,
         },
         {
             "product": "Resana",
-            "indicator": "monthly active users",
+            "record": "monthly active users",
             "value": 23323,
         },
         {
             "product": "Grist",
-            "indicator": "monthly active users",
+            "record": "monthly active users",
             "value": 16094,
         },
         {
             "product": "Docs",
-            "indicator": "monthly active users",
+            "record": "monthly active users",
             "value": 11515,
         },
         {
             "product": "Visio",
-            "indicator": "monthly active users",
+            "record": "monthly active users",
             "value": 8184,
         },
         {
             "product": "Fichiers",
-            "indicator": "monthly active users",
+            "record": "monthly active users",
             "value": 1771,
         },
         {
             "product": "Messagerie de la Suite Numérique",
-            "indicator": "monthly active users",
+            "record": "monthly active users",
             "value": 1155,
         },
         {
             "product": "Hors suj",
-            "indicator": "monthly active users",
+            "record": "monthly active users",
             "value": 13,
         },
     ]
@@ -92,14 +92,14 @@ def test_metabase_multiple_products(metabase_lasuite_MAU):
 
 ## TCHAP
 @responses.activate
-def test_tchap_indicators():
+def test_tchap_records():
     """Tchap client should retrieve expected data."""
     adaptor = factories.AdaptorFactory.create(
         product=factories.ProductFactory(
             nom_service_public_numerique="tchap",
         ),
         source_url="https://metabase.tchap.net/public/question/last_MAU.json",
-        indicator="monthly active users",
+        record="monthly active users",
         client="TchapClient",
     )
 
@@ -112,5 +112,5 @@ def test_tchap_indicators():
     )
 
     assert adaptor.get_data() == [
-        {"product": "tchap", "indicator": "monthly active users", "value": 367146}
+        {"product": "tchap", "record": "monthly active users", "value": 367146}
     ]

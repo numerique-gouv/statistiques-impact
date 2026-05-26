@@ -2,7 +2,7 @@ import requests
 
 
 class ClientBase:
-    """A basic client to fetch product's data and create indicators."""
+    """A basic client to fetch product's data and create records."""
 
     def __init__(self, adaptor):
         self.adaptor = adaptor
@@ -16,6 +16,6 @@ class ClientBase:
 
     def get_last_month_data(self):
         """Get latest values for all indicators."""
-        for indicator in self.indicators:
-            indicator["value"] = getattr(self, indicator["method"])()
-        return self.indicators
+        for record in self.indicators:
+            record["value"] = getattr(self, record["method"])()
+        return self.records

@@ -117,7 +117,7 @@ def fixture_datagouv_file_sent():
             "success": True,
             "title": "filename",
             "type": "main",
-            "url": "https://demo-static.data.gouv.fr/resources/test-envoi-fichiers-france-transfert/20250904-162900/filename",
+            "url": "https://demo.data.gouv.fr/resources/test-envoi-fichiers-france-transfert/20250904-162900/filename",
         },
         status=status.HTTP_201_CREATED,
         content_type="application/json",
