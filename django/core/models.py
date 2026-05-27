@@ -127,7 +127,7 @@ class Indicator(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=["productid", "indicateur", "frequence_monitoring", "date"],
-                name="unique_username",
+                name="no_duplicate_indicators",
             ),
         ]
         ordering = ("-date",)
@@ -243,3 +243,46 @@ class Adaptor(models.Model):
                     )
                 except exceptions.ValidationError as error:
                     print(error)
+
+
+class Record(models.Model):
+    """
+    Single record of an indicator. Related to product through indicator.
+    """
+
+    id = models.UUIDField(
+        verbose_name=_("id"),
+        help_text=_("primary key for the record as UUID"),
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+    )
+    indicator = models.ForeignKey(
+        "Indicator",
+        on_delete=models.PROTECT,
+        db_column="indicator",
+        related_name="records",
+    )
+    value = models.FloatField()
+    end_date = models.DateField()
+    start_date = models.DateField(blank=True, null=True)
+    is_auto_added = models.BooleanField(default=False)
+    created_at = models.DateTimeField(
+        verbose_name=_("created at"),
+        help_text=_("date and time at which a record was created"),
+        auto_now_add=True,
+        editable=False,
+    )
+    updated_at = models.DateTimeField(
+        verbose_name=_("updated at"),
+        help_text=_("date and time at which a record was last updated"),
+        auto_now=True,
+        editable=False,
+    )
+
+    class Meta:
+        db_table = "record"
+        verbose_name = _("record")
+        verbose_name_plural = _("records")
+        # add uniqueconstraint after indicator model improvement
+        ordering = ("-end_date",)
