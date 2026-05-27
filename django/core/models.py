@@ -126,7 +126,11 @@ class Indicator(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=["productid", "indicateur", "frequence_monitoring", "date"],
-                name="unique_username",
+                name="no_duplicates",
+            ),
+            models.UniqueConstraint(
+                fields=["productid", "slug"],
+                name="unique_slug_by_product",
             ),
         ]
         ordering = ("-date",)

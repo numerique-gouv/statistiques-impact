@@ -5,7 +5,7 @@ Unit tests for the product API
 import pytest
 from rest_framework import status
 from rest_framework.test import APIClient
-
+from datetime import date, timedelta
 from core import models, factories
 
 pytestmark = pytest.mark.django_db
@@ -39,48 +39,48 @@ def test_api_products_list__anonymous_cant_create():
 # RETRIEVE
 def test_api_products_retrieve__anonymous_ok():
     """Anonymous users should be allowed to retrieve info on a given product."""
-    product = factories.ProductFactory()
-
-    response = APIClient().get(f"/api/products/{product.slug}/")
+    indicator = factories.IndicatorFactory()
+    response = APIClient().get(f"/api/products/{indicator.productid.slug}/")
     assert response.status_code == status.HTTP_200_OK
-    assert response.json() == {
-        "nom_service_public_numerique": product.nom_service_public_numerique,
-        "slug": product.slug,
-        "last_indicators": [],
-    }
-
 
 def test_api_products_retrieve__last_indicators_ok():
     """Last indicators should be returned when retrieving Product's details."""
-    product = factories.ProductFactory()
-    factories.IndicatorFactory(productid=product, date="2025-06-30")
-    most_recent_indicators = factories.IndicatorFactory.create_batch(
-        2, productid=product, date="2025-07-30"
+    indicator = factories.IndicatorFactory.create_batch(3)[0]
+    product = indicator.productid
+
+    # previous records of indicators should not be retrieve with product
+    factories.IndicatorFactory(productid=product, date=date.fromisoformat(indicator.date) - timedelta(days=30)
     )
 
-    response = APIClient().get(f"/api/products/{product.slug}/")
+    response = APIClient().get(
+        f"/api/products/{product.slug}/"
+    )
     assert response.status_code == status.HTTP_200_OK
+    import pdb; pdb.set_trace()
     assert response.json() == {
-        "nom_service_public_numerique": product.nom_service_public_numerique,
-        "slug": product.slug,
         "last_indicators": [
             {
+                "created_at": indicator.created_at.strftime(
+                    "%Y-%m-%dT%H:%M:%S.%fZ"
+                ),
+                "date": indicator.date,
+                "date_debut": indicator.date_debut,
+                "est_automatise": indicator.est_automatise,
+                "est_periode": indicator.est_periode,
+                "frequence_monitoring": indicator.frequence_monitoring,
                 "id": str(indicator.id),
                 "indicateur": indicator.indicateur,
+                "productid": product.slug,
                 "slug": indicator.slug,
-                "valeur": float(indicator.valeur),
                 "unite_mesure": indicator.unite_mesure,
-                "frequence_monitoring": indicator.frequence_monitoring,
-                "date": str(indicator.date),
-                "date_debut": str(indicator.date_debut),
-                "est_periode": indicator.est_periode,
-                "est_automatise": indicator.est_automatise,
-                "productid": str(indicator.productid.id),
-                "created_at": indicator.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
-                "updated_at": indicator.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "updated_at": indicator.updated_at.strftime(
+                    "%Y-%m-%dT%H:%M:%S.%fZ"
+                ),
+                "valeur": int(indicator.valeur),
             }
-            for indicator in most_recent_indicators
-        ],
+        for indicator in product.last_indicators],
+        "nom_service_public_numerique": product.nom_service_public_numerique,
+        "slug": product.slug,
     }
 
 

@@ -46,7 +46,10 @@ class IndicatorViewSet(
         Can be filtered by indicateur with ?indicateur=<your desired indicateur>
     """
 
-    serializer_class = serializers.IndicatorSerializer
+    serializer_class = serializers.IndicatorDetailSerializer
+
+    # serializer_list_class = serializers.IndicatorListSerializer
+    # serializer_detail_class = serializers.IndicatorDetailSerializer
     queryset = models.Indicator.objects.all()
     permission_classes = [permissions.HasValidAPIKeyOrReadOnly]
     lookup_field = "slug"
@@ -58,10 +61,13 @@ class IndicatorViewSet(
             product = get_object_or_404(models.Product, slug=product_slug)
             queryset = queryset.filter(productid=product)
 
-        query = self.request.query_params
-        if indicateur := query.get("indicateur"):
-            queryset = queryset.filter(indicateur=indicateur)
         return queryset
+
+    def get_serializer_context(self):
+        """Extra context provided to the serializer class."""
+        context = super().get_serializer_context()
+        context["product_slug"] = self.kwargs["product_slug"]
+        return context
 
     def perform_create(self, serializer):
         """Validate uniqueness constraints after adding productid."""
@@ -96,3 +102,48 @@ class IndicatorSubmissionView(CreateAPIView):
             data={"file": file.name, "success": response.json()["success"]},
             status=response.status_code,
         )
+
+
+class RecordViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet,
+):
+    """
+    API endpoint to list and manage indicators' record of a given product.
+
+    POST /api/products/<product-slug>/indicators/<indicator-slug>/records/
+        Return newly added record
+
+    GET /api/products/<product-slug>/indicators/<indicator-slug>/records/
+        Return a list of records for this indicator
+
+    GET /api/products/<product-slug>/indicators/<indicator-slug>/records/<record_id>/
+        Return details on a single record
+
+    DELETE /api/products/<product-slug>/indicators/<indicator-slug>/records/<record_id>/
+    """
+
+    serializer_class = serializers.RecordSerializer
+    queryset = models.Record.objects.all()
+    permission_classes = [permissions.HasValidAPIKeyOrReadOnly]
+    lookup_field = "id"
+
+    def get_queryset(self, *args, **kwargs):
+        """Filter queryset by product and possibly indicator."""
+        indicator = get_object_or_404(
+            models.Indicator,
+            slug=self.kwargs.get("indicator_slug"),
+            productid__slug=self.kwargs.get("product_slug"),
+        )
+        queryset = super().get_queryset().filter(indicator=indicator)
+        return queryset
+
+    def get_serializer_context(self):
+        """Extra context provided to the serializer class."""
+        context = super().get_serializer_context()
+        context["product_slug"] = self.kwargs["product_slug"]
+        context["indicator_slug"] = self.kwargs["indicator_slug"]
+        return context

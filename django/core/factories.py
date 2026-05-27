@@ -46,3 +46,14 @@ class AdaptorFactory(factory.django.DjangoModelFactory):
 
     product = factory.SubFactory(ProductFactory)
     indicator = factory.Faker("text", max_nb_chars=30)
+
+
+class RecordFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = models.Record
+
+    indicator = factory.SubFactory(IndicatorFactory)
+    value = random.randint(1, 300000)
+    end_date = factory.fuzzy.FuzzyDate(datetime.date(2025, 1, 1))
+    start_date = None
+    is_auto_added = random.choice([True, False])
