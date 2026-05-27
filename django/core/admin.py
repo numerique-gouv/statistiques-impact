@@ -70,3 +70,20 @@ class AdaptorAdmin(admin.ModelAdmin):
         "status",
     ]
     readonly_fields = ["status", "created_at"]
+
+
+@admin.register(models.Record)
+class RecordAdmin(admin.ModelAdmin):
+    """Indicator admin interface declaration."""
+
+    list_display = (
+        "indicator",
+        "end_date",
+        "value",
+    )
+    search_fields = ("indicator",)
+    list_filter = [
+        "indicator",
+        ("end_date", admin.DateFieldListFilter),
+    ]
+    readonly_fields = ("id", "created_at", "updated_at")
