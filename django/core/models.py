@@ -169,6 +169,8 @@ class ProductAPIKey(AbstractAPIKey):
 class Indicator(models.Model):
     """Indicator model"""
 
+    name = models.CharField(blank=False, null=False)
+    slug = models.SlugField(null=False, blank=False)
     product = models.ForeignKey(
         "Product",
         on_delete=models.PROTECT,
@@ -178,7 +180,6 @@ class Indicator(models.Model):
         null=True,
     )
     record = models.CharField(blank=True, null=True)
-
     source_url = models.CharField(blank=True, null=True)
     client = models.CharField(
         verbose_name=_("client to treat data"),
@@ -200,7 +201,7 @@ class Indicator(models.Model):
         db_table = "indicator"
         verbose_name = _("Indicator")
         verbose_name_plural = _("Indicators")
-        unique_together = (("product", "record"),)
+        unique_together = (("product", "name"),)
 
     def get_client(self):
         """Get client or return error."""
@@ -237,3 +238,9 @@ class Indicator(models.Model):
                     print(
                         f"ValueError occured when trying to create record {entry['record']}"
                     )
+
+    def save(self, *args, **kwargs):
+        """Call `full_clean` and fill slug if necessary before saving."""
+        self.slug = self.get_slug()
+        self.full_clean()
+        return super().save(*args, **kwargs)

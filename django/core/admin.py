@@ -60,13 +60,13 @@ class IndicatorAdmin(admin.ModelAdmin):
 
     list_display = (
         "product",
-        "record",
+        # "records",
         "status",
     )
     search_fields = ("product", "record")
     list_filter = [
         "product",
-        "record",
+        # "records",
         "status",
     ]
     readonly_fields = ["status", "created_at"]
