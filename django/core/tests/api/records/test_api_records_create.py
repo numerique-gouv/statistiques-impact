@@ -73,9 +73,6 @@ def test_api_records_create__valid_api_key_can_create():
         content_type="application/json",
     )
     assert response.status_code == status.HTTP_201_CREATED
-    import pdb
-
-    pdb.set_trace()
     record = models.Record.objects.get()
     # check response
     assert response.json()["indicator"] == {
@@ -120,9 +117,6 @@ def test_api_records_create__admin_can_create():
             headers={"x-api-key": "admin_key"},
             content_type="application/json",
         )
-        import pdb
-
-        pdb.set_trace()
         assert response.status_code == status.HTTP_201_CREATED
     assert models.Record.objects.count() == 2
 

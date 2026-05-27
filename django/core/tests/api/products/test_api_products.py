@@ -56,9 +56,6 @@ def test_api_products_retrieve__last_indicators_ok():
 
     response = APIClient().get(f"/api/products/{product.slug}/")
     assert response.status_code == status.HTTP_200_OK
-    import pdb
-
-    pdb.set_trace()
     assert response.json() == {
         "last_indicators": [
             {

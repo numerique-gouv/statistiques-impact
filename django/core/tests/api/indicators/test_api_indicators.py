@@ -24,9 +24,6 @@ def test_api_indicators_list__anonymous_ok():
     response = APIClient().get(f"/api/products/{product.slug}/indicators/")
     assert response.status_code == status.HTTP_200_OK
     assert len(response.json()) == 2
-    import pdb
-
-    pdb.set_trace()
     assert response.json() == sorted(
         [
             {
