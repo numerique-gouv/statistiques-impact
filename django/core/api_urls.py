@@ -22,9 +22,21 @@ indicator_router.register(
     basename="indicators",
 )
 
+record_router = SimpleRouter()
+record_router.register(
+    "records",
+    viewsets.RecordViewSet,
+    basename="records",
+)
+
+
 urlpatterns = [
     path("", include(product_router.urls)),
     re_path(r"^products/(?P<product_slug>[\w-]+)/?", include(indicator_router.urls)),
+    re_path(
+        r"^products/(?P<product_slug>[\w-]+)/indicators/(?P<indicator_slug>[\w-]+)/?",
+        include(record_router.urls),
+    ),
     re_path(
         r"^products/(?P<product_slug>[\w-]+)/submission/?",
         viewsets.IndicatorSubmissionView.as_view(),

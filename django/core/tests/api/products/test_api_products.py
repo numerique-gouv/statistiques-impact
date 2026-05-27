@@ -43,26 +43,26 @@ def test_api_products_retrieve__anonymous_ok():
     response = APIClient().get(f"/api/products/{indicator.productid.slug}/")
     assert response.status_code == status.HTTP_200_OK
 
+
 def test_api_products_retrieve__last_indicators_ok():
     """Last indicators should be returned when retrieving Product's details."""
     indicator = factories.IndicatorFactory.create_batch(3)[0]
     product = indicator.productid
 
     # previous records of indicators should not be retrieve with product
-    factories.IndicatorFactory(productid=product, date=date.fromisoformat(indicator.date) - timedelta(days=30)
+    factories.IndicatorFactory(
+        productid=product, date=date.fromisoformat(indicator.date) - timedelta(days=30)
     )
 
-    response = APIClient().get(
-        f"/api/products/{product.slug}/"
-    )
+    response = APIClient().get(f"/api/products/{product.slug}/")
     assert response.status_code == status.HTTP_200_OK
-    import pdb; pdb.set_trace()
+    import pdb
+
+    pdb.set_trace()
     assert response.json() == {
         "last_indicators": [
             {
-                "created_at": indicator.created_at.strftime(
-                    "%Y-%m-%dT%H:%M:%S.%fZ"
-                ),
+                "created_at": indicator.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 "date": indicator.date,
                 "date_debut": indicator.date_debut,
                 "est_automatise": indicator.est_automatise,
@@ -73,12 +73,11 @@ def test_api_products_retrieve__last_indicators_ok():
                 "productid": product.slug,
                 "slug": indicator.slug,
                 "unite_mesure": indicator.unite_mesure,
-                "updated_at": indicator.updated_at.strftime(
-                    "%Y-%m-%dT%H:%M:%S.%fZ"
-                ),
+                "updated_at": indicator.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 "valeur": int(indicator.valeur),
             }
-        for indicator in product.last_indicators],
+            for indicator in product.last_indicators
+        ],
         "nom_service_public_numerique": product.nom_service_public_numerique,
         "slug": product.slug,
     }
