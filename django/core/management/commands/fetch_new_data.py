@@ -19,6 +19,7 @@ class Command(BaseCommand):
 
         for adaptor in models.Adaptor.objects.all():
             self.stdout.write(f"{str(adaptor.product)} - {str(adaptor.indicator)}")
+
             try:
                 adaptor.save_last_month_indicator()
             except Exception as exc:

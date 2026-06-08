@@ -8,6 +8,7 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.template.defaultfilters import slugify
 from rest_framework_api_key.models import AbstractAPIKey
 from core.utils.utils import get_last_month_limits
+from django.core import exceptions
 
 
 class User(AbstractBaseUser):
@@ -213,7 +214,7 @@ class Adaptor(models.Model):
 
     def save_last_month_indicator(self):
         """Call client to get last available data and save it."""
-        date_fin = get_last_month_limits()[1]
+        date_debut, date_fin = get_last_month_limits()
         client = self.get_client()
         data = client.get_data()
 
@@ -230,6 +231,9 @@ class Adaptor(models.Model):
                         productid=product,
                         indicateur=entry["indicator"],
                         date=date_fin,
+                        date_debut=date_debut
+                        if self.frequence_monitoring == "mensuelle"
+                        else None,
                         valeur=entry["value"],
                         frequence_monitoring=self.frequence_monitoring,
                     )
@@ -237,3 +241,5 @@ class Adaptor(models.Model):
                     print(
                         f"ValueError occured when trying to create indicator {entry['indicator']}"
                     )
+                except exceptions.ValidationError as error:
+                    print(error)

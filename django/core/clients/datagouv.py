@@ -135,18 +135,16 @@ class FranceTransfertClient(DataGouvClient):
             else:
                 print(f"Unexpected resource ({resource.title}).")
 
+        indicators_list = self.calculate_usage_stats(
+            df_stats
+        ) + self.calculate_satisfaction_stats(df_satisfaction)
         return [
             {
                 "product": str(self.adaptor.product),
-                "indicators": [
-                    indicator
-                    for indicators_list in [
-                        self.calculate_usage_stats(df_stats),
-                        self.calculate_satisfaction_stats(df_satisfaction),
-                    ]
-                    for indicator in indicators_list
-                ],
+                "indicator": indicator["name"],
+                "value": indicator["value"],
             }
+            for indicator in indicators_list
         ]
 
     def calculate_usage_stats(self, df):
