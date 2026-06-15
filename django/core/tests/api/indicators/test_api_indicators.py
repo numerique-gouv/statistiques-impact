@@ -38,7 +38,7 @@ def test_api_indicators_list__anonymous_ok():
                 "date_debut": str(indicator.date_debut),
                 "est_periode": indicator.est_periode,
                 "est_automatise": indicator.est_automatise,
-                "productid": str(indicator.productid.id),
+                "productid": str(indicator.product.id),
                 "created_at": indicator.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 "updated_at": indicator.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
             }
@@ -54,7 +54,7 @@ def test_api_indicators_list__filter_ok():
     product = factories.ProductFactory()
     factories.IndicatorFactory(indicateur="somethingelse", productid=product)
     indicator = factories.IndicatorFactory(
-        indicateur="utilisateurs actifs", productid=product
+        indicateur="utilisateurs actifs", product=product
     )
 
     response = APIClient().get(
@@ -74,7 +74,7 @@ def test_api_indicators_list__filter_ok():
             "date_debut": str(indicator.date_debut),
             "est_periode": indicator.est_periode,
             "est_automatise": indicator.est_automatise,
-            "productid": str(indicator.productid.id),
+            "productid": str(indicator.product.id),
             "created_at": indicator.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
             "updated_at": indicator.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
         }
@@ -240,12 +240,12 @@ def test_api_indicators_retrieve__anonymous_ok():
     indicator = factories.IndicatorFactory()
 
     # same product, other indicator : should not appear
-    factories.IndicatorFactory(productid=indicator.productid)
+    factories.IndicatorFactory(productid=indicator.product)
     # other product, same name indicator : should not appear
     factories.IndicatorFactory.create_batch(2, indicateur=indicator.indicateur)
 
     response = APIClient().get(
-        f"/api/products/{indicator.productid.slug}/indicators/{indicator.slug}/",
+        f"/api/products/{indicator.product.slug}/indicators/{indicator.slug}/",
     )
     assert response.status_code == status.HTTP_200_OK
     assert response.json() == {
@@ -259,7 +259,7 @@ def test_api_indicators_retrieve__anonymous_ok():
         "date_debut": str(indicator.date_debut),
         "est_periode": indicator.est_periode,
         "est_automatise": indicator.est_automatise,
-        "productid": str(indicator.productid.id),
+        "productid": str(indicator.product.id),
         "created_at": indicator.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
         "updated_at": indicator.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
     }
@@ -271,7 +271,7 @@ def test_api_indicators_delete__anonymous_cannot_delete():
     indicator = factories.IndicatorFactory()
 
     response = APIClient().delete(
-        f"/api/products/{indicator.productid.slug}/indicators/{indicator.slug}/",
+        f"/api/products/{indicator.product.slug}/indicators/{indicator.slug}/",
     )
     assert response.status_code == status.HTTP_403_FORBIDDEN
     assert models.Indicator.objects.exists()
@@ -281,11 +281,11 @@ def test_api_indicators_delete__invalid_api_key_cannot_delete():
     """Calls bearing an invalid API key should not be able to delete indicators."""
     indicator = factories.IndicatorFactory()
     api_key, key = models.ProductAPIKey.objects.create_key(
-        name="valid_key", product=indicator.productid
+        name="valid_key", product=indicator.product
     )
 
     response = APIClient().delete(
-        f"/api/products/{indicator.productid.slug}/indicators/{indicator.slug}/",
+        f"/api/products/{indicator.product.slug}/indicators/{indicator.slug}/",
         headers={"x-api-key": key + "ko"},
     )
     assert response.status_code == status.HTTP_403_FORBIDDEN
@@ -296,11 +296,11 @@ def test_api_indicators_delete__valid_api_key_can_delete():
     """Calls bearing a valid API key for this product can delete indicator for product."""
     indicator = factories.IndicatorFactory()
     api_key, key = models.ProductAPIKey.objects.create_key(
-        name="valid_key", product=indicator.productid
+        name="valid_key", product=indicator.product
     )
 
     response = APIClient().delete(
-        f"/api/products/{indicator.productid.slug}/indicators/{indicator.slug}/",
+        f"/api/products/{indicator.product.slug}/indicators/{indicator.slug}/",
         headers={"x-api-key": key},
     )
     assert response.status_code == status.HTTP_204_NO_CONTENT

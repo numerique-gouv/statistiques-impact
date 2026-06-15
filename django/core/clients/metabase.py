@@ -4,7 +4,7 @@ from rest_framework import status, exceptions
 
 
 class MetabaseClient(ClientBase):
-    """Adaptor to extract data of interest from Metabase responses."""
+    """Indicator to extract data of interest from Metabase responses."""
 
     def get_data(self):
         """Extract data from response content."""
@@ -14,8 +14,8 @@ class MetabaseClient(ClientBase):
         if len(content) == 1:
             return [
                 {
-                    "product": str(self.adaptor.product),
-                    "indicator": self.adaptor.indicator,
+                    "product": str(self.indicator.product),
+                    "record": self.indicator.record,
                     "value": int(content[0]["Valeurs distinctes de Sub Fi"]),
                 }
             ]
@@ -23,7 +23,7 @@ class MetabaseClient(ClientBase):
             return [
                 {
                     "product": entry["Fournisseur Service"],
-                    "indicator": self.adaptor.indicator,
+                    "record": self.indicator.record,
                     "value": entry["Somme de Distinct values of Sub Fi"],
                 }
                 for entry in content
@@ -31,7 +31,7 @@ class MetabaseClient(ClientBase):
 
 
 class TchapClient(MetabaseClient):
-    """Adaptor to fetch and send Tchap's indicators."""
+    """Indicator to fetch and send Tchap's records."""
 
     def get_data(self):
         response = self.get_response()
@@ -45,8 +45,8 @@ class TchapClient(MetabaseClient):
 
         return [
             {
-                "product": str(self.adaptor.product),
-                "indicator": self.adaptor.indicator,
+                "product": str(self.indicator.product),
+                "record": self.indicator.record,
                 "value": int(content[0]["Nombre de lignes"].replace(" ", "")),
             }
         ]
@@ -65,14 +65,14 @@ class TchapClient(MetabaseClient):
 
 
 class MetabaseMultipleProductsClient(MetabaseClient):
-    """Adaptor to fetch LaSuite's basic indicators."""
+    """Indicator to fetch LaSuite's basic records."""
 
     def get_last_month_data(self):
-        """Get latest values for all indicators."""
+        """Get latest values for all records."""
         values = self.get_value()
 
         for product in values:
-            this_indicator = {}
+            this_record = {}
             product_name, value = product.popitem()
 
             if product_name == "DINUM - RESANA":
@@ -82,9 +82,7 @@ class MetabaseMultipleProductsClient(MetabaseClient):
             else:
                 pass
 
-            this_indicator = {
-                key: value for key, value in self.indicators_types[0].items()
-            }
+            this_record = {key: value for key, value in self.records_types[0].items()}
             if product_name in [
                 "Resana",
                 "France transfert",
@@ -92,13 +90,13 @@ class MetabaseMultipleProductsClient(MetabaseClient):
                 "Messagerie",
                 "Tchap",
             ]:
-                this_indicator["name"] = f"{this_indicator['name']} via ProConnect"
+                this_record["name"] = f"{this_record['name']} via ProConnect"
 
-            this_indicator["product"] = product_name
-            this_indicator["value"] = value
-            self.indicators.append(this_indicator)
+            this_record["product"] = product_name
+            this_record["value"] = value
+            self.records.append(this_record)
 
-        return self.indicators
+        return self.records
 
     def get_value(self):
         """Fetch data from url."""

@@ -1,13 +1,13 @@
-from core.models import Product, Indicator
+from core import models
 from rest_framework import serializers
 from django.template.defaultfilters import slugify
 
 
-class IndicatorSerializer(serializers.ModelSerializer):
+class RecordSerializer(serializers.ModelSerializer):
     valeur = serializers.IntegerField()
 
     class Meta:
-        model = Indicator
+        model = models.Record
         fields = "__all__"
         read_only_fields = ["productid", "slug"]
 
@@ -16,7 +16,7 @@ class IndicatorSerializer(serializers.ModelSerializer):
         return slugify(self.indicateur)
 
     def validate(self, attrs):
-        product = Product.objects.filter(
+        product = models.Product.objects.filter(
             slug=self.context["view"].kwargs["product_slug"]
         )
         if product.exists():
@@ -24,7 +24,7 @@ class IndicatorSerializer(serializers.ModelSerializer):
         return super().validate(attrs)
 
 
-class IndicatorSubmitSerializer(serializers.Serializer):
+class RecordSubmitSerializer(serializers.Serializer):
     file_uploaded = serializers.FileField()
 
     class Meta:
@@ -32,19 +32,19 @@ class IndicatorSubmitSerializer(serializers.Serializer):
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):
-    """Serializer for Product objects. Add most recent indicators."""
+    """Serializer for Product objects. Add most recent records."""
 
-    last_indicators = serializers.SerializerMethodField("get_last_indicators")
+    last_records = serializers.SerializerMethodField("get_last_records")
 
     class Meta:
-        model = Product
-        fields = ["nom_service_public_numerique", "slug", "last_indicators"]
+        model = models.Product
+        fields = ["nom_service_public_numerique", "slug", "last_records"]
 
-    def get_last_indicators(self, instance):
-        return IndicatorSerializer(instance.last_indicators, many=True).data
+    def get_last_records(self, instance):
+        return RecordSerializer(instance.last_records, many=True).data
 
 
 class ProductListSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Product
+        model = models.Product
         fields = ["nom_service_public_numerique", "slug"]

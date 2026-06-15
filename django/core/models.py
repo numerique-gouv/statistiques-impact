@@ -59,18 +59,18 @@ class Product(models.Model):
         verbose_name_plural = _("products")
 
     @property
-    def last_indicators(self):
-        recent_indicators = Indicator.objects.filter(productid=self).order_by("-date")
-        if not recent_indicators:
+    def last_records(self):
+        recent_records = Record.objects.filter(productid=self).order_by("-date")
+        if not recent_records:
             return []
 
-        last_entry_date = recent_indicators[0].date
-        return recent_indicators.filter(date=last_entry_date)
+        last_entry_date = recent_records[0].date
+        return recent_records.filter(date=last_entry_date)
 
     @property
-    def last_indicators_date(self):
-        if len(self.last_indicators) != 0:
-            return self.last_indicators[0].date
+    def last_records_date(self):
+        if len(self.last_records) != 0:
+            return self.last_records[0].date
 
         return "N/A"
 
@@ -83,7 +83,7 @@ class Product(models.Model):
         return self.nom_service_public_numerique
 
 
-class Indicator(models.Model):
+class Record(models.Model):
     id = models.UUIDField(
         verbose_name=_("id"),
         help_text=_("primary key for the record as UUID"),
@@ -96,7 +96,7 @@ class Indicator(models.Model):
         "Product",
         on_delete=models.PROTECT,
         db_column="productId",
-        related_name="indicators",
+        related_name="records",
     )
     indicateur = models.CharField(max_length=100)
     valeur = models.FloatField()
@@ -120,9 +120,9 @@ class Indicator(models.Model):
     )
 
     class Meta:
-        db_table = "indicator"
-        verbose_name = _("indicator")
-        verbose_name_plural = _("indicators")
+        db_table = "record"
+        verbose_name = _("record")
+        verbose_name_plural = _("records")
         constraints = [
             models.UniqueConstraint(
                 fields=["productid", "indicateur", "frequence_monitoring", "date"],
@@ -166,19 +166,20 @@ class ProductAPIKey(AbstractAPIKey):
         verbose_name_plural = _("API keys")
 
 
-class Adaptor(models.Model):
-    """Adaptor model"""
+class Indicator(models.Model):
+    """Indicator model"""
 
+    name = models.CharField(blank=False, null=False)
+    slug = models.SlugField(null=False, blank=False)
     product = models.ForeignKey(
         "Product",
         on_delete=models.PROTECT,
         db_column="product",
-        related_name="adaptor",
+        related_name="indicator",
         blank=True,
         null=True,
     )
-    indicator = models.CharField(blank=True, null=True)
-
+    record = models.CharField(blank=True, null=True)
     source_url = models.CharField(blank=True, null=True)
     client = models.CharField(
         verbose_name=_("client to treat data"),
@@ -197,21 +198,21 @@ class Adaptor(models.Model):
     )
 
     class Meta:
-        db_table = "adaptor"
-        verbose_name = _("Adaptor")
-        verbose_name_plural = _("Adaptors")
-        unique_together = (("product", "indicator"),)
+        db_table = "indicator"
+        verbose_name = _("Indicator")
+        verbose_name_plural = _("Indicators")
+        unique_together = (("product", "name"),)
 
     def get_client(self):
         """Get client or return error."""
-        return getattr(sys.modules["core.clients"], self.client)(adaptor=self)
+        return getattr(sys.modules["core.clients"], self.client)(indicator=self)
 
     def get_data(self):
         """Call client to get last available data."""
         client = self.get_client()
         return client.get_data()
 
-    def save_last_month_indicator(self):
+    def save_last_month_record(self):
         """Call client to get last available data and save it."""
         date_fin = get_last_month_limits()[1]
         client = self.get_client()
@@ -226,14 +227,20 @@ class Adaptor(models.Model):
                 print(f"Product {entry['product']} not found.")
             else:
                 try:
-                    Indicator.objects.create(
+                    Record.objects.create(
                         productid=product,
-                        indicateur=entry["indicator"],
+                        indicateur=entry["record"],
                         date=date_fin,
                         valeur=entry["value"],
                         frequence_monitoring=self.frequence_monitoring,
                     )
                 except ValueError:
                     print(
-                        f"ValueError occured when trying to create indicator {entry['indicator']}"
+                        f"ValueError occured when trying to create record {entry['record']}"
                     )
+
+    def save(self, *args, **kwargs):
+        """Call `full_clean` and fill slug if necessary before saving."""
+        self.slug = self.get_slug()
+        self.full_clean()
+        return super().save(*args, **kwargs)

@@ -21,11 +21,11 @@ class ProductFactory(factory.django.DjangoModelFactory):
     nom_service_public_numerique = factory.Faker("company", locale="fr_FR")
 
 
-class IndicatorFactory(factory.django.DjangoModelFactory):
-    """Factory for the Indicator model."""
+class RecordFactory(factory.django.DjangoModelFactory):
+    """Factory for the Record model."""
 
     class Meta:
-        model = models.Indicator
+        model = models.Record
 
     productid = factory.SubFactory(ProductFactory)
     indicateur = factory.Faker("text", max_nb_chars=30)
@@ -38,11 +38,11 @@ class IndicatorFactory(factory.django.DjangoModelFactory):
     date_debut = ""
 
 
-class AdaptorFactory(factory.django.DjangoModelFactory):
-    """Factory for the Adaptor model."""
+class IndicatorFactory(factory.django.DjangoModelFactory):
+    """Factory for the Indicator model."""
 
     class Meta:
-        model = models.Adaptor
+        model = models.Indicator
 
     product = factory.SubFactory(ProductFactory)
-    indicator = factory.Faker("text", max_nb_chars=30)
+    record = factory.Faker("text", max_nb_chars=30)

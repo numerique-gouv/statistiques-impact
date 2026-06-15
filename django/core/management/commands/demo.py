@@ -19,7 +19,7 @@ class Command(BaseCommand):
                 nom_service_public_numerique=service
             )
             for i in range(1, 13):
-                models.Indicator.objects.create(
+                models.Record.objects.create(
                     productid=product,
                     indicateur=random.choice(
                         ["utilisateurs actifs", "indicateur2", "autre_indicateur"]

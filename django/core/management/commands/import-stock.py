@@ -10,7 +10,7 @@ from datetime import date as dtdate
 
 class Command(BaseCommand):
     """
-    If product exists, create indicators from files.
+    If product exists, create records from files.
     """
 
     def add_arguments(self, parser):
@@ -33,7 +33,7 @@ class Command(BaseCommand):
             self.import_webinaire_stock(product, file_path)
 
     def import_webinaire_stock(self, product, file_path, verbose=False):
-        """Parse and create missing indicators for 'webinaire'."""
+        """Parse and create missing records for 'webinaire'."""
         if "nombre_de_participants" in file_path:
             indicateur = "participants"
             cle_valeur = "Somme de Attendee Count"
@@ -53,10 +53,10 @@ class Command(BaseCommand):
             ):
                 data.pop(-1)
 
-            existing_records = models.Indicator.objects.filter(
+            existing_records = models.Record.objects.filter(
                 productid=product, indicateur=indicateur
             )
-            nb_indicators_created = 0
+            nb_records_created = 0
             nb_errors = 0
             self.stdout.write("Date\tValeur enregistrée\tComparaison valeur fichier")
             for entry in data:
@@ -71,9 +71,9 @@ class Command(BaseCommand):
                     else:
                         nb_errors += 1
                         self.stdout.write(self.style.ERROR(f"!= {valeur}"))
-                except models.Indicator.DoesNotExist:
-                    nb_indicators_created += 1
-                    models.Indicator.objects.create(
+                except models.Record.DoesNotExist:
+                    nb_records_created += 1
+                    models.Record.objects.create(
                         productid=product,
                         indicateur=indicateur,
                         valeur=valeur,
@@ -87,5 +87,5 @@ class Command(BaseCommand):
                     self.stdout.write(f"N/A\t+ {valeur}")
 
         self.stdout.write(
-            f"Import terminé ! {nb_indicators_created} indicateurs ajoutés, {nb_errors} erreurs."
+            f"Import terminé ! {nb_records_created} indicateurs ajoutés, {nb_errors} erreurs."
         )

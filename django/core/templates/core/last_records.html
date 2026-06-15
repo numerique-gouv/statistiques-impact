@@ -20,30 +20,30 @@
                         <th scope="col">Ajout<br>automatisé</th>
                     </thead>
                     <tbody>
-                        {% for entry in last_indicators %}
+                        {% for entry in last_records %}
                         <tr>
                             <td>
                                 <a href="{% url 'produit' product_slug=entry.product.slug %}">
                                     {{ entry.product.nom_service_public_numerique }}</a>
                             </td>
                             <td>
-                                {% for indicator in entry.last_indicators %}
-                                {{ indicator.valeur|floatformat:"0" }} {{ indicator.indicateur }}<br>
+                                {% for record in entry.last_records %}
+                                {{ record.valeur|floatformat:"0" }} {{ record.indicateur }}<br>
                                 {% endfor %}
                             </td>
                             <td>
-                                {% for indicator in entry.last_indicators %}
-                                {{ indicator.frequence_monitoring }}<br>
+                                {% for record in entry.last_records %}
+                                {{ record.frequence_monitoring }}<br>
                                 {% endfor %}
                             </td>
                             <td>
-                                {% for indicator in entry.last_indicators %}
-                                {{ indicator.date }}<br>
+                                {% for record in entry.last_records %}
+                                {{ record.date }}<br>
                                 {% endfor %}
                             </td>
                             <td>
-                                {% for indicator in entry.last_indicators %}
-                                {{ indicator.est_automatise }}<br>
+                                {% for record in entry.last_records %}
+                                {{ record.est_automatise }}<br>
                                 {% endfor %}
                             </td>
                         </tr>

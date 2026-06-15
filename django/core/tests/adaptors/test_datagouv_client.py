@@ -41,20 +41,20 @@ def test_api_submissions__no_dataset_id_fails():
 @responses.activate
 def test_messagerie_active_users(datagouv_messagerie_data):
     """Checks that DataGouvClient retrieves data.gouv data as expected."""
-    adaptor = factories.AdaptorFactory.create(
+    indicator = factories.IndicatorFactory.create(
         product=factories.ProductFactory(
             nom_service_public_numerique="messagerie",
             dataset_id="68650cd6130c82da6ba44a92",
         ),
-        indicator="monthly active users",
+        record="monthly active users",
         client="MessagerieClient",
     )
 
     # Responses mocked in fixtures
-    assert adaptor.get_data() == [
+    assert indicator.get_data() == [
         {
-            "product": adaptor.product.nom_service_public_numerique,
-            "indicator": adaptor.indicator,
+            "product": indicator.product.nom_service_public_numerique,
+            "record": indicator.record,
             "value": 580,
         }
     ]
@@ -62,9 +62,9 @@ def test_messagerie_active_users(datagouv_messagerie_data):
 
 # FRANCE TRANSFERT
 @freeze_time("2026-05-08")
-def test_france_transfert_indicators():
-    """Monthly retrieval should fetch csv files from data.gouv.fr and compute expected indicators."""
-    adaptor = factories.AdaptorFactory(
+def test_france_transfert_records():
+    """Monthly retrieval should fetch csv files from data.gouv.fr and compute expected records."""
+    indicator = factories.IndicatorFactory(
         product=factories.ProductFactory(
             nom_service_public_numerique="france transfert-tests",
             dataset_id="69e8b42855b96c292988a106",
@@ -72,10 +72,10 @@ def test_france_transfert_indicators():
         client="FranceTransfertClient",
     )
 
-    assert adaptor.get_data() == [
+    assert indicator.get_data() == [
         {
             "product": "france transfert-tests",
-            "indicators": [
+            "records": [
                 {"name": "utilisateurs actifs (téléchargement)", "value": 68},
                 {"name": "utilisateurs actifs (envoi)", "value": 148},
                 {"name": "utilisateurs actifs", "value": 211},

@@ -1,0 +1,461 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Statistique d'usage",
+        "version": "2.0.0",
+        "description": "API pour les statistiques d'usage des produits de l'OPI"
+    },
+    "paths": {
+        "/products/": {
+            "get": {
+                "operationId": "products_list",
+                "description": "API endpoint to list existing products.\n\n- GET products/ lists all product\n- GET products/<product_slug>/ retrieves info on this product",
+                "tags": [
+                    "products"
+                ],
+                "security": [
+                    {
+                        "cookieAuth": []
+                    },
+                    {
+                        "basicAuth": []
+                    },
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ProductList"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/products/{product_slug}/records/": {
+            "get": {
+                "operationId": "products_records_list",
+                "description": "API endpoint to list and manage records of a given product.\n\nGET /api/products/<your-product>/records/\n    Return a list of public records for this product.\n    Can be filtered by indicateur with ?indicateur=<your desired indicateur>",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "product_slug",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^[\\w-]+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "products"
+                ],
+                "security": [
+                    {
+                        "cookieAuth": []
+                    },
+                    {
+                        "basicAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Record"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "products_records_create",
+                "description": "API endpoint to list and manage records of a given product.\n\nGET /api/products/<your-product>/records/\n    Return a list of public records for this product.\n    Can be filtered by indicateur with ?indicateur=<your desired indicateur>",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "product_slug",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^[\\w-]+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "products"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Record"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Record"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Record"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    },
+                    {
+                        "basicAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Record"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/products/{product_slug}/records/{slug}/": {
+            "get": {
+                "operationId": "products_records_retrieve",
+                "description": "API endpoint to list and manage records of a given product.\n\nGET /api/products/<your-product>/records/\n    Return a list of public records for this product.\n    Can be filtered by indicateur with ?indicateur=<your desired indicateur>",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "product_slug",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^[\\w-]+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "slug",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "products"
+                ],
+                "security": [
+                    {
+                        "cookieAuth": []
+                    },
+                    {
+                        "basicAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Record"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "products_records_destroy",
+                "description": "API endpoint to list and manage records of a given product.\n\nGET /api/products/<your-product>/records/\n    Return a list of public records for this product.\n    Can be filtered by indicateur with ?indicateur=<your desired indicateur>",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "product_slug",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^[\\w-]+$"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "slug",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "products"
+                ],
+                "security": [
+                    {
+                        "cookieAuth": []
+                    },
+                    {
+                        "basicAuth": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/products/{product_slug}/submission/": {
+            "post": {
+                "operationId": "products_submission_create",
+                "description": "An endpoint for submission of external data in .csv format.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "product_slug",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^[\\w-]+$"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "products"
+                ],
+                "requestBody": {
+                    "content": {
+                        "*/*": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RecordSubmit"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    },
+                    {
+                        "basicAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RecordSubmit"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/products/{slug}/": {
+            "get": {
+                "operationId": "products_retrieve",
+                "description": "API endpoint to list existing products.\n\n- GET products/ lists all product\n- GET products/<product_slug>/ retrieves info on this product",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "slug",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "products"
+                ],
+                "security": [
+                    {
+                        "cookieAuth": []
+                    },
+                    {
+                        "basicAuth": []
+                    },
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductDetail"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ProductDetail": {
+                "type": "object",
+                "description": "Serializer for Product objects. Add most recent records.",
+                "properties": {
+                    "nom_service_public_numerique": {
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "slug": {
+                        "type": "string",
+                        "maxLength": 50,
+                        "pattern": "^[-a-zA-Z0-9_]+$"
+                    },
+                    "last_records": {
+                        "type": "string",
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "last_records",
+                    "nom_service_public_numerique",
+                    "slug"
+                ]
+            },
+            "ProductList": {
+                "type": "object",
+                "properties": {
+                    "nom_service_public_numerique": {
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "slug": {
+                        "type": "string",
+                        "maxLength": 50,
+                        "pattern": "^[-a-zA-Z0-9_]+$"
+                    }
+                },
+                "required": [
+                    "nom_service_public_numerique",
+                    "slug"
+                ]
+            },
+            "Record": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true,
+                        "description": "primary key for the record as UUID"
+                    },
+                    "valeur": {
+                        "type": "integer"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "readOnly": true,
+                        "pattern": "^[-a-zA-Z0-9_]+$"
+                    },
+                    "indicateur": {
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "unite_mesure": {
+                        "type": "string"
+                    },
+                    "frequence_monitoring": {
+                        "type": "string",
+                        "default": "monthly"
+                    },
+                    "date": {
+                        "type": "string"
+                    },
+                    "date_debut": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "est_periode": {
+                        "type": "boolean"
+                    },
+                    "est_automatise": {
+                        "type": "boolean"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true,
+                        "description": "date and time at which a record was created"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true,
+                        "description": "date and time at which a record was last updated"
+                    },
+                    "productid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "primary key for the record as UUID",
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "created_at",
+                    "date",
+                    "id",
+                    "indicateur",
+                    "productid",
+                    "slug",
+                    "updated_at",
+                    "valeur"
+                ]
+            },
+            "RecordSubmit": {
+                "type": "object",
+                "properties": {
+                    "file_uploaded": {
+                        "type": "string",
+                        "format": "uri"
+                    }
+                },
+                "required": [
+                    "file_uploaded"
+                ]
+            }
+        },
+        "securitySchemes": {
+            "basicAuth": {
+                "type": "http",
+                "scheme": "basic"
+            },
+            "cookieAuth": {
+                "type": "apiKey",
+                "in": "cookie",
+                "name": "sessionid"
+            }
+        }
+    }
+}

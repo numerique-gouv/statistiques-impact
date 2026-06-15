@@ -17,15 +17,15 @@ pytestmark = pytest.mark.django_db
 # FETCH_NEW_DATA
 @freeze_time("2025-10-02")
 @responses.activate
-def test_fetch_new_data_single_adaptor_ok(
+def test_fetch_new_data_single_indicator_ok(
     settings,
     proconnect_MAU,
 ):
     settings.DEBUG = True
 
-    factories.AdaptorFactory.create(
+    factories.IndicatorFactory.create(
         product=factories.ProductFactory(nom_service_public_numerique="proconnect"),
-        indicator="monthly active users",
+        record="monthly active users",
         client="MetabaseClient",
         source_url="https://metabase.gouv.fr/public/question/single-product-question.json",
         frequence_monitoring="monthly",
@@ -34,21 +34,21 @@ def test_fetch_new_data_single_adaptor_ok(
     # Response in fixtures
     call_command("fetch_new_data")
 
-    assert models.Indicator.objects.count() == 1
-    indicator = models.Indicator.objects.get()
-    assert str(indicator.date) == "2025-09-30"
-    assert str(indicator.productid) == "proconnect"
+    assert models.Record.objects.count() == 1
+    record = models.Record.objects.get()
+    assert str(record.date) == "2025-09-30"
+    assert str(record.productid) == "proconnect"
 
 
 @freeze_time("2025-10-02")
 @responses.activate
-def test_fetch_new_data_many_products_adaptor_ok(metabase_lasuite_MAU):
-    """Test adaptors can add indicators on multiple products."""
+def test_fetch_new_data_many_products_indicator_ok(metabase_lasuite_MAU):
+    """Test indicators can add records on multiple products."""
 
     models.Product.objects.get(slug="visio").delete()
-    factories.AdaptorFactory.create(
+    factories.IndicatorFactory.create(
         product=None,
-        indicator="monthly active users via ProConnect",
+        record="monthly active users via ProConnect",
         client="MetabaseMultipleProductsClient",
         source_url="https://metabase.gouv.fr/public/question/multiple-products-question.json",
         frequence_monitoring="monthly",
@@ -57,32 +57,32 @@ def test_fetch_new_data_many_products_adaptor_ok(metabase_lasuite_MAU):
     # Responses mocked in fixtures
     call_command("fetch_new_data")
 
-    assert models.Indicator.objects.count() == 6
-    assert not models.Indicator.objects.exclude(date="2025-09-30").exists()
+    assert models.Record.objects.count() == 6
+    assert not models.Record.objects.exclude(date="2025-09-30").exists()
 
 
 @freeze_time("2025-10-02")
 @responses.activate
-def test_fetch_new_data_continues_when_adaptor_fails(
+def test_fetch_new_data_continues_when_indicator_fails(
     settings,
     metabase_lasuite_MAU,
 ):
-    """Data retrieval should not stop if an adaptor raises an exception."""
+    """Data retrieval should not stop if an indicator raises an exception."""
     settings.DEBUG = True
 
-    # Functional adaptor. Product and responses in fixture
-    factories.AdaptorFactory.create(
+    # Functional indicator. Product and responses in fixture
+    factories.IndicatorFactory.create(
         product=None,
-        indicator="monthly active users via ProConnect",
+        record="monthly active users via ProConnect",
         client="MetabaseClient",
         source_url="https://metabase.gouv.fr/public/question/multiple-products-question.json",
         frequence_monitoring="monthly",
     )
 
-    # Failing adaptor and response
-    factories.AdaptorFactory.create(
+    # Failing indicator and response
+    factories.IndicatorFactory.create(
         product=factories.ProductFactory(nom_service_public_numerique="ProConnect"),
-        indicator="monthly active users",
+        record="monthly active users",
         client="MetabaseClient",
         source_url="https://source-url.gouv.fr",
         frequence_monitoring="monthly",
@@ -98,9 +98,9 @@ def test_fetch_new_data_continues_when_adaptor_fails(
 
     call_command("fetch_new_data")
 
-    indicators = models.Indicator.objects.all()
-    visio_indicator = indicators.filter(
+    records = models.Record.objects.all()
+    visio_record = records.filter(
         productid__slug="proconnect", indicateur="monthly active users"
     )
-    assert not visio_indicator.exists()  # failing adaptor created no indicator
-    assert indicators.count() == 7  # other adaptors worked fine
+    assert not visio_record.exists()  # failing indicator created no record
+    assert records.count() == 7  # other indicators worked fine

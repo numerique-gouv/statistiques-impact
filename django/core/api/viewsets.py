@@ -31,7 +31,7 @@ class ProductViewSet(
         return self.serializer_class
 
 
-class IndicatorViewSet(
+class RecordViewSet(
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
@@ -39,15 +39,15 @@ class IndicatorViewSet(
     viewsets.GenericViewSet,
 ):
     """
-    API endpoint to list and manage indicators of a given product.
+    API endpoint to list and manage records of a given product.
 
-    GET /api/products/<your-product>/indicators/
-        Return a list of public indicators for this product.
+    GET /api/products/<your-product>/records/
+        Return a list of public records for this product.
         Can be filtered by indicateur with ?indicateur=<your desired indicateur>
     """
 
-    serializer_class = serializers.IndicatorSerializer
-    queryset = models.Indicator.objects.all()
+    serializer_class = serializers.RecordSerializer
+    queryset = models.Record.objects.all()
     permission_classes = [permissions.HasValidAPIKeyOrReadOnly]
     lookup_field = "slug"
 
@@ -71,9 +71,9 @@ class IndicatorViewSet(
             raise exceptions.ValidationError(exc)
 
 
-class IndicatorSubmissionView(CreateAPIView):
+class RecordSubmissionView(CreateAPIView):
     parser_classes = (FileUploadParser,)
-    serializer_class = serializers.IndicatorSubmitSerializer
+    serializer_class = serializers.RecordSubmitSerializer
     permission_classes = [permissions.HasValidAPIKeyOrReadOnly]
 
     def post(self, request, *args, **kwargs):
@@ -90,7 +90,7 @@ class IndicatorSubmissionView(CreateAPIView):
 
         env = "demo" if product.slug == "france-transfert-tests" else "www"
 
-        client = DataGouvClient(adaptor=models.Adaptor(product=product), env=env)
+        client = DataGouvClient(indicator=models.Indicator(product=product), env=env)
         response = client.upload_new_file(file=file.file.getvalue(), filename=file.name)
         return Response(
             data={"file": file.name, "success": response.json()["success"]},
