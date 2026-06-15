@@ -9,33 +9,6 @@ from freezegun import freeze_time
 pytestmark = pytest.mark.django_db
 
 
-def test_api_submissions__no_dataset_id_fails():
-    """API returns a clear error if product has no dataset_id."""
-    product = factories.ProductFactory(
-        nom_service_public_numerique="france-transfert-tests"
-    )
-    _, key = models.ProductAPIKey.objects.create_key(name="valid_key", product=product)
-    filepath = "core/tests/api/examples/ip-127-0-0-1_FranceTransfert_2025-05-11_download_stats.csv"
-    filename = filepath.split("/")[-1]
-
-    # no response expected
-    response = APIClient().post(
-        f"/api/products/{product}/submission/",
-        data={
-            "upload_file": open(
-                filepath,
-                "r",
-            )
-        },
-        headers={
-            "x-api-key": key,
-            "Content-Type": "text/csv",
-            "Content-Disposition": f"attachment; filename={filename}",
-        },
-    )
-    assert response.json() == {"detail": "Please provide a data.gouv.fr dataset"}
-
-
 # MESSAGERIE
 @freeze_time("2025-07-02")
 @responses.activate
@@ -66,7 +39,7 @@ def test_france_transfert_indicators():
     """Monthly retrieval should fetch csv files from data.gouv.fr and compute expected indicators."""
     adaptor = factories.AdaptorFactory(
         product=factories.ProductFactory(
-            nom_service_public_numerique="france transfert-tests",
+            nom_service_public_numerique="france transfert tests",
             dataset_id="69e8b42855b96c292988a106",
         ),
         client="FranceTransfertClient",
@@ -74,7 +47,7 @@ def test_france_transfert_indicators():
 
     assert adaptor.get_data() == [
         {
-            "product": "france transfert-tests",
+            "product": "france transfert tests",
             "indicators": [
                 {"name": "utilisateurs actifs (téléchargement)", "value": 68},
                 {"name": "utilisateurs actifs (envoi)", "value": 148},
@@ -93,3 +66,41 @@ def test_france_transfert_indicators():
             ],
         }
     ]
+
+
+def test_api_submissions__no_dataset_id_fails():
+    """API returns a clear error if product has no dataset_id."""
+    adaptor = factories.AdaptorFactory.create(
+        product=factories.ProductFactory(
+            nom_service_public_numerique="france-transfert-tests",
+        ),
+        indicator="monthly active users",
+        client="FranceTransfertClient",
+    )
+    _, key = models.ProductAPIKey.objects.create_key(
+        name="valid_key", product=adaptor.product
+    )
+    filepath = "core/tests/api/examples/ip-127-0-0-1_FranceTransfert_2025-05-11_download_stats.csv"
+    filename = filepath.split("/")[-1]
+
+    # no response expected
+    response = APIClient().post(
+        f"/api/products/{adaptor.product}/submission/",
+        data={
+            "upload_file": open(
+                filepath,
+                "r",
+            )
+        },
+        headers={
+            "x-api-key": key,
+            "Content-Type": "text/csv",
+            "Content-Disposition": f"attachment; filename={filename}",
+        },
+    )
+    assert response.status_code == 400
+    assert response.json() == {
+        "product.dataset_id": [
+            "Please provide a dataset_id for your product before creating a DataGouvClient."
+        ]
+    }
