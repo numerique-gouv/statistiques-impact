@@ -34,6 +34,7 @@ def test_messagerie_active_users(datagouv_messagerie_data):
 
 
 # FRANCE TRANSFERT
+@pytest.mark.skip(reason="broken files on datagouv's end")
 @freeze_time("2026-05-08")
 def test_france_transfert_indicators():
     """Monthly retrieval should fetch csv files from data.gouv.fr and compute expected indicators."""
