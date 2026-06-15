@@ -25,7 +25,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Product'
+                  $ref: '#/components/schemas/ProductList'
           description: ''
   /api/products/{product_slug}/indicators/:
     get:
@@ -96,7 +96,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Indicator'
           description: ''
-  /api/products/{product_slug}/indicators/{id}/:
+  /api/products/{product_slug}/indicators/{slug}/:
     get:
       operationId: products_indicators_retrieve
       description: |-
@@ -107,17 +107,15 @@ paths:
             Can be filtered by indicateur with ?indicateur=<your desired indicateur>
       parameters:
       - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-          description: primary key for the record as UUID
-        required: true
-      - in: path
         name: product_slug
         schema:
           type: string
           pattern: ^[\w-]+$
+        required: true
+      - in: path
+        name: slug
+        schema:
+          type: string
         required: true
       tags:
       - products
@@ -141,17 +139,15 @@ paths:
             Can be filtered by indicateur with ?indicateur=<your desired indicateur>
       parameters:
       - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-          description: primary key for the record as UUID
-        required: true
-      - in: path
         name: product_slug
         schema:
           type: string
           pattern: ^[\w-]+$
+        required: true
+      - in: path
+        name: slug
+        schema:
+          type: string
         required: true
       tags:
       - products
@@ -215,7 +211,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Product'
+                $ref: '#/components/schemas/ProductDetail'
           description: ''
 components:
   schemas:
@@ -229,6 +225,10 @@ components:
           description: primary key for the record as UUID
         valeur:
           type: integer
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
         indicateur:
           type: string
           maxLength: 100
@@ -236,6 +236,7 @@ components:
           type: string
         frequence_monitoring:
           type: string
+          default: monthly
         date:
           type: string
         date_debut:
@@ -245,20 +246,29 @@ components:
           type: boolean
         est_automatise:
           type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: date and time at which a record was created
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: date and time at which a record was last updated
         productid:
           type: string
           format: uuid
           description: primary key for the record as UUID
           readOnly: true
       required:
+      - created_at
       - date
-      - est_automatise
-      - est_periode
-      - frequence_monitoring
       - id
       - indicateur
       - productid
-      - unite_mesure
+      - slug
+      - updated_at
       - valeur
     IndicatorSubmit:
       type: object
@@ -268,20 +278,37 @@ components:
           format: uri
       required:
       - file_uploaded
-    Product:
+    ProductDetail:
       type: object
+      description: Serializer for Product objects. Add most recent indicators.
       properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-          description: primary key for the record as UUID
         nom_service_public_numerique:
           type: string
           maxLength: 100
+        slug:
+          type: string
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
+        last_indicators:
+          type: string
+          readOnly: true
       required:
-      - id
+      - last_indicators
       - nom_service_public_numerique
+      - slug
+    ProductList:
+      type: object
+      properties:
+        nom_service_public_numerique:
+          type: string
+          maxLength: 100
+        slug:
+          type: string
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
+      required:
+      - nom_service_public_numerique
+      - slug
   securitySchemes:
     basicAuth:
       type: http
