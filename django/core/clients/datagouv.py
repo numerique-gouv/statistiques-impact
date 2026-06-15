@@ -35,9 +35,12 @@ class DataGouvClient(ClientBase):
         dataset_id = self.adaptor.product.dataset_id
 
         if not self.product.dataset_id:
-            raise exceptions.APIException(
-                detail="Please provide a data.gouv.fr dataset",
-                code=status.HTTP_400_BAD_REQUEST,
+            raise exceptions.ValidationError(
+                {
+                    "product.dataset_id": [
+                        "Please provide a dataset_id for your product before creating a DataGouvClient."
+                    ]
+                },
             )
 
         return Dataset(
