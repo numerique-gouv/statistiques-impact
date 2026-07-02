@@ -1,6 +1,6 @@
 asgiref==3.9.1
 datagouv_client==0.3.2
-dj-database-url==3.0.1
+dj-database-url==3.1.2
 Django==5.2.8
 django-dsfr==3.0.0
 django-revproxy==0.13.0
