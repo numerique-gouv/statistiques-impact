@@ -1,0 +1,31 @@
+[project]
+name = "statistiques-impact"
+version = "0.1.0"
+description = "An app collecting and displaying usage statistics for DINUM's services."
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "asgiref==3.9.1",
+    "datagouv-client==0.5.0",
+    "dj-database-url==3.1.2",
+    "django==5.2.8",
+    "django-dsfr==3.5.2",
+    "djangorestframework==3.16.0",
+    "djangorestframework-api-key==3.1.0",
+    "drf-spectacular==0.28.0",
+    "drf-spectacular-sidecar==2025.8.1",
+    "factory-boy==3.3.3",
+    "freezegun==1.5.5",
+    "gunicorn==23.0.0",
+    "pandas==2.3.1",
+    "psycopg>=3.3.4",
+    "psycopg2-binary>=2.9.12",
+    "pytest==9.0.3",
+    "pytest-django==4.11.1",
+    "python-dotenv==1.2.2",
+    "responses==0.25.7",
+    "ruff==0.15.20",
+    "sqlparse==0.5.5",
+    "typing-extensions==4.14.1",
+    "whitenoise==6.9.0",
+]
