@@ -1,5 +1,5 @@
 asgiref==3.9.1
-datagouv_client==0.3.2
+datagouv_client==0.5.0
 dj-database-url==3.1.2
 Django==5.2.8
 django-dsfr==3.5.2
