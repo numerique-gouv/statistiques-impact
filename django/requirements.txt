@@ -18,5 +18,5 @@ python-dotenv==1.2.2
 responses==0.25.7
 ruff==0.15.20
 sqlparse==0.5.5
-typing_extensions==4.14.1
+typing_extensions==4.16.0
 whitenoise==6.9.0
