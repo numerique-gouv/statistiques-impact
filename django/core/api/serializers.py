@@ -1,22 +1,34 @@
-from core.models import Product, Indicator
-from rest_framework import serializers
-from django.template.defaultfilters import slugify
+from core import models
+from rest_framework import serializers, exceptions
+from django.shortcuts import get_object_or_404
 
 
-class IndicatorSerializer(serializers.ModelSerializer):
-    valeur = serializers.IntegerField()
+class IndicatorListSerializer(serializers.ModelSerializer):
+    """A smaller serializer for Indicator model."""
+
+    productid = serializers.SlugRelatedField(slug_field="slug", read_only=True)
 
     class Meta:
-        model = Indicator
-        fields = "__all__"
-        read_only_fields = ["productid", "slug"]
+        model = models.Indicator
+        fields = ["slug", "productid"]
+        read_only_fields = ["slug", "productid"]
 
-    def validate_slug(self, value):
-        """Force slug field."""
-        return slugify(self.indicateur)
+
+class IndicatorDetailSerializer(serializers.ModelSerializer):
+    """A detailed serializer for Indicator model."""
+
+    valeur = serializers.IntegerField()
+    productid = serializers.SlugRelatedField(slug_field="slug", read_only=True)
+
+    class Meta:
+        model = models.Indicator
+        fields = "__all__"
+        read_only_fields = [
+            "productid",
+        ]
 
     def validate(self, attrs):
-        product = Product.objects.filter(
+        product = models.Product.objects.filter(
             slug=self.context["view"].kwargs["product_slug"]
         )
         if product.exists():
@@ -34,17 +46,48 @@ class IndicatorSubmitSerializer(serializers.Serializer):
 class ProductDetailSerializer(serializers.ModelSerializer):
     """Serializer for Product objects. Add most recent indicators."""
 
-    last_indicators = serializers.SerializerMethodField("get_last_indicators")
+    last_records = serializers.SerializerMethodField("get_last_indicators")
 
     class Meta:
-        model = Product
-        fields = ["nom_service_public_numerique", "slug", "last_indicators"]
+        model = models.Product
+        fields = ["nom_service_public_numerique", "slug", "last_records"]
 
     def get_last_indicators(self, instance):
-        return IndicatorSerializer(instance.last_indicators, many=True).data
+        return IndicatorDetailSerializer(instance.last_records, many=True).data
 
 
 class ProductListSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Product
+        model = models.Product
         fields = ["nom_service_public_numerique", "slug"]
+
+
+class RecordSerializer(serializers.ModelSerializer):
+    """A serializer to display record information."""
+
+    indicator = IndicatorListSerializer(read_only=True)
+
+    class Meta:
+        model = models.Record
+        fields = [
+            "id",
+            "value",
+            "start_date",
+            "end_date",
+            "is_auto_added",
+            "created_at",
+            "updated_at",
+            "indicator",
+        ]
+
+    def validate(self, attrs):
+        try:
+            attrs["indicator"] = get_object_or_404(
+                models.Indicator, slug=self.context.get("indicator_slug")
+            )
+        except KeyError as exc:
+            raise exceptions.ValidationError(
+                "You must set a indicator slug in kwargs to create a new record."
+            ) from exc
+
+        return super().validate(attrs)
