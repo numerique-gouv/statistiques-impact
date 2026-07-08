@@ -60,18 +60,18 @@ class Product(models.Model):
         verbose_name_plural = _("products")
 
     @property
-    def last_indicators(self):
-        recent_indicators = Indicator.objects.filter(productid=self).order_by("-date")
-        if not recent_indicators:
+    def last_records(self):
+        recent_records = Indicator.objects.filter(productid=self).order_by("-date")
+        if not recent_records:
             return []
 
-        last_entry_date = recent_indicators[0].date
-        return recent_indicators.filter(date=last_entry_date)
+        last_entry_date = recent_records[0].date
+        return recent_records.filter(date=last_entry_date)
 
     @property
     def last_indicators_date(self):
-        if len(self.last_indicators) != 0:
-            return self.last_indicators[0].date
+        if len(self.last_records) != 0:
+            return self.last_records[0].date
 
         return "N/A"
 

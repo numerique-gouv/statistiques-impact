@@ -3,23 +3,23 @@ from django.shortcuts import render, get_object_or_404
 from core.models import Product
 
 
-def last_indicators(request: HttpRequest) -> HttpResponse:
-    last_indicators = sorted(
+def last_records(request: HttpRequest) -> HttpResponse:
+    last_records = sorted(
         [
             {
                 "product": product,
-                "last_indicators": product.last_indicators,
+                "last_records": product.last_records,
             }
             for product in Product.objects.all()
-            if product.last_indicators
+            if product.last_records
         ],
-        key=lambda x: x["last_indicators"][0].date,
+        key=lambda x: x["last_records"][0].date,
         reverse=True,
     )
     return render(
         request,
-        "core/last_indicators.html",
-        context={"last_indicators": last_indicators},
+        "core/last_records.html",
+        context={"last_records": last_records},
     )
 
 

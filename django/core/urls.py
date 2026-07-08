@@ -21,9 +21,9 @@ urlpatterns = [
         name="legal-notice",
     ),
     re_path(
-        r"last_indicators/?$",
-        views.last_indicators,
-        name="last_indicators",
+        r"last_records/?$",
+        views.last_records,
+        name="last_records",
     ),
     path(
         "produits/<product_slug>/",

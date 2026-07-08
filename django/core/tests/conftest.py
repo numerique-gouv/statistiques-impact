@@ -3,6 +3,7 @@ import re
 import responses
 from rest_framework import status
 from core import factories
+from django.conf import settings
 
 
 # METABASE
@@ -164,3 +165,8 @@ def fixture_posthog_visio_MAU():
         status=status.HTTP_200_OK,
         content_type="application/json",
     )
+
+
+@pytest.fixture()
+def admin_key():
+    settings.ADMIN_API_KEY = "admin_key"
