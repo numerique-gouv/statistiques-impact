@@ -32,7 +32,7 @@ def test_openapi_client_schema():
     )
     assert output.getvalue() == ""
 
-    response = Client().get("/api/swagger.json")
+    response = Client().get("/api/schema/swagger.json")
 
     assert response.status_code == 200
     with open("core/tests/swagger.json", "r", encoding="utf-8") as expected_schema:
