@@ -3,6 +3,7 @@
 from django.urls import include, path, re_path
 from django.contrib import admin
 from django.views.generic import TemplateView
+from django.views.generic.base import RedirectView
 
 from core import views
 from . import api_urls
@@ -20,11 +21,12 @@ urlpatterns = [
         TemplateView.as_view(template_name="core/legal_notice.html"),
         name="legal-notice",
     ),
-    re_path(
+    re_path( 
         r"last_records/?$",
         views.last_records,
         name="last_records",
     ),
+    re_path(r'last_indicators/?$', RedirectView.as_view(pattern_name='last_records'), name='last_indicators'),
     path(
         "produits/<product_slug>/",
         views.product,
