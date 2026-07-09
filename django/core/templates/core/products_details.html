@@ -25,49 +25,43 @@
         {% endif %}
     </p>
 
-    {% if product.last_records %}
-    <div class="fr-table">
-        <div class="fr-table__wrapper">
-            <div class="fr-table__container">
-                <div class="fr-table__content">
-                    <table>
-                        <caption>Indicateurs du {{ product.indicators.all.0.date }}</caption>
-                        <thead>
-                            <th scope="col">Valeur</th>
-                            <th scope="col">Indicateur</th>
-                            <th scope="col">Fréquence</th>
-                            <th scope="col">Période</th>
-                            <th scope="col">Ajout<br>automatisé</th>
-                        </thead>
-                        <tbody>
-                            {% for indicator in product.indicators.all %}
-                            <tr>
-                                <td>
-                                    {{ indicator.valeur|floatformat:"0" }}
-                                </td>
-                                <td>
-                                    {{ indicator.indicateur }}
-                                </td>
-                                <td>
-                                    {{ indicator.frequence_monitoring }}
-                                </td>
-                                <td>
-                                    {% if indicator.date_debut %}
-                                    {{indicator.date_debut}} -
-                                    {% endif %}
-                                    {{ indicator.date }}
-                                </td>
-                                <td>
-                                    {{ indicator.est_automatise }}
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+    {% for indicator in product.indicators.all %}
+        <h2>{{ indicator.indicateur }}</h2>
+        <p>Fréquence des relevés : {{ indicator.frequence_monitoring }}</p>
+
+        <div class="fr-table">
+            <div class="fr-table__wrapper">
+                <div class="fr-table__container">
+                    <div class="fr-table__content">
+                        <table>
+                            <thead>
+                                <th scope="col">Valeur</th>
+                                <th scope="col">Période</th>
+                                <th scope="col">Ajout<br>automatisé</th>
+                            </thead>
+                            <tbody>
+                                {% for record in indicator.records.all %}
+                                <tr>
+                                    <td>
+                                        {{ record.value|floatformat:"0" }}
+                                    </td>
+                                    <td>
+                                        {% if record.start_date %}
+                                        {{ record.start_date}} -
+                                        {% endif %}
+                                        {{ record.end_date }}
+                                    </td>
+                                    <td>
+                                        {{ record.is_auto_added }}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    {% endif %}
+    {% endfor %}
 </div>
 {% endblock content %}
