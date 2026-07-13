@@ -5,7 +5,7 @@ Django==5.2.8
 django-dsfr==3.5.2
 djangorestframework==3.17.1
 djangorestframework-api-key==3.1.0
-drf-spectacular==0.28.0
+drf-spectacular==0.30.0
 drf-spectacular-sidecar==2025.8.1
 factory_boy==3.3.3
 freezegun==1.5.5
