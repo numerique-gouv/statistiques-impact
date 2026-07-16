@@ -7,9 +7,9 @@ from rest_framework_api_key.admin import APIKeyModelAdmin
 class ProductAdmin(admin.ModelAdmin):
     """Product admin interface declaration."""
 
-    list_display = ("nom_service_public_numerique", "last_indicators_date")
+    list_display = ("name", "last_indicators_date")
     readonly_fields = ("id",)
-    prepopulated_fields = {"slug": ("nom_service_public_numerique",)}
+    prepopulated_fields = {"slug": ("name",)}
 
 
 @admin.register(models.Indicator)
@@ -17,15 +17,15 @@ class IndicatorAdmin(admin.ModelAdmin):
     """Indicator admin interface declaration."""
 
     list_display = (
-        "productid__nom_service_public_numerique",
+        "productid__name",
         "indicateur",
         "date",
         "frequence_monitoring",
         "valeur",
     )
-    search_fields = ("productid__nom_service_public_numerique", "indicateur")
+    search_fields = ("productid__name", "indicateur")
     list_filter = [
-        "productid__nom_service_public_numerique",
+        "productid__name",
         "indicateur",
         ("date", admin.DateFieldListFilter),
     ]
@@ -38,7 +38,7 @@ class ProductAPIKeyAdmin(APIKeyModelAdmin):
 
     list_display = [
         *APIKeyModelAdmin.list_display,
-        "product__nom_service_public_numerique",
+        "product__name",
     ]
     search_fields = [
         *APIKeyModelAdmin.search_fields,

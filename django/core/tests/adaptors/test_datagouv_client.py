@@ -16,7 +16,7 @@ def test_messagerie_active_users(datagouv_messagerie_data):
     """Checks that DataGouvClient retrieves data.gouv data as expected."""
     adaptor = factories.AdaptorFactory.create(
         product=factories.ProductFactory(
-            nom_service_public_numerique="messagerie",
+            name="messagerie",
             dataset_id="68650cd6130c82da6ba44a92",
         ),
         indicator="monthly active users",
@@ -26,7 +26,7 @@ def test_messagerie_active_users(datagouv_messagerie_data):
     # Responses mocked in fixtures
     assert adaptor.get_data() == [
         {
-            "product": adaptor.product.nom_service_public_numerique,
+            "product": adaptor.product.name,
             "indicator": adaptor.indicator,
             "value": 580,
         }
@@ -40,7 +40,7 @@ def test_france_transfert_indicators():
     """Monthly retrieval should fetch csv files from data.gouv.fr and compute expected indicators."""
     adaptor = factories.AdaptorFactory(
         product=factories.ProductFactory(
-            nom_service_public_numerique="france transfert tests",
+            name="france transfert tests",
             dataset_id="69e8b42855b96c292988a106",
         ),
         client="FranceTransfertClient",
@@ -73,7 +73,7 @@ def test_api_submissions__no_dataset_id_fails():
     """API returns a clear error if product has no dataset_id."""
     adaptor = factories.AdaptorFactory.create(
         product=factories.ProductFactory(
-            nom_service_public_numerique="france-transfert-tests",
+            name="france-transfert-tests",
         ),
         indicator="monthly active users",
         client="FranceTransfertClient",

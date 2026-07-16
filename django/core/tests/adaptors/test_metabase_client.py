@@ -13,7 +13,7 @@ pytestmark = pytest.mark.django_db
 @responses.activate
 def test_metabase_single_indicator():
     adaptor = factories.AdaptorFactory.create(
-        product=factories.ProductFactory(nom_service_public_numerique="proconnect"),
+        product=factories.ProductFactory(name="proconnect"),
         indicator="monthly active users",
         client="MetabaseClient",
         source_url="https://metabase.gouv.fr/public/question/single-product-question.json",
@@ -39,7 +39,7 @@ def test_metabase_single_indicator():
 def test_metabase_multiple_products(metabase_lasuite_MAU):
     """Test a question with multiple products is handled as expected."""
     adaptor = factories.AdaptorFactory.create(
-        product=factories.ProductFactory(nom_service_public_numerique="proconnect"),
+        product=factories.ProductFactory(name="proconnect"),
         indicator="monthly active users",
         client="MetabaseMultipleProductsClient",
         source_url="https://metabase.gouv.fr/public/question/multiple-products-question.json",
@@ -96,7 +96,7 @@ def test_tchap_indicators():
     """Tchap client should retrieve expected data."""
     adaptor = factories.AdaptorFactory.create(
         product=factories.ProductFactory(
-            nom_service_public_numerique="tchap",
+            name="tchap",
         ),
         source_url="https://metabase.tchap.net/public/question/last_MAU.json",
         indicator="monthly active users",

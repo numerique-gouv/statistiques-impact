@@ -80,7 +80,7 @@ def test_api_indicators_create__anonymous_cannot_create():
 
     response = APIClient().post(
         f"/api/products/{product.slug}/indicators/",
-        body="{'nom_service_public_numerique': 'product'}",
+        body="{'name': 'product'}",
     )
     assert response.status_code == status.HTTP_403_FORBIDDEN
     assert not models.Indicator.objects.exists()

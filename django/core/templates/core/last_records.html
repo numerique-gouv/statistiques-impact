@@ -24,7 +24,7 @@
                         <tr>
                             <td>
                                 <a href="{% url 'produit' product_slug=entry.product.slug %}">
-                                    {{ entry.product.nom_service_public_numerique }}</a>
+                                    {{ entry.product.name }}</a>
                             </td>
                             <td>
                                 {% for indicator in entry.last_records %}

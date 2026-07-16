@@ -50,7 +50,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Product
-        fields = ["nom_service_public_numerique", "slug", "last_records"]
+        fields = ["name", "slug", "last_records"]
 
     def get_last_indicators(self, instance):
         return IndicatorDetailSerializer(instance.last_records, many=True).data
@@ -59,7 +59,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
 class ProductListSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Product
-        fields = ["nom_service_public_numerique", "slug"]
+        fields = ["name", "slug"]
 
 
 class RecordSerializer(serializers.ModelSerializer):

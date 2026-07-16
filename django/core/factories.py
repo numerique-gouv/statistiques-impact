@@ -18,7 +18,7 @@ class ProductFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Product
 
-    nom_service_public_numerique = factory.Faker("company", locale="fr_FR")
+    name = factory.Faker("company", locale="fr_FR")
 
 
 class IndicatorFactory(factory.django.DjangoModelFactory):

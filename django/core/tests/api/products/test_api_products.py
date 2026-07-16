@@ -20,7 +20,7 @@ def test_api_products_list__anonymous_ok():
     assert response.status_code == status.HTTP_200_OK
     assert response.json() == [
         {
-            "nom_service_public_numerique": product.nom_service_public_numerique,
+            "name": product.name,
             "slug": product.slug,
         }
     ]
@@ -28,9 +28,7 @@ def test_api_products_list__anonymous_ok():
 
 def test_api_products_list__anonymous_cant_create():
     """Anonymous users should not be allowed to create products."""
-    response = APIClient().post(
-        "/api/products/", body="{'nom_service_public_numerique': 'product'}"
-    )
+    response = APIClient().post("/api/products/", body="{'name': 'product'}")
 
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
     assert not models.Product.objects.exists()
@@ -75,7 +73,7 @@ def test_api_products_retrieve__last_indicators_ok():
             }
             for indicator in product.last_records
         ],
-        "nom_service_public_numerique": product.nom_service_public_numerique,
+        "name": product.name,
         "slug": product.slug,
     }
 
@@ -87,6 +85,6 @@ def test_api_products_retrieve__anonymous_read_only(verb):
 
     response = getattr(APIClient(), verb)(
         f"/api/products/{product.slug}/",
-        body="{'nom_service_public_numerique': 'product'}",
+        body="{'name': 'product'}",
     )
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED

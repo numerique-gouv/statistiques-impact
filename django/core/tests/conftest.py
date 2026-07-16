@@ -32,7 +32,7 @@ def fixture_metabase_lasuite_MAU():
         "Messagerie de la Suite Numérique",
     ]
     for product in products:
-        factories.ProductFactory(nom_service_public_numerique=product)
+        factories.ProductFactory(name=product)
 
     responses.get(
         re.compile(

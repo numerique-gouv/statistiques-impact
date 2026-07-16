@@ -24,7 +24,7 @@ def test_fetch_new_data_single_adaptor_ok(
     settings.DEBUG = True
 
     factories.AdaptorFactory.create(
-        product=factories.ProductFactory(nom_service_public_numerique="proconnect"),
+        product=factories.ProductFactory(name="proconnect"),
         indicator="monthly active users",
         client="MetabaseClient",
         source_url="https://metabase.gouv.fr/public/question/single-product-question.json",
@@ -81,7 +81,7 @@ def test_fetch_new_data_continues_when_adaptor_fails(
 
     # Failing adaptor and response
     factories.AdaptorFactory.create(
-        product=factories.ProductFactory(nom_service_public_numerique="ProConnect"),
+        product=factories.ProductFactory(name="ProConnect"),
         indicator="monthly active users",
         client="MetabaseClient",
         source_url="https://source-url.gouv.fr",

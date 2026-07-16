@@ -17,7 +17,7 @@ def test_posthog_monthly_active_users(settings):
     """Test fetching monthly active users from PostHog."""
     adaptor = factories.AdaptorFactory.create(
         product=factories.ProductFactory(
-            nom_service_public_numerique="visio",
+            name="visio",
         ),
         source_url="https://eu.posthog.com/api/projects/44954/insights/65340",
         indicator="monthly active users",
@@ -59,7 +59,7 @@ def test_posthog_no_data_error(settings):
 
     adaptor = factories.AdaptorFactory.create(
         product=factories.ProductFactory(
-            nom_service_public_numerique="visio",
+            name="visio",
         ),
         source_url="https://eu.posthog.com/api/projects/0/insights/broken-insight",
         indicator="monthly active users",

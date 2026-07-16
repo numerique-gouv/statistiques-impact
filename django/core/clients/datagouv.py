@@ -20,7 +20,7 @@ class DataGouvClient(ClientBase):
         self.api_key = settings.DATAGOUV_API_KEY
 
         # poor alternative for a dedicated preprod env
-        if "test" in adaptor.product.nom_service_public_numerique:
+        if "test" in adaptor.product.name:
             self.env = "demo"
             self.api_url = "https://demo.data.gouv.fr/api/1"
             self.api_key = settings.DATAGOUV_DEMO_API_KEY

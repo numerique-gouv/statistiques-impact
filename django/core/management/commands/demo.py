@@ -15,9 +15,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         for service in services:
-            product, is_created = models.Product.objects.get_or_create(
-                nom_service_public_numerique=service
-            )
+            product, is_created = models.Product.objects.get_or_create(name=service)
             for i in range(1, 13):
                 models.Indicator.objects.create(
                     productid=product,

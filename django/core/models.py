@@ -50,7 +50,7 @@ class Product(models.Model):
         default=uuid.uuid4,
         editable=False,
     )
-    nom_service_public_numerique = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(null=False, blank=False, unique=True)
     dataset_id = models.CharField(blank=True, null=False)
 
@@ -77,11 +77,11 @@ class Product(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug or self.slug == "":
-            self.slug = slugify(self.nom_service_public_numerique)
+            self.slug = slugify(self.name)
         return super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.nom_service_public_numerique
+        return self.name
 
 
 class Indicator(models.Model):
@@ -220,9 +220,7 @@ class Adaptor(models.Model):
 
         for entry in data:
             try:
-                product = Product.objects.get(
-                    nom_service_public_numerique=entry["product"]
-                )
+                product = Product.objects.get(name=entry["product"])
             except Product.DoesNotExist:
                 print(f"Product {entry['product']} not found.")
             else:

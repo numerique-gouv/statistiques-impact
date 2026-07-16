@@ -15,7 +15,7 @@ def test_api_submissions__anonymous_cannot_submit():
     """Anonymous should not be able to send files."""
     adaptor = factories.AdaptorFactory(
         product=factories.ProductFactory(
-            nom_service_public_numerique="france transfert-tests",
+            name="france transfert-tests",
             dataset_id="69e8b42855b96c292988a106",
         ),
         client="FranceTransfertClient",
@@ -43,15 +43,13 @@ def test_api_submissions__unauthorized_cannot_submit():
     """Anonymous should not be able to send files."""
     adaptor = factories.AdaptorFactory(
         product=factories.ProductFactory(
-            nom_service_public_numerique="france transfert-tests",
+            name="france transfert-tests",
             dataset_id="69e8b42855b96c292988a106",
         ),
         client="FranceTransfertClient",
     )
     filename = "core/tests/api/examples/ip-127-0-0-1_FranceTransfert_2025-07-23_upload_stats.csv"
-    another_product = factories.ProductFactory(
-        nom_service_public_numerique="autre-produit"
-    )
+    another_product = factories.ProductFactory(name="autre-produit")
     _, someone_else_key = models.ProductAPIKey.objects.create_key(
         name="valid_key", product=another_product
     )
@@ -78,7 +76,7 @@ def test_api_submissions__cannot_submit_on_random_product():
     """Cannot submit files on a product not expecting file processing."""
     adaptor = factories.AdaptorFactory(
         product=factories.ProductFactory(
-            nom_service_public_numerique="unauthorized-product",
+            name="unauthorized-product",
         ),
     )
     _, key = models.ProductAPIKey.objects.create_key(
@@ -109,7 +107,7 @@ def test_api_submissions__cannot_submit_on_random_product():
 def test_api_submissions__ok():
     adaptor = factories.AdaptorFactory(
         product=factories.ProductFactory(
-            nom_service_public_numerique="france transfert-tests",
+            name="france transfert-tests",
             dataset_id="69e8b42855b96c292988a106",
         ),
         client="FranceTransfertClient",
@@ -142,7 +140,7 @@ def test_api_submissions__files_sent_to_datagouv(datagouv_file_sent):
     """When a file is submitted, it's succesfully sent to data.gouv.fr."""
     adaptor = factories.AdaptorFactory(
         product=factories.ProductFactory(
-            nom_service_public_numerique="france transfert-tests",
+            name="france transfert-tests",
             dataset_id="69e8b42855b96c292988a106",
         ),
         client="FranceTransfertClient",
