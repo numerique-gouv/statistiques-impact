@@ -9,7 +9,7 @@ drf-spectacular==0.30.0
 drf-spectacular-sidecar==2025.8.1
 factory_boy==3.3.3
 freezegun==1.5.5
-gunicorn==23.0.0
+gunicorn==26.0.0
 pandas==3.0.3
 psycopg2-binary==2.9.12
 pytest==9.1.1
