@@ -77,12 +77,14 @@ class RecordAdmin(admin.ModelAdmin):
     """Indicator admin interface declaration."""
 
     list_display = (
+        "indicator__productid",
         "indicator",
         "end_date",
         "value",
     )
     search_fields = ("indicator",)
     list_filter = [
+        "indicator__productid",
         "indicator",
         ("end_date", admin.DateFieldListFilter),
     ]
