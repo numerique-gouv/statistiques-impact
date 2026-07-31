@@ -285,9 +285,19 @@ class Record(models.Model):
         editable=False,
     )
 
+    def save(self, *args, **kwargs):
+        """Call `full_clean` and fill slug if necessary before saving."""
+        self.full_clean()
+        return super().save(*args, **kwargs)
+
     class Meta:
         db_table = "record"
         verbose_name = _("record")
         verbose_name_plural = _("records")
-        # add uniqueconstraint after indicator model improvement
         ordering = ("-end_date",)
+        constraints = [
+            models.UniqueConstraint(
+                fields=["indicator", "end_date"],
+                name="no_duplicate_records",
+            ),
+        ]
