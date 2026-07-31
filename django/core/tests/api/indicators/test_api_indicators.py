@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from core import models, factories
+from django.core import exceptions
 
 pytestmark = pytest.mark.django_db
 
@@ -164,30 +165,27 @@ def test_api_indicators_create__admin_can_create(admin_key):
 
 def test_api_indicators_create__cannot_create_duplicate(admin_key):
     """Should not be able to create duplicate."""
-    product = factories.ProductFactory()
-    data = {
-        "indicateur": "participants",
-        "slug": "participants",
-        "valeur": 3,
-        "unite_mesure": "unite",
-        "frequence_monitoring": "mensuelle",
-        "date": "2025-06-30",
-        "date_debut": "2025-04-01",
-        "est_periode": True,
-        "est_automatise": False,
-    }
+    indicator = factories.IndicatorFactory()
+    with pytest.raises(
+        exceptions.ValidationError,
+        match="Un objet Indicator avec ces champs Productid, Indicateur et Frequence monitoring existe déjà.",
+    ):
+        response = APIClient().post(
+            f"/api/products/{indicator.productid.slug}/indicators/",
+            data={
+                "indicateur": indicator.indicateur,
+                "frequence_monitoring": indicator.frequence_monitoring,
+                "date": indicator.date,
+                "slug": indicator.slug,
+                "valeur": indicator.valeur,
+            },
+            headers={"x-api-key": "admin_key"},
+        )
 
-    models.Indicator.objects.create(productid=product, **data)
-    response = APIClient().post(
-        f"/api/products/{product.slug}/indicators/",
-        data,
-        headers={"x-api-key": "admin_key"},
-    )
-
-    assert response.status_code == status.HTTP_400_BAD_REQUEST
-    assert response.json() == [
-        "{'__all__': ['Un objet Indicator avec ces champs Productid, Indicateur, Frequence monitoring et Date existe déjà.']}"
-    ]
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert response.json() == [
+            "{'__all__': ['Un objet Indicator avec ces champs Productid, Indicateur et Frequence monitoring existe déjà.']}"
+        ]
     assert len(models.Indicator.objects.all()) == 1
 
 
