@@ -126,7 +126,7 @@ class Indicator(models.Model):
         verbose_name_plural = _("indicators")
         constraints = [
             models.UniqueConstraint(
-                fields=["productid", "indicateur", "frequence_monitoring", "date"],
+                fields=["productid", "indicateur", "frequence_monitoring"],
                 name="no_duplicate_indicators",
             ),
         ]

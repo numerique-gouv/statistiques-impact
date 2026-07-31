@@ -67,13 +67,6 @@ class IndicatorViewSet(
         context["product_slug"] = self.kwargs["product_slug"]
         return context
 
-    def perform_create(self, serializer):
-        """Validate uniqueness constraints after adding productid."""
-        try:
-            return super().perform_create(serializer)
-        except ValidationError as exc:
-            raise exceptions.ValidationError(exc)
-
 
 class IndicatorSubmissionView(CreateAPIView):
     parser_classes = (FileUploadParser,)
