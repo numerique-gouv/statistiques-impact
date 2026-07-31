@@ -31,8 +31,11 @@ def fixture_metabase_lasuite_MAU():
         "Fichiers",
         "Messagerie de la Suite Numérique",
     ]
-    for product in products:
-        factories.ProductFactory(name=product)
+    for product_name in products:
+        product = factories.ProductFactory(name=product_name)
+        factories.IndicatorFactory(
+            indicateur="monthly active users via ProConnect", productid=product
+        )
 
     responses.get(
         re.compile(

@@ -23,9 +23,12 @@ def test_fetch_new_data_single_adaptor_ok(
 ):
     settings.DEBUG = True
 
+    indicator = factories.IndicatorFactory(
+        indicateur="MAU", productid=factories.ProductFactory(name="proconnect")
+    )
     factories.AdaptorFactory.create(
-        product=factories.ProductFactory(name="proconnect"),
-        indicator="monthly active users",
+        product=indicator.productid,
+        indicator=indicator.indicateur,
         client="MetabaseClient",
         source_url="https://metabase.gouv.fr/public/question/single-product-question.json",
         frequence_monitoring="monthly",
@@ -34,10 +37,11 @@ def test_fetch_new_data_single_adaptor_ok(
     # Response in fixtures
     call_command("fetch_new_data")
 
-    assert models.Indicator.objects.count() == 1
-    indicator = models.Indicator.objects.get()
-    assert str(indicator.date) == "2025-09-30"
-    assert str(indicator.productid) == "proconnect"
+    assert models.Record.objects.count() == 1
+    record = models.Record.objects.get()
+    assert str(record.indicator.productid) == "proconnect"
+    assert str(record.indicator.indicateur) == "MAU"
+    assert str(record.end_date) == "2025-09-30"
 
 
 @freeze_time("2025-10-02")
@@ -45,7 +49,8 @@ def test_fetch_new_data_single_adaptor_ok(
 def test_fetch_new_data_many_products_adaptor_ok(metabase_lasuite_MAU):
     """Test adaptors can add indicators on multiple products."""
 
-    models.Product.objects.get(slug="visio").delete()
+    models.Indicator.objects.filter(productid__name="Visio").delete()
+    models.Product.objects.get(name="Visio").delete()
     factories.AdaptorFactory.create(
         product=None,
         indicator="monthly active users via ProConnect",
@@ -57,8 +62,8 @@ def test_fetch_new_data_many_products_adaptor_ok(metabase_lasuite_MAU):
     # Responses mocked in fixtures
     call_command("fetch_new_data")
 
-    assert models.Indicator.objects.count() == 6
-    assert not models.Indicator.objects.exclude(date="2025-09-30").exists()
+    assert models.Record.objects.count() == 6
+    assert not models.Record.objects.exclude(end_date="2025-09-30").exists()
 
 
 @freeze_time("2025-10-02")

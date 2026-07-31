@@ -214,26 +214,33 @@ class Adaptor(models.Model):
 
     def save_last_month_indicator(self):
         """Call client to get last available data and save it."""
-        date_debut, date_fin = get_last_month_limits()
+        start_date, end_date = get_last_month_limits()
         client = self.get_client()
         data = client.get_data()
 
         for entry in data:
             try:
                 product = Product.objects.get(name=entry["product"])
+                indicator = Indicator.objects.get(
+                    indicateur=entry["indicator"], productid__name=product
+                )
             except Product.DoesNotExist:
-                print(f"Product {entry['product']} not found.")
+                print(f"Product {product} not found.")
+            except Indicator.DoesNotExist:
+                print(
+                    f"Indicator '{entry['indicator']}' not found for product '{product}'."
+                )
+
             else:
                 try:
-                    Indicator.objects.create(
-                        productid=product,
-                        indicateur=entry["indicator"],
-                        date=date_fin,
-                        date_debut=date_debut
-                        if self.frequence_monitoring == "mensuelle"
+                    Record.objects.create(
+                        indicator=indicator,
+                        end_date=end_date,
+                        start_date=start_date
+                        if indicator.frequence_monitoring in ["mensuelle", "monthly"]
                         else None,
-                        valeur=entry["value"],
-                        frequence_monitoring=self.frequence_monitoring,
+                        value=entry["value"],
+                        is_auto_added=True,
                     )
                 except ValueError:
                     print(
