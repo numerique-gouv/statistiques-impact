@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from core import models, factories
+from django.core import exceptions
 
 pytestmark = pytest.mark.django_db
 
@@ -101,25 +102,27 @@ def test_api_records_create__admin_can_create(admin_key):
     assert models.Record.objects.count() == 2
 
 
-@pytest.mark.skip(reason="broken until unique constraints is added on record model")
 def test_api_records_create__cannot_create_duplicate(admin_key):
     """Should not be able to create duplicate."""
     record = factories.RecordFactory()
 
-    response = APIClient().post(
-        f"/api/products/{record.indicator.productid.slug}/indicators/{record.indicator.slug}/records/",
-        data={
-            "value": record.value,
-            "end_date": str(record.end_date),
-            "is_auto_added": record.is_auto_added,
-        },
-        headers={"x-api-key": "admin_key"},
-    )
+    with pytest.raises(
+        exceptions.ValidationError,
+        match="Un objet Record avec ces champs Indicator et End date existe déjà",
+    ):
+        response = APIClient().post(
+            f"/api/products/{record.indicator.productid.slug}/indicators/{record.indicator.slug}/records/",
+            data={
+                "value": record.value,
+                "end_date": record.end_date,
+            },
+            headers={"x-api-key": "admin_key"},
+        )
 
-    assert response.status_code == status.HTTP_400_BAD_REQUEST
-    assert response.json() == {
-        "non_field_errors": [
-            "Les champs indicator, date doivent former un ensemble unique."
-        ]
-    }
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert response.json() == {
+            "non_field_errors": [
+                "Les champs indicator, date doivent former un ensemble unique."
+            ]
+        }
     assert len(models.Record.objects.all()) == 1
