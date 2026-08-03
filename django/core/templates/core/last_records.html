@@ -27,23 +27,23 @@
                                     {{ entry.product.name }}</a>
                             </td>
                             <td>
-                                {% for indicator in entry.last_records %}
-                                {{ indicator.valeur|floatformat:"0" }} {{ indicator.indicateur }}<br>
+                                {% for record in entry.last_records %}
+                                {{ record.velue|floatformat:"0" }} {{ record.indicator.indicateur }}<br>
                                 {% endfor %}
                             </td>
                             <td>
-                                {% for indicator in entry.last_records %}
-                                {{ indicator.frequence_monitoring }}<br>
+                                {% for record in entry.last_records %}
+                                {{ record.indicator.frequence_monitoring }}<br>
                                 {% endfor %}
                             </td>
                             <td>
-                                {% for indicator in entry.last_records %}
-                                {{ indicator.date }}<br>
+                                {% for record in entry.last_records %}
+                                {{ record.end_date }}<br>
                                 {% endfor %}
                             </td>
                             <td>
-                                {% for indicator in entry.last_records %}
-                                {{ indicator.est_automatise }}<br>
+                                {% for record in entry.last_records %}
+                                {{ record.is_auto_added }}<br>
                                 {% endfor %}
                             </td>
                         </tr>

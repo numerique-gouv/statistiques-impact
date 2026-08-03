@@ -61,17 +61,17 @@ class Product(models.Model):
 
     @property
     def last_records(self):
-        recent_records = Indicator.objects.filter(productid=self).order_by("-date")
+        recent_records = Record.objects.filter(indicator__productid=self).order_by("-end_date")
         if not recent_records:
             return []
 
-        last_entry_date = recent_records[0].date
-        return recent_records.filter(date=last_entry_date)
+        last_entry_date = recent_records[0].end_date
+        return recent_records.filter(end_date=last_entry_date)
 
     @property
     def last_indicators_date(self):
         if len(self.last_records) != 0:
-            return self.last_records[0].date
+            return self.last_records[0].end_date
 
         return "N/A"
 

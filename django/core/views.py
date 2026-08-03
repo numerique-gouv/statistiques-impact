@@ -13,7 +13,7 @@ def last_records(request: HttpRequest) -> HttpResponse:
             for product in Product.objects.all()
             if product.last_records
         ],
-        key=lambda x: x["last_records"][0].date,
+        key=lambda x: x["last_records"][0].end_date,
         reverse=True,
     )
     return render(
