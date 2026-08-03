@@ -28,3 +28,7 @@ dependencies = [
     "typing-extensions==4.16.0",
     "whitenoise==6.12.0",
 ]
+
+
+[tool.ruff]
+exclude = ["migrations"]
