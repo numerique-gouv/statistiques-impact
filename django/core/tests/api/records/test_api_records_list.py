@@ -59,7 +59,7 @@ def test_api_records_list__filtered_ok():
     factories.RecordFactory(indicator=other_product_same_indicator_name)
 
     response = APIClient().get(
-        f"/api/products/{indicator.productid.slug}/indicators/{indicator.slug}/records/?date={record.end_date}",
+        f"/api/products/{indicator.productid.slug}/indicators/{indicator.slug}/records/?end_date={record.end_date}",
     )
 
     assert response.status_code == status.HTTP_200_OK

@@ -30,11 +30,8 @@ def test_api_indicators_list__anonymous_ok():
                 "id": str(indicator.id),
                 "indicateur": indicator.indicateur,
                 "slug": indicator.slug,
-                "valeur": indicator.valeur,
                 "unite_mesure": indicator.unite_mesure,
                 "frequence_monitoring": indicator.frequence_monitoring,
-                "date": str(indicator.date),
-                "date_debut": str(indicator.date_debut),
                 "est_periode": indicator.est_periode,
                 "est_automatise": indicator.est_automatise,
                 "productid": indicator.productid.slug,
@@ -43,7 +40,7 @@ def test_api_indicators_list__anonymous_ok():
             }
             for indicator in indicators
         ],
-        key=lambda x: x["date"],
+        key=lambda x: x["updated_at"],
         reverse=True,
     )
 
@@ -61,11 +58,8 @@ def test_api_indicators_list__filter_ok():
         "id": str(indicator.id),
         "indicateur": indicator.indicateur,
         "slug": indicator.slug,
-        "valeur": indicator.valeur,
         "unite_mesure": indicator.unite_mesure,
         "frequence_monitoring": indicator.frequence_monitoring,
-        "date": str(indicator.date),
-        "date_debut": str(indicator.date_debut),
         "est_periode": indicator.est_periode,
         "est_automatise": indicator.est_automatise,
         "productid": indicator.productid.slug,
@@ -99,11 +93,8 @@ def test_api_indicators_create__invalid_api_key_cannot_create():
         {
             "indicateur": "participants",
             "slug": "participants",
-            "valeur": 3,
             "unite_mesure": "unite",
             "frequence_monitoring": "mensuelle",
-            "date": "2025-06-30",
-            "date_debut": "2025-04-01",
             "est_periode": "true",
             "est_automatise": "false",
         },
@@ -125,11 +116,8 @@ def test_api_indicators_create__valid_api_key_can_create():
         {
             "indicateur": "participants",
             "slug": "participants",
-            "valeur": 3,
             "unite_mesure": "unite",
             "frequence_monitoring": "mensuelle",
-            "date": "2025-06-30",
-            "date_debut": "2025-04-01",
             "est_periode": "true",
             "est_automatise": "false",
         },
@@ -149,11 +137,8 @@ def test_api_indicators_create__admin_can_create(admin_key):
             {
                 "indicateur": "participants",
                 "slug": "participants",
-                "valeur": 3,
                 "unite_mesure": "unite",
                 "frequence_monitoring": "mensuelle",
-                "date": "2025-06-30",
-                "date_debut": "2025-04-01",
                 "est_periode": "true",
                 "est_automatise": "false",
             },
@@ -175,9 +160,7 @@ def test_api_indicators_create__cannot_create_duplicate(admin_key):
             data={
                 "indicateur": indicator.indicateur,
                 "frequence_monitoring": indicator.frequence_monitoring,
-                "date": indicator.date,
                 "slug": indicator.slug,
-                "valeur": indicator.valeur,
             },
             headers={"x-api-key": "admin_key"},
         )
@@ -191,7 +174,7 @@ def test_api_indicators_create__cannot_create_duplicate(admin_key):
 
 # RETRIEVE
 def test_api_indicators_retrieve__anonymous_ok():
-    """Anonymous users should be allowed to delete indicators."""
+    """Anonymous users should be allowed to retrieve indicators."""
     indicator = factories.IndicatorFactory()
 
     response = APIClient().get(
@@ -202,11 +185,8 @@ def test_api_indicators_retrieve__anonymous_ok():
         "id": str(indicator.id),
         "indicateur": indicator.indicateur,
         "slug": indicator.slug,
-        "valeur": indicator.valeur,
         "unite_mesure": indicator.unite_mesure,
         "frequence_monitoring": indicator.frequence_monitoring,
-        "date": str(indicator.date),
-        "date_debut": str(indicator.date_debut),
         "est_periode": indicator.est_periode,
         "est_automatise": indicator.est_automatise,
         "productid": indicator.productid.slug,
