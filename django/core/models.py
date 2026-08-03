@@ -61,12 +61,12 @@ class Product(models.Model):
 
     @property
     def last_records(self):
-        recent_records = Record.objects.filter(indicator__productid=self).order_by("-end_date")
+        recent_records = Record.objects.filter(indicator__productid=self).order_by(
+            "-end_date"
+        )
         if not recent_records:
             return []
-
-        last_entry_date = recent_records[0].end_date
-        return recent_records.filter(end_date=last_entry_date)
+        return recent_records.filter(end_date=recent_records[0].end_date)
 
     @property
     def last_indicators_date(self):
@@ -100,11 +100,8 @@ class Indicator(models.Model):
         related_name="indicators",
     )
     indicateur = models.CharField(max_length=100)
-    valeur = models.FloatField()
     unite_mesure = models.CharField(default="unités")
     frequence_monitoring = models.CharField(default="monthly")
-    date = models.CharField()
-    date_debut = models.CharField(blank=True, null=True)
     est_periode = models.BooleanField(default=True)
     est_automatise = models.BooleanField(default=False)
     created_at = models.DateTimeField(
@@ -130,7 +127,7 @@ class Indicator(models.Model):
                 name="no_duplicate_indicators",
             ),
         ]
-        ordering = ("-date",)
+        ordering = ("-updated_at",)
 
     def save(self, *args, **kwargs):
         """Call `full_clean` and fill slug if necessary before saving."""
@@ -141,11 +138,6 @@ class Indicator(models.Model):
     def get_slug(self):
         """Compute slug value from name."""
         return slugify(self.indicateur)[:50]
-
-    def validate(self, data):
-        if data.est_periode and not data.date_debut:
-            if data.frequence_monitoring == "monthly":
-                data.date_debut = data.date.replace(day=1)
 
     def __str__(self):
         return f"{self.indicateur} on {self.productid}"
@@ -289,6 +281,9 @@ class Record(models.Model):
         """Call `full_clean` and fill slug if necessary before saving."""
         self.full_clean()
         return super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.indicator.indicateur} on {self.indicator.productid.name} ({self.end_date})"
 
     class Meta:
         db_table = "record"

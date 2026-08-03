@@ -29,13 +29,10 @@ class IndicatorFactory(factory.django.DjangoModelFactory):
 
     productid = factory.SubFactory(ProductFactory)
     indicateur = factory.Faker("text", max_nb_chars=30)
-    valeur = random.randint(1, 300000)
     unite_mesure = "unite"
     frequence_monitoring = "mensuelle"
-    date = factory.fuzzy.FuzzyDate(datetime.date(2025, 1, 1))
     est_periode = True
     est_automatise = random.choice([True, False])
-    date_debut = ""
 
 
 class AdaptorFactory(factory.django.DjangoModelFactory):

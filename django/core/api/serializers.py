@@ -17,7 +17,6 @@ class IndicatorListSerializer(serializers.ModelSerializer):
 class IndicatorDetailSerializer(serializers.ModelSerializer):
     """A detailed serializer for Indicator model."""
 
-    valeur = serializers.IntegerField()
     productid = serializers.SlugRelatedField(slug_field="slug", read_only=True)
 
     class Meta:
@@ -53,7 +52,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         fields = ["name", "slug", "last_records"]
 
     def get_last_indicators(self, instance):
-        return IndicatorDetailSerializer(instance.last_records, many=True).data
+        return RecordSerializer(instance.last_records, many=True).data
 
 
 class ProductListSerializer(serializers.ModelSerializer):

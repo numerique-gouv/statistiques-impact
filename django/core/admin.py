@@ -19,15 +19,12 @@ class IndicatorAdmin(admin.ModelAdmin):
     list_display = (
         "productid__name",
         "indicateur",
-        "date",
         "frequence_monitoring",
-        "valeur",
     )
     search_fields = ("productid__name", "indicateur")
     list_filter = [
         "productid__name",
         "indicateur",
-        ("date", admin.DateFieldListFilter),
     ]
     readonly_fields = ("id", "created_at", "updated_at", "slug")
 
