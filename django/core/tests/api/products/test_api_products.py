@@ -5,7 +5,7 @@ Unit tests for the product API
 import pytest
 from rest_framework import status
 from rest_framework.test import APIClient
-from datetime import date, timedelta
+from datetime import timedelta
 from core import models, factories
 
 pytestmark = pytest.mark.django_db
@@ -44,38 +44,36 @@ def test_api_products_retrieve__anonymous_ok():
 
 def test_api_products_retrieve__last_indicators_ok():
     """Last indicators should be returned when retrieving Product's details."""
-    indicator = factories.IndicatorFactory.create_batch(3)[0]
-    product = indicator.productid
-
-    # previous records of indicators should not be retrieve with product
-    factories.IndicatorFactory(
-        productid=product, date=date.fromisoformat(indicator.date) - timedelta(days=30)
-    )
+    last_record = factories.RecordFactory()
+    product = last_record.indicator.productid
+    _ = factories.RecordFactory(
+        indicator__productid=product, end_date=last_record.end_date
+    )  # same date, same product, other indicator = should be listed
+    _ = factories.RecordFactory(
+        indicator=last_record.indicator,
+        end_date=last_record.end_date - timedelta(days=30),
+    )  # same indicator, earlier date = should not be listed
 
     response = APIClient().get(f"/api/products/{product.slug}/")
     assert response.status_code == status.HTTP_200_OK
-    assert response.json() == {
-        "last_records": [
-            {
-                "created_at": indicator.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
-                "date": indicator.date,
-                "date_debut": indicator.date_debut,
-                "est_automatise": indicator.est_automatise,
-                "est_periode": indicator.est_periode,
-                "frequence_monitoring": indicator.frequence_monitoring,
-                "id": str(indicator.id),
-                "indicateur": indicator.indicateur,
+    last_records = response.json()["last_records"]
+    assert len(last_records) == 2
+    assert last_records == [
+        {
+            "created_at": record.created_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+            "end_date": str(record.end_date),
+            "start_date": record.start_date,
+            "is_auto_added": record.is_auto_added,
+            "id": str(record.id),
+            "indicator": {
                 "productid": product.slug,
-                "slug": indicator.slug,
-                "unite_mesure": indicator.unite_mesure,
-                "updated_at": indicator.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
-                "valeur": int(indicator.valeur),
-            }
-            for indicator in product.last_records
-        ],
-        "name": product.name,
-        "slug": product.slug,
-    }
+                "slug": record.indicator.slug,
+            },
+            "updated_at": record.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+            "value": record.value,
+        }
+        for record in last_record.indicator.productid.last_records
+    ]
 
 
 @pytest.mark.parametrize("verb", ["put", "patch", "delete"])

@@ -79,8 +79,8 @@ def test_api_records_create__valid_api_key_can_create():
         "slug": indicator.slug,
     }
 
-    record.indicator = indicator
-    record.valeur = payload["value"]
+    assert record.indicator == indicator
+    assert record.value == payload["value"]
 
 
 def test_api_records_create__admin_can_create(admin_key):

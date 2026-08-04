@@ -21,7 +21,6 @@ class IndicatorAdmin(admin.ModelAdmin):
         "indicateur",
         "date",
         "frequence_monitoring",
-        "valeur",
     )
     search_fields = ("productid__name", "indicateur")
     list_filter = [

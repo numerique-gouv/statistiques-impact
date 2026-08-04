@@ -22,7 +22,6 @@ class Command(BaseCommand):
                     indicateur=random.choice(
                         ["utilisateurs actifs", "indicateur2", "autre_indicateur"]
                     ),
-                    valeur=random.randint(1, 300000),
                     unite_mesure="unite",
                     frequence_monitoring="mensuelle",
                     date=f"2024-{format(i, '02d')}-30",
