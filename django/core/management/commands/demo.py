@@ -3,7 +3,6 @@
 from core import models, utils, factories
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
-from django.contrib.auth.hashers import make_password
 
 
 User = get_user_model()
@@ -16,7 +15,6 @@ class Command(BaseCommand):
     """
 
     def handle(self, *args, **options):
-
         user = User.objects.filter(username="admin")
         if not user.exists():
             User.objects.create_superuser(
@@ -32,7 +30,7 @@ class Command(BaseCommand):
 
         for service in services:
             product, _ = models.Product.objects.get_or_create(name=service)
-            for i in range(1, 5):
+            for i in range(0, 5):
                 indicator = factories.IndicatorFactory(productid=product)
 
                 for month in range(1, 13):
@@ -43,4 +41,4 @@ class Command(BaseCommand):
                         ),
                     )
 
-        print(f"Demo objects created.")
+        print("Demo objects created.")
