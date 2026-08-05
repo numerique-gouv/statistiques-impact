@@ -1,11 +1,13 @@
 """Management command to fill database with some demo objects."""
 
-import random
-from core import models
+from core import models, utils, factories
 from django.core.management.base import BaseCommand
+from django.contrib.auth import get_user_model
+from django.contrib.auth.hashers import make_password
 
 
-services = ["service connect", "mon france pro"]
+User = get_user_model()
+services = ["liberte connect", "mon france egalité", "adelphie.gouv.fr"]
 
 
 class Command(BaseCommand):
@@ -14,16 +16,31 @@ class Command(BaseCommand):
     """
 
     def handle(self, *args, **options):
+
+        user = User.objects.filter(username="admin")
+        if not user.exists():
+            User.objects.create_superuser(
+                username="admin",
+                email="",
+                password="admin",
+                is_staff=True,
+                is_active=True,
+            )
+        else:
+            user[0].is_superuser = True
+            user[0].save()
+
         for service in services:
-            product, is_created = models.Product.objects.get_or_create(name=service)
-            for i in range(1, 13):
-                models.Indicator.objects.create(
-                    productid=product,
-                    indicateur=random.choice(
-                        ["utilisateurs actifs", "indicateur2", "autre_indicateur"]
-                    ),
-                    unite_mesure="unite",
-                    frequence_monitoring="mensuelle",
-                    est_periode=True,
-                    est_automatise=random.choice([True, False]),
-                )
+            product, _ = models.Product.objects.get_or_create(name=service)
+            for i in range(1, 5):
+                indicator = factories.IndicatorFactory(productid=product)
+
+                for month in range(1, 13):
+                    factories.RecordFactory(
+                        indicator=indicator,
+                        end_date=utils.utils.get_last_day_of_month(
+                            f"2026-{format(month, '02d')}-01"
+                        ),
+                    )
+
+        print(f"Demo objects created.")
