@@ -7,3 +7,8 @@ lint: ## Lint Python files
 test: ## Run back-end tests
 	uv run pytest
 .PHONY: lint
+
+demo:
+	python manage.py migrate
+	python manage.py demo
+.PHONY: demo
