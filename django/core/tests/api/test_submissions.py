@@ -20,7 +20,7 @@ def test_api_submissions__anonymous_cannot_submit():
         ),
         client="FranceTransfertClient",
     )
-    filename = "core/tests/api/examples/ip-127-0-0-1_FranceTransfert_2025-07-23_upload_stats.csv"
+    filename = "core/tests/api/examples/ft-example-francetransfert-2026-08-31-upload-stats.csv"
 
     response = APIClient().post(
         f"/api/products/{adaptor.product.slug}/submission/",
@@ -34,6 +34,7 @@ def test_api_submissions__anonymous_cannot_submit():
             "Content-Type": "text/csv",
             "Content-Disposition": f"attachment; filename={filename}",
         },
+        format="multipart",
     )
     assert response.status_code == status.HTTP_403_FORBIDDEN
     assert not models.Indicator.objects.exists()
@@ -48,7 +49,7 @@ def test_api_submissions__unauthorized_cannot_submit():
         ),
         client="FranceTransfertClient",
     )
-    filename = "core/tests/api/examples/ip-127-0-0-1_FranceTransfert_2025-07-23_upload_stats.csv"
+    filename = "core/tests/api/examples/ft-example-francetransfert-2026-08-31-upload-stats.csv"
     another_product = factories.ProductFactory(name="autre-produit")
     _, someone_else_key = models.ProductAPIKey.objects.create_key(
         name="valid_key", product=another_product
@@ -67,6 +68,7 @@ def test_api_submissions__unauthorized_cannot_submit():
             "Content-Type": "text/csv",
             "Content-Disposition": f"attachment; filename={filename}",
         },
+        format="multipart",
     )
     assert response.status_code == status.HTTP_403_FORBIDDEN
     assert not models.Indicator.objects.exists()
@@ -82,7 +84,7 @@ def test_api_submissions__cannot_submit_on_random_product():
     _, key = models.ProductAPIKey.objects.create_key(
         name="valid_key", product=adaptor.product
     )
-    filename = "core/tests/api/examples/ip-127-0-0-1_FranceTransfert_2025-07-23_upload_stats.csv"
+    filename = "core/tests/api/examples/ft-example-francetransfert-2026-08-31-upload-stats.csv"
     response = APIClient().post(
         f"/api/products/{adaptor.product.slug}/submission/",
         data={
@@ -96,75 +98,42 @@ def test_api_submissions__cannot_submit_on_random_product():
             "Content-Type": "text/csv",
             "Content-Disposition": f"attachment; filename={filename}",
         },
+        format="multipart",
     )
     assert (
         response.json()["detail"] == "File submission not authorized for this product."
     )
 
 
-@pytest.mark.skip(reason="reponses doesn't catch calls - could not mock")
 @responses.activate
-def test_api_submissions__ok():
-    adaptor = factories.AdaptorFactory(
-        product=factories.ProductFactory(
-            name="france transfert-tests",
-            dataset_id="69e8b42855b96c292988a106",
-        ),
-        client="FranceTransfertClient",
-    )
-    _, key = models.ProductAPIKey.objects.create_key(
-        name="valid_key", product=adaptor.product
-    )
-    filename = "core/tests/api/examples/ip-127-0-0-1_FranceTransfert_2025-07-23_upload_stats.csv"
+def test_submission_data_is_saved():
+    product = factories.ProductFactory(name="France Transfert")
+    _, key = models.ProductAPIKey.objects.create_key(name="valid_key", product=product)
 
-    response = APIClient().post(
-        f"/api/products/{adaptor.product.slug}/submission/",
-        data={
-            "upload_file": open(
-                filename,
-                "rb",
-            )
-        },
-        headers={
-            "x-api-key": key,
-            "Content-Type": "text/csv",
-            "Content-Disposition": f"attachment; filename={filename}",
-        },
-    )
-    assert response.json() == "ok"
+    files = [
+        "ft-example-francetransfert-2026-08-31-download-satisfaction.csv",
+        "ft-example-francetransfert-2026-08-31-upload-satisfaction.csv",
+        "ft-example-francetransfert-2026-08-31-download-stats.csv",
+        "ft-example-francetransfert-2026-08-31-upload-stats.csv",
+    ]
+    for filename in files:
+        response = APIClient().post(
+            f"/api/products/{product.slug}/submission/",
+            data={
+                "upload_file": open(
+                    f"core/tests/api/examples/{filename}",
+                    "r",
+                ),
+                "format": "multipart",
+            },
+            format="multipart",
+            headers={
+                "x-api-key": key,
+                "Content-Type": "text/csv",
+                "Content-Disposition": f"attachment; filename={f'{filename}'}",
+            },
+        )
+        assert response.status_code == 201
 
-
-@pytest.mark.skip(reason="reponses doesn't catch calls - could not mock")
-@responses.activate
-def test_api_submissions__files_sent_to_datagouv(datagouv_file_sent):
-    """When a file is submitted, it's succesfully sent to data.gouv.fr."""
-    adaptor = factories.AdaptorFactory(
-        product=factories.ProductFactory(
-            name="france transfert-tests",
-            dataset_id="69e8b42855b96c292988a106",
-        ),
-        client="FranceTransfertClient",
-    )
-    _, key = models.ProductAPIKey.objects.create_key(
-        name="valid_key", product=adaptor.product
-    )
-    filepath = "core/tests/api/examples/ip-127-0-0-1_FranceTransfert_2025-05-11_download_stats.csv"
-    filename = filepath.split("/")[-1]
-
-    # Mock successfull response from data.gouv.fr
-    response = APIClient().post(
-        f"/api/products/{adaptor.product.slug}/submission/",
-        data={
-            "upload_file": open(
-                filepath,
-                "r",
-            )
-        },
-        headers={
-            "x-api-key": key,
-            "Content-Type": "text/csv",
-            "Content-Disposition": f"attachment; filename={filename}",
-        },
-    )
-    assert response.json() == {"file": filename, "success": True}
-    assert response.status_code == status.HTTP_201_CREATED
+    assert models.FTUsageLogs.objects.count() == 2
+    assert models.FTSatisfactionLogs.objects.count() == 2

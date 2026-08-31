@@ -48,12 +48,12 @@ class DataGouvClient(ClientBase):
             _client=Client(environment=self.env, api_key=self.api_key),
         )
 
-    def upload_new_file(self, file, filename):
+    async def upload_new_file(self, file, filename):
         """Upload a file to a dataset."""
         self.get_dataset()
 
         # Can't use wrapper because it expects a path
-        response = requests.post(
+        response = await requests.post(
             url=f"{self.api_url}/datasets/{self.product.dataset_id}/upload/",
             files={"file": (filename, file, "text/csv")},
             headers=self.get_headers(),

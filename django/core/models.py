@@ -296,3 +296,43 @@ class Record(models.Model):
                 name="no_duplicate_records",
             ),
         ]
+
+
+# FranceTransfert-related models
+
+
+class FTSatisfactionOperation(models.TextChoices):
+    DOWNLOAD = "Download", _("download_satisfaction")
+    UPLOAD = "Upload", _("upload_satisfaction")
+
+
+class FTUsageLogs(models.Model):
+    """
+    Save usage logs submitted by Acton on francetransfert/submission endpoint.
+    """
+
+    id_plis = models.UUIDField(
+        default=uuid.uuid4,
+    )
+    date = models.DateField()
+    domaine_expediteur = models.CharField()
+    domaine_destinataire = models.CharField()
+    is_demo = models.BooleanField(default=False)
+
+
+class FTSatisfactionLogs(models.Model):
+    """
+    Save satisfaction logs submitted by Acton on francetransfert/submission endpoint.
+    """
+
+    id_plis = models.UUIDField(
+        verbose_name=_("id_plis"),
+        default=uuid.uuid4,
+    )
+    date = models.DateField()
+    commentaire = models.CharField(blank=True, null=True)
+    note = models.PositiveSmallIntegerField(choices=[(1, 1), (2, 2), (3, 3)])
+
+    type_satisfaction = models.CharField(choices=FTSatisfactionOperation)
+    domaine = models.CharField()
+    is_demo = models.BooleanField(default=False)
