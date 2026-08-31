@@ -10,8 +10,8 @@ Certains indicateurs ne sont pas récupérés automatiquement par notre API en d
 curl -L 'http://stats.beta.numerique.gouv.fr/api/products/france-transfert/submission/' 
 -H 'Content-Type: text/csv' 
 -H 'x-api-key: <votre-clé-secrète>' 
--H 'Content-Disposition: attachment; filename=ip-127-0-0-1_FranceTransfert_2025-07-14_upload_stats.csv' 
--d '@/home/france-transfert/statistiques/ip-127-0-0-1_FranceTransfert_2025-07-24_upload_stats.csv'
+-H 'Content-Disposition: attachment; filename=ft-example-francetransfert-2026-08-31-download-stats.csv"' 
+-d '@/home/france-transfert/statistiques/ft-example-francetransfert-2026-08-31-download-stats.csv"'
 ```
 
 > [!NOTE]   
