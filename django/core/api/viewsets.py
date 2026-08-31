@@ -5,7 +5,8 @@ from core import models
 from core.api import serializers, permissions
 from rest_framework.parsers import FileUploadParser
 from django.shortcuts import get_object_or_404
-from core.clients.datagouv import DataGouvClient
+from rest_framework import status
+from core.utils import utils
 
 
 class ProductViewSet(
@@ -75,6 +76,7 @@ class IndicatorSubmissionView(CreateAPIView):
     def post(self, request, *args, **kwargs):
         """An endpoint for submission of external data in .csv format."""
         file = request.FILES["file"]
+        file.seek(0)
 
         product = get_object_or_404(models.Product, slug=kwargs["product_slug"])
 
@@ -83,14 +85,37 @@ class IndicatorSubmissionView(CreateAPIView):
                 method="Submission",
                 detail="File submission not authorized for this product.",
             )
+    
+        df = utils.read_csv(file)
 
-        env = "demo" if product.slug == "france-transfert-tests" else "www"
+        if "satisfaction.csv" in file.name:
+            for index, row in df.iterrows():
+                models.FTSatisfactionLogs.objects.create(
+                    id_plis=row["ID_PLIS"],
+                    date=row["DATE"],
+                    commentaire=row["COMMENTAIRE"],
+                    note=row["NOTE"],
+                    type_satisfaction=row["TYPE_SATISFACTION"],
+                    domaine=row["DOMAINE"],
+                    is_demo="test" in product.slug,
+                )
+        elif "stats.csv" in file.name:
+            for index, row in df.iterrows():
+                models.FTUsageLogs.objects.create(
+                    id_plis=row["ID_PLIS"],
+                    date=row["DATE"],
+                    domaine_expediteur=row["DOMAINE_EXPEDITEUR"],
+                    domaine_destinataire=row["DOMAINE_DESTINATAIRE"],
+                    is_demo="test" in product.slug,
+                )
+        else:
+            raise exceptions.ApiException(
+                detail="Name file contains nor 'satisfaction' neither 'stats', don't know how to process it.",
+            )
 
-        client = DataGouvClient(adaptor=models.Adaptor(product=product), env=env)
-        response = client.upload_new_file(file=file.file.getvalue(), filename=file.name)
         return Response(
-            data={"file": file.name, "success": response.json()["success"]},
-            status=response.status_code,
+            data={"file": file.name, "success": True},
+            status=status.HTTP_201_CREATED,
         )
 
 
