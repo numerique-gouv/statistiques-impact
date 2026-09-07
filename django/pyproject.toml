@@ -16,7 +16,7 @@ dependencies = [
     "drf-spectacular-sidecar==2026.7.1",
     "factory-boy==3.3.3",
     "freezegun==1.5.5",
-    "gunicorn==26.0.0",
+    "gunicorn==26.2.0",
     "pandas==3.0.5",
     "psycopg2-binary==2.9.12",
     "pytest==9.1.1",
