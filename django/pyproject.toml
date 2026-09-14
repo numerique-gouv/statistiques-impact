@@ -18,7 +18,7 @@ dependencies = [
     "freezegun==1.5.5",
     "gunicorn==26.2.0",
     "pandas==3.0.5",
-    "psycopg2-binary==2.9.12",
+    "psycopg2-binary==2.9.13",
     "pytest==9.1.1",
     "pytest-django==4.14.0",
     "python-dotenv==1.2.3",
