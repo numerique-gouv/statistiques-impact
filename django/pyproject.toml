@@ -9,7 +9,7 @@ dependencies = [
     "datagouv-client==0.5.0",
     "dj-database-url==3.1.2",
     "django==6.1.1",
-    "django-dsfr==3.5.2",
+    "django-dsfr==3.6.1",
     "djangorestframework==3.18.3",
     "djangorestframework-api-key==3.1.0",
     "drf-spectacular==0.30.0",
