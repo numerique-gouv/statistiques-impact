@@ -9,7 +9,7 @@ class PostHogClient(ClientBase):
     POSTHOG_API_URL = settings.POSTHOG_API_URL
     POSTHOG_API_KEY = settings.POSTHOG_API_KEY
 
-    def get_data(self):
+    def get_monthly_data(self):
         response = self.get_response(
             headers={"Authorization": f"Bearer {self.POSTHOG_API_KEY}"}
         )

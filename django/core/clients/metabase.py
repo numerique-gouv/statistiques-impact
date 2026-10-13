@@ -6,7 +6,7 @@ from rest_framework import status, exceptions
 class MetabaseClient(ClientBase):
     """Adaptor to extract data of interest from Metabase responses."""
 
-    def get_data(self):
+    def get_monthly_data(self):
         """Extract data from response content."""
         response = self.get_response()
         content = response.json()
@@ -33,7 +33,7 @@ class MetabaseClient(ClientBase):
 class TchapClient(MetabaseClient):
     """Adaptor to fetch and send Tchap's indicators."""
 
-    def get_data(self):
+    def get_monthly_data(self):
         response = self.get_response()
         content = response.json()
 

@@ -26,7 +26,7 @@ def test_metabase_single_indicator():
         status=status.HTTP_200_OK,
         content_type="application/json",
     )
-    assert adaptor.get_data() == [
+    assert adaptor.get_monthly_data() == [
         {
             "product": "proconnect",
             "indicator": "monthly active users",
@@ -46,7 +46,7 @@ def test_metabase_multiple_products(metabase_lasuite_MAU):
     )
 
     # Response mocked in fixture
-    assert adaptor.get_data() == [
+    assert adaptor.get_monthly_data() == [
         {
             "product": "Tchap",
             "indicator": "monthly active users",
@@ -111,6 +111,6 @@ def test_tchap_indicators():
         content_type="application/json",
     )
 
-    assert adaptor.get_data() == [
+    assert adaptor.get_monthly_data() == [
         {"product": "tchap", "indicator": "monthly active users", "value": 367146}
     ]

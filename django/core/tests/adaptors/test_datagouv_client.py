@@ -24,7 +24,7 @@ def test_messagerie_active_users(datagouv_messagerie_data):
     )
 
     # Responses mocked in fixtures
-    assert adaptor.get_data() == [
+    assert adaptor.get_monthly_data() == [
         {
             "product": adaptor.product.name,
             "indicator": adaptor.indicator,
@@ -46,7 +46,7 @@ def test_france_transfert_indicators():
         client="FranceTransfertClient",
     )
 
-    assert adaptor.get_data() == [
+    assert adaptor.get_monthly_data() == [
         {
             "product": "france transfert tests",
             "indicators": [
