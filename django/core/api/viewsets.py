@@ -85,7 +85,7 @@ class IndicatorSubmissionView(CreateAPIView):
                 method="Submission",
                 detail="File submission not authorized for this product.",
             )
-    
+
         df = utils.read_csv(file)
 
         if "satisfaction.csv" in file.name:
@@ -106,6 +106,9 @@ class IndicatorSubmissionView(CreateAPIView):
                     date=row["DATE"],
                     domaine_expediteur=row["DOMAINE_EXPEDITEUR"],
                     domaine_destinataire=row["DOMAINE_DESTINATAIRE"],
+                    taille=row["TAILLE"],
+                    hash_expe=row["HASH_EXPE"],
+                    type_action=row["TYPE_ACTION"],
                     is_demo="test" in product.slug,
                 )
         else:

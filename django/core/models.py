@@ -299,6 +299,9 @@ class Record(models.Model):
 
 
 # FranceTransfert-related models
+class FTUsageLogsTypeAction(models.TextChoices):
+    DOWNLOAD = "Download", _("download")
+    UPLOAD = "Upload", _("upload")
 
 
 class FTSatisfactionOperation(models.TextChoices):
@@ -317,6 +320,11 @@ class FTUsageLogs(models.Model):
     date = models.DateField()
     domaine_expediteur = models.CharField()
     domaine_destinataire = models.CharField()
+    taille = models.PositiveIntegerField(default=0)
+    hash_expe = models.CharField(blank=True, null=True)
+    type_action = models.CharField(
+        null=True, default=None, choices=FTUsageLogsTypeAction
+    )
     is_demo = models.BooleanField(default=False)
 
 
