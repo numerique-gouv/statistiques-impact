@@ -44,7 +44,7 @@ def test_posthog_monthly_active_users(settings):
     )
 
     # Verify the latest data point was returned
-    assert adaptor.get_data() == [
+    assert adaptor.get_monthly_data() == [
         {
             "product": str(adaptor.product),
             "indicator": "monthly active users",
@@ -77,4 +77,4 @@ def test_posthog_no_data_error(settings):
 
     # Should raise ValueError when no data is available
     with pytest.raises(KeyError, match="This insight has no data."):
-        adaptor.get_data()
+        adaptor.get_monthly_data()

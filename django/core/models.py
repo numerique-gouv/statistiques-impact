@@ -199,16 +199,16 @@ class Adaptor(models.Model):
         """Get client or return error."""
         return getattr(sys.modules["core.clients"], self.client)(adaptor=self)
 
-    def get_data(self):
+    def get_monthly_data(self):
         """Call client to get last available data."""
         client = self.get_client()
-        return client.get_data()
+        return client.get_monthly_data()
 
     def save_last_month_indicator(self):
         """Call client to get last available data and save it."""
         start_date, end_date = get_last_month_limits()
         client = self.get_client()
-        data = client.get_data()
+        data = client.get_monthly_data()
 
         for entry in data:
             try:

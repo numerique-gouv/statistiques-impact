@@ -81,7 +81,7 @@ class DataGouvClient(ClientBase):
 class MessagerieClient(DataGouvClient):
     """Adaptor to fetch and send 's indicators."""
 
-    def get_data(self):
+    def get_monthly_data(self):
         """Get a specific date's active users from messagerie's dataset on data.gouv.fr."""
 
         dataset = self.get_dataset()
@@ -112,7 +112,7 @@ class MessagerieClient(DataGouvClient):
 class FranceTransfertClient(DataGouvClient):
     """A client for the special needs of FranceTransfert."""
 
-    def get_data(self):
+    def get_monthly_data(self):
         """Surchage function to run France-Transfert-specific treatment on data."""
         month = str(utils.get_last_month_limits()[0])[0:-3]
         dataset = self.get_dataset()
