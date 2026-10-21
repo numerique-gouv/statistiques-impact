@@ -1,9 +1,9 @@
 """Management command to fill database with some demo objects."""
 
-from core import models, utils, factories
-from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
+from django.core.management.base import BaseCommand
 
+from core import factories, models, utils
 
 User = get_user_model()
 services = ["liberte connect", "mon france egalité", "adelphie.gouv.fr"]
@@ -30,7 +30,7 @@ class Command(BaseCommand):
 
         for service in services:
             product, _ = models.Product.objects.get_or_create(name=service)
-            for i in range(0, 5):
+            for i in range(5):
                 indicator = factories.IndicatorFactory(productid=product)
 
                 for month in range(1, 13):

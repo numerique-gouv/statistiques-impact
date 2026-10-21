@@ -1,7 +1,8 @@
 import pytest
-from core import models
-from django.core.management import call_command
 from django.contrib.auth import get_user_model
+from django.core.management import call_command
+
+from core import models
 
 User = get_user_model()
 pytestmark = pytest.mark.django_db

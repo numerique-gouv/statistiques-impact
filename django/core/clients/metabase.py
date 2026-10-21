@@ -1,6 +1,7 @@
 import requests
+from rest_framework import exceptions, status
+
 from core.clients.client_base import ClientBase
-from rest_framework import status, exceptions
 
 
 class MetabaseClient(ClientBase):

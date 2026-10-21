@@ -1,8 +1,9 @@
 """Management command to fetch data from."""
 
 from django.core.management.base import BaseCommand
-from core.utils.utils import get_last_month_limits
+
 from core import models
+from core.utils.utils import get_last_month_limits
 
 
 class Command(BaseCommand):
@@ -18,7 +19,7 @@ class Command(BaseCommand):
         )
 
         for adaptor in models.Adaptor.objects.all():
-            self.stdout.write(f"{str(adaptor.product)} - {str(adaptor.indicator)}")
+            self.stdout.write(f"{adaptor.product!s} - {adaptor.indicator!s}")
 
             try:
                 adaptor.save_last_month_indicator()

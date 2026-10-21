@@ -1,6 +1,7 @@
-from core import models
-from rest_framework import serializers, exceptions
 from django.shortcuts import get_object_or_404
+from rest_framework import exceptions, serializers
+
+from core import models
 
 
 class IndicatorListSerializer(serializers.ModelSerializer):

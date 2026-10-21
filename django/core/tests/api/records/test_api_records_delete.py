@@ -6,7 +6,7 @@ import pytest
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core import models, factories
+from core import factories, models
 
 pytestmark = pytest.mark.django_db
 

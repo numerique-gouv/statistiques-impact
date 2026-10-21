@@ -3,10 +3,11 @@ Unit tests for the PostHog adaptor
 """
 
 import pytest
-from core import factories
 import responses
-from rest_framework import status
 from freezegun import freeze_time
+from rest_framework import status
+
+from core import factories
 
 pytestmark = pytest.mark.django_db
 

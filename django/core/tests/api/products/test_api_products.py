@@ -2,11 +2,13 @@
 Unit tests for the product API
 """
 
+from datetime import timedelta
+
 import pytest
 from rest_framework import status
 from rest_framework.test import APIClient
-from datetime import timedelta
-from core import models, factories
+
+from core import factories, models
 
 pytestmark = pytest.mark.django_db
 

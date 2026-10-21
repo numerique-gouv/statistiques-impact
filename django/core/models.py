@@ -1,14 +1,14 @@
-import uuid
 import sys
+import uuid
 
-
-from django.db import models
-from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.base_user import AbstractBaseUser
-from django.template.defaultfilters import slugify
-from rest_framework_api_key.models import AbstractAPIKey
-from core.utils.utils import get_last_month_limits
 from django.core import exceptions
+from django.db import models
+from django.template.defaultfilters import slugify
+from django.utils.translation import gettext_lazy as _
+from rest_framework_api_key.models import AbstractAPIKey
+
+from core.utils.utils import get_last_month_limits
 
 
 class User(AbstractBaseUser):

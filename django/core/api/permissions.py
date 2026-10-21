@@ -1,9 +1,9 @@
-from rest_framework import permissions
-from rest_framework import exceptions
-from core import models
-from django.shortcuts import get_object_or_404
 from django.conf import settings
+from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
+from rest_framework import exceptions, permissions
+
+from core import models
 
 
 class HasValidAPIKeyOrReadOnly(permissions.BasePermission):

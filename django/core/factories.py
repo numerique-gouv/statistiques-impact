@@ -3,9 +3,10 @@ Test application factories
 """
 
 import datetime
+import random
+
 import factory.fuzzy
 from faker import Faker
-import random
 
 from core import models
 

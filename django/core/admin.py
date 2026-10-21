@@ -1,6 +1,7 @@
 from django.contrib import admin
-from core import models
 from rest_framework_api_key.admin import APIKeyModelAdmin
+
+from core import models
 
 
 @admin.register(models.Product)

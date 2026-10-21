@@ -1,10 +1,12 @@
 """Test every clients."""
 
-import pytest
-from rest_framework import status
-import responses
-from core import factories
 import re
+
+import pytest
+import responses
+from rest_framework import status
+
+from core import factories
 
 pytestmark = pytest.mark.django_db
 

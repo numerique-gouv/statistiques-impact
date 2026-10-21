@@ -1,9 +1,11 @@
-import pytest
 import re
+
+import pytest
 import responses
-from rest_framework import status
-from core import factories
 from django.conf import settings
+from rest_framework import status
+
+from core import factories
 
 
 # METABASE

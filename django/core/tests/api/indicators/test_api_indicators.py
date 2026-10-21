@@ -3,11 +3,11 @@ Unit tests for the indicators/ endpoint
 """
 
 import pytest
+from django.core import exceptions
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core import models, factories
-from django.core import exceptions
+from core import factories, models
 
 pytestmark = pytest.mark.django_db
 

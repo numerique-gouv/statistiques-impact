@@ -1,6 +1,7 @@
+from django.conf import settings
+
 from core.clients.client_base import ClientBase
 from core.utils import utils
-from django.conf import settings
 
 
 class PostHogClient(ClientBase):

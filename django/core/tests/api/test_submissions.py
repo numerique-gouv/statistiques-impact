@@ -5,8 +5,8 @@ Unit tests for the product API
 import pytest
 from rest_framework import status
 from rest_framework.test import APIClient
-from core import models, factories
 
+from core import factories, models
 
 pytestmark = pytest.mark.django_db
 
@@ -110,7 +110,10 @@ def test_api_submissions__cannot_submit_on_random_product():
         response.json()["detail"] == "File submission not authorized for this product."
     )
 
-@pytest.mark.skip(reason="broken on current file parsing method. TODO unskip when switching to MultiPart")
+
+@pytest.mark.skip(
+    reason="broken on current file parsing method. TODO unskip when switching to MultiPart"
+)
 def test_submission_data_is_saved():
     product = factories.ProductFactory(name="France Transfert")
     _, key = models.ProductAPIKey.objects.create_key(name="valid_key", product=product)

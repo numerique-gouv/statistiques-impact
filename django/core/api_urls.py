@@ -1,19 +1,15 @@
 """API URL Configuration"""
 
 from django.urls import include, path, re_path
-
-from rest_framework.routers import DefaultRouter, SimpleRouter
-
-from core.api import viewsets
-
 from drf_spectacular.views import (
     SpectacularAPIView,
+    SpectacularJSONAPIView,
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
-from drf_spectacular.views import (
-    SpectacularJSONAPIView,
-)
+from rest_framework.routers import DefaultRouter, SimpleRouter
+
+from core.api import viewsets
 
 product_router = DefaultRouter()
 product_router.register(r"products", viewsets.ProductViewSet, basename="products")

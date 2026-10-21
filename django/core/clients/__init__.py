@@ -1,7 +1,6 @@
-from .metabase import MetabaseClient, TchapClient, MetabaseMultipleProductsClient
-from .datagouv import DataGouvClient, MessagerieClient, FranceTransfertClient
+from .datagouv import DataGouvClient, FranceTransfertClient, MessagerieClient
+from .metabase import MetabaseClient, MetabaseMultipleProductsClient, TchapClient
 from .posthog import PostHogClient
-
 
 all_adaptors = [
     MetabaseClient,

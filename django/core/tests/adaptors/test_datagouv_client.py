@@ -1,10 +1,10 @@
 """Test every clients."""
 
 import pytest
-from rest_framework.test import APIClient
 import responses
-from core import models, factories
 from freezegun import freeze_time
+
+from core import factories
 
 pytestmark = pytest.mark.django_db
 
@@ -67,4 +67,3 @@ def test_france_transfert_indicators():
             ],
         }
     ]
-

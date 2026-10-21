@@ -3,13 +3,14 @@ Unit tests for the product API
 """
 
 import re
+
 import pytest
-from core import factories, models
 import responses
-from rest_framework import status
 from django.core.management import call_command
 from freezegun import freeze_time
+from rest_framework import status
 
+from core import factories, models
 
 pytestmark = pytest.mark.django_db
 

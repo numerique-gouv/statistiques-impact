@@ -5,10 +5,9 @@ Tests for the generated openapi schema.
 import json
 from io import StringIO
 
+import pytest
 from django.core.management import call_command
 from django.test import Client
-
-import pytest
 
 pytestmark = pytest.mark.django_db
 

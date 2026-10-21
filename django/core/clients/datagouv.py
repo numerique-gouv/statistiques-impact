@@ -1,12 +1,14 @@
+import os
+from datetime import date
+
+import pandas
+import requests
+from datagouv import Client, Dataset, Resource
+from django.conf import settings
+from rest_framework import exceptions, status
+
 from core.clients.client_base import ClientBase
 from core.utils import utils
-import pandas
-from rest_framework import status, exceptions
-import requests
-from datetime import date
-from django.conf import settings
-from datagouv import Client, Dataset, Resource
-import os
 
 
 class DataGouvClient(ClientBase):

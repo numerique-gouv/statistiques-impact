@@ -1,11 +1,13 @@
 """Management command to fill database with some demo objects."""
 
-from django.core.management.base import BaseCommand, CommandError
-from core import models
-import os
 import json
-from core.utils import utils
+import os
 from datetime import date as dtdate
+
+from django.core.management.base import BaseCommand, CommandError
+
+from core import models
+from core.utils import utils
 
 
 class Command(BaseCommand):
