@@ -55,3 +55,32 @@ class RecordFactory(factory.django.DjangoModelFactory):
     end_date = factory.fuzzy.FuzzyDate(datetime.date(2025, 1, 1))
     start_date = None
     is_auto_added = random.choice([True, False])
+
+
+class FTUsageLogsFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = models.FTUsageLogs
+
+    date = factory.fuzzy.FuzzyDate(datetime.date(2025, 1, 1))
+    domaine_expediteur = factory.Faker("domain_name")
+    domaine_destinataire = factory.Faker("domain_name")
+    taille = factory.fuzzy.FuzzyInteger(0, 999999999)
+    hash_expe = factory.Faker("uuid4")
+    type_action = random.choice(["download", "upload"])
+    is_demo = False
+
+
+class FTSatisfactionLogsFactory(factory.django.DjangoModelFactory):
+    """
+    Save satisfaction logs submitted by Acton on francetransfert/submission endpoint.
+    """
+
+    class Meta:
+        model = models.FTSatisfactionLogs
+
+    date = factory.fuzzy.FuzzyDate(datetime.date(2025, 1, 1))
+    commentaire = factory.Faker("sentence")
+    note = random.choice([1, 2, 3])
+    type_satisfaction = random.choice(["download", "upload"])
+    domaine = factory.Faker("domain_name")
+    is_demo = False
